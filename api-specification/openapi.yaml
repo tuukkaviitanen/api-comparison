@@ -1,0 +1,229 @@
+openapi: 3.1.0
+
+info:
+  title: Expenses API
+  version: 0.0.1
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  summary: Simple API for keeping track of expenses
+
+paths:
+  /expenses:
+
+    post:
+      tags:
+        - Expenses
+      summary: Add a new expense
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+      responses:
+        201:
+          description: Expense added
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    get:
+      tags:
+        - Expenses
+      summary: Get list of the expenses
+      parameters:
+        - in: query
+          name: category
+          schema:
+            $ref: '#/components/schemas/ExpenseCategory'
+        - in: query
+          name: sort
+          schema:
+            type: string
+            default: timestamp
+            enum:
+              - category
+              - timestamp
+        - in: query
+          name: order
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
+        - in: query
+          name: limit
+          schema:
+            minimum: 1
+            type: integer
+            default: 10
+        - in: query
+          name: skip
+          schema:
+            minimum: 0
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: List of expenses successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessedExpense'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /expenses/{expenseId}:
+
+    parameters:
+    - in: path
+      name: expenseId
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    get:
+      tags:
+        - Expenses
+      summary: Get expense by id
+      responses:
+        200:
+          description: Expense successfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessedExpense'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Expenses
+      summary: Update an existing expense
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+      responses:
+        200:
+          description: Expense successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessedExpense'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Expenses
+      summary: Delete an existing expense
+      responses:
+        204:
+          description: Expense successfully deleted
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    ExpenseCategory:
+          type: string
+          enum:
+            - "Household & Services"
+            - "Food & Drinks"
+            - "Transport"
+            - "Recreation"
+            - "Health"
+            - "Other"
+
+    Expense:
+      type: object
+      required:
+        - category
+        - description
+        - value
+        - timestamp
+      properties:
+        category:
+          $ref: '#/components/schemas/ExpenseCategory'
+        description:
+          type: string
+          description: Freely formatted description of the expense
+          maxLength: 200
+          minLength: 4
+          examples:
+            - "Restaurant Paris"
+            - "Refund"
+        value:
+          type: number
+          description: Negative number when money was spent, and positive if money has been added to account. Allows maximum of two decimals.
+          multipleOf: 0.01
+          maximum: 1000000000
+          minimum: -1000000000
+          format: double
+          examples:
+            - -54.99
+            - 9.99
+        timestamp:
+          type: string
+          format: date-time
+          description: When the expense occurred
+
+    ProcessedExpense:
+      required:
+      allOf:
+        - $ref: '#/components/schemas/Expense'
+        - type: object
+          properties:
+            id:
+              description: Assigned unique identifier
+              type: string
+              format: uuid
+
+    ErrorBody:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          examples:
+            - "Detailed error message"
+
+  responses:
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+
+    InternalError:
+      description: Internal error occurred
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
