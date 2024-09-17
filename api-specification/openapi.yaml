@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Budget Tracking API
-  version: 0.0.3
+  version: 0.0.4
   license:
     name: MIT
     url: http://opensource.org/licenses/MIT
@@ -266,6 +266,20 @@ paths:
           $ref: '#/components/responses/AuthenticationError'
         500:
           $ref: '#/components/responses/InternalError'
+  /openapi.yaml:
+    get:
+      summary: Returns the OpenAPI document
+      tags:
+        - OpenAPI
+      responses:
+        200:
+          description: Successfully fetched the OpenAPI document
+          content:
+            application/yaml:
+              schema:
+                type: object
+        500:
+          description: Fetching OpenAPI document failed
 components:
   schemas:
     TransactionCategory:
