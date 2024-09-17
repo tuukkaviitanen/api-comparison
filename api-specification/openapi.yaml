@@ -1,11 +1,11 @@
 openapi: 3.1.0
 info:
-  title: Expenses API
-  version: 0.0.2
+  title: Budget Tracking API
+  version: 0.0.3
   license:
     name: MIT
     url: http://opensource.org/licenses/MIT
-  summary: Simple API for keeping track of expenses
+  summary: Simple API for keeping track of financial transactions
 paths:
   /credentials:
     post:
@@ -48,21 +48,21 @@ paths:
           $ref: '#/components/responses/AuthenticationError'
         500:
           $ref: '#/components/responses/InternalError'
-  /expenses:
+  /transactions:
     post:
       security:
       - basicAuth: []
       tags:
-        - Expenses
-      summary: Add a new expense
+        - Transactions
+      summary: Add a new transaction
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Expense'
+              $ref: '#/components/schemas/Transaction'
       responses:
         201:
-          description: Expense added
+          description: Transactions added
         400:
           $ref: '#/components/responses/ValidationError'
         401:
@@ -73,15 +73,29 @@ paths:
       security:
       - basicAuth: []
       tags:
-        - Expenses
-      summary: Get list of the expenses
+        - Transactions
+      summary: Get list of the transactions
       parameters:
         - in: query
           name: category
+          description: For filtering. Returns transactions with given category.
           schema:
-            $ref: '#/components/schemas/ExpenseCategory'
+            $ref: '#/components/schemas/TransactionCategory'
+        - in: query
+          name: from
+          description: For filtering. Returns transactions that occured after given timestamp.
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          description: For filtering. Returns transactions that occured before given timestamp.
+          schema:
+            type: string
+            format: date-time
         - in: query
           name: sort
+          description: For sorting. Sorts transactions by the given property.
           schema:
             type: string
             default: timestamp
@@ -90,6 +104,7 @@ paths:
               - timestamp
         - in: query
           name: order
+          description: For sorting. Determines the sorting direction.
           schema:
             type: string
             default: desc
@@ -98,35 +113,37 @@ paths:
               - desc
         - in: query
           name: limit
+          description: For pagination. Returns the given amount of transactions.
           schema:
             minimum: 1
             type: integer
             default: 10
         - in: query
           name: skip
+          description: For pagination. Skips the given amount of transactions.
           schema:
             minimum: 0
             type: integer
             default: 0
       responses:
         200:
-          description: List of expenses successfully fetched
+          description: List of transactions successfully fetched
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProcessedExpense'
+                  $ref: '#/components/schemas/ProcessedTransaction'
         400:
           $ref: '#/components/responses/ValidationError'
         401:
           $ref: '#/components/responses/AuthenticationError'
         500:
           $ref: '#/components/responses/InternalError'
-  /expenses/{expenseId}:
+  /transactions/{transactionId}:
     parameters:
     - in: path
-      name: expenseId
+      name: transactionId
       required: true
       schema:
         type: string
@@ -135,15 +152,15 @@ paths:
       security:
       - basicAuth: []
       tags:
-        - Expenses
-      summary: Get expense by id
+        - Transactions
+      summary: Get transaction by id
       responses:
         200:
-          description: Expense successfully fetched
+          description: Transaction successfully fetched
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedExpense'
+                $ref: '#/components/schemas/ProcessedTransaction'
         401:
           $ref: '#/components/responses/AuthenticationError'
         403:
@@ -156,20 +173,20 @@ paths:
       security:
       - basicAuth: []
       tags:
-        - Expenses
-      summary: Update an existing expense
+        - Transactions
+      summary: Update an existing transaction
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Expense'
+              $ref: '#/components/schemas/Transaction'
       responses:
         200:
-          description: Expense successfully updated
+          description: Transaction successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedExpense'
+                $ref: '#/components/schemas/ProcessedTransaction'
         400:
           $ref: '#/components/responses/ValidationError'
         401:
@@ -184,11 +201,11 @@ paths:
       security:
       - basicAuth: []
       tags:
-        - Expenses
-      summary: Delete an existing expense
+        - Transactions
+      summary: Delete an existing transaction
       responses:
         204:
-          description: Expense successfully deleted
+          description: Transaction successfully deleted
         401:
           $ref: '#/components/responses/AuthenticationError'
         403:
@@ -197,9 +214,61 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/InternalError'
+  /reports:
+    get:
+      summary: Generates a financial report for the given period
+      description: If run without any parameters, generates the report from all data. Can be filtered more specifically with parameters.
+      security:
+        - basicAuth: []
+      tags:
+        - Reports
+      parameters:
+        - in: query
+          name: category
+          schema:
+            $ref: '#/components/schemas/TransactionCategory'
+          required: false
+        - in: query
+          name: from
+          description: Timestamp to start the report from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          description: Timestamp to end the report to
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Report generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions_sum:
+                    type: number
+                  expenses_sum:
+                    type: number
+                  incomes_sum:
+                    type: number
+                  transactions_count:
+                    type: number
+                  expenses_count:
+                    type: number
+                  incomes_count:
+                    type: number
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/AuthenticationError'
+        500:
+          $ref: '#/components/responses/InternalError'
 components:
   schemas:
-    ExpenseCategory:
+    TransactionCategory:
           type: string
           enum:
             - "Household & Services"
@@ -208,7 +277,7 @@ components:
             - "Recreation"
             - "Health"
             - "Other"
-    Expense:
+    Transaction:
       type: object
       required:
         - category
@@ -217,10 +286,10 @@ components:
         - timestamp
       properties:
         category:
-          $ref: '#/components/schemas/ExpenseCategory'
+          $ref: '#/components/schemas/TransactionCategory'
         description:
           type: string
-          description: Freely formatted description of the expense
+          description: Freely formatted description of the transaction
           maxLength: 200
           minLength: 4
           examples:
@@ -239,11 +308,11 @@ components:
         timestamp:
           type: string
           format: date-time
-          description: When the expense occurred
-    ProcessedExpense:
+          description: When the transaction occurred
+    ProcessedTransaction:
       required:
       allOf:
-        - $ref: '#/components/schemas/Expense'
+        - $ref: '#/components/schemas/Transaction'
         - type: object
           properties:
             id:
