@@ -1,3 +1,5 @@
+# Budget Tracking API database schema
+
 ```mermaid
 erDiagram
 
