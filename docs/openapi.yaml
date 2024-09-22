@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Budget Tracking API
-  version: 0.0.4
+  version: 0.0.3
   license:
     name: MIT
     url: http://opensource.org/licenses/MIT
