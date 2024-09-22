@@ -6,6 +6,9 @@
     "dev": "nodemon ./src/index.js"
   },
   "devDependencies": {
+    "@eslint/js": "^9.11.0",
+    "eslint": "^9.11.0",
+    "globals": "^15.9.0",
     "nodemon": "^3.1.7",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
