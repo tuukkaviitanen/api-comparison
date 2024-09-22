@@ -6,6 +6,10 @@ transactionRouter.get("/", (req, res) => {
   res.sendStatus(200);
 });
 
+transactionRouter.get("/:transactionId", (req, res) => {
+  res.sendStatus(200);
+});
+
 transactionRouter.post("/", (req, res) => {
   res.sendStatus(201);
 });
