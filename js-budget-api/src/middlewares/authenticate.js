@@ -17,6 +17,13 @@ const generateHash = (string) => {
   return result;
 };
 
+const sendAuthorizationError = (res) => {
+  res
+    .setHeader("WWW-Authenticate", "Basic")
+    .status(401)
+    .json({ error: "Authentication failed" });
+};
+
 const basicAuthPrefixRegex = /^basic /i;
 const basicAuthFormatRegex = /(?<username>.+):(?<password>.+)/;
 
@@ -28,11 +35,11 @@ const authenticate = async (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
 
     if (!authorizationHeader) {
-      return res.status(401).json({ error: "Authorization header required" });
+      return sendAuthorizationError(res);
     }
 
     if (!basicAuthPrefixRegex.test(authorizationHeader)) {
-      return res.status(401).json({ error: "Basic authorization required" });
+      return sendAuthorizationError(res);
     }
 
     const decryptedAuthorizationHeader = decryptBase64(
@@ -40,13 +47,13 @@ const authenticate = async (req, res, next) => {
     );
 
     if (!decryptedAuthorizationHeader) {
-      return res.status(401).json({ error: "Invalid authorization header" });
+      return sendAuthorizationError(res);
     }
 
     const regexResult = basicAuthFormatRegex.exec(decryptedAuthorizationHeader);
 
     if (!regexResult) {
-      return res.status(401).json({ error: "Invalid authorization header" });
+      return sendAuthorizationError(res);
     }
 
     const [username, password] = regexResult;
@@ -56,7 +63,7 @@ const authenticate = async (req, res, next) => {
     const credentialId = await getCredentialId(username, passwordHash);
 
     if (!credentialId) {
-      return res.status(401).json({ error: "Invald credentials" });
+      return sendAuthorizationError(res);
     }
 
     req.credentialId = credentialId;
