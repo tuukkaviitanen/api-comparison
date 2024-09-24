@@ -6,7 +6,9 @@
     "dev": "nodemon ./src/index.js",
     "lint": "eslint ./src",
     "lint:fix": "npm run lint -- --fix",
-    "db:migrate": "DATABASE_URL=postgresql://user:password@localhost/budget_api sequelize-cli db:migrate"
+    "db:migrate": "sequelize-cli db:migrate",
+    "docker:dev": "npm run db:migrate && npm run dev",
+    "docker:start": "npm run db:migrate && npm start"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.0",
