@@ -1,23 +1,22 @@
 require("dotenv");
-const express = require("express");
+const { Sequelize } = require("sequelize");
+const app = require("./app");
 
-const reportRouter = require("./routers/report-router");
-const transactionRouter = require("./routers/transaction-router");
-const errorHandler = require("./middlewares/error-handler");
-const authenticate = require("./middlewares/authenticate");
-const credentialRouter = require("./routers/credential-router");
+const main = async () => {
+  const DATABASE_URL = process.env.DATABASE_URL;
 
-const app = express();
-const port = Number(process.env.PORT) || 8080;
+  try {
+    const sequelize = new Sequelize(DATABASE_URL);
+    await sequelize.authenticate();
+  } catch (error) {
+    console.error("Database connection couldn't be created", error);
+  }
 
-app.get("/openapi.yaml", (_req, res) => res.sendStatus(200));
+  const PORT = Number(process.env.PORT) || 8080;
 
-app.use("/reports", authenticate, reportRouter);
-app.use("/transactions", authenticate, transactionRouter);
-app.use("/credentials", credentialRouter);
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+  });
+};
 
-app.use(errorHandler);
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+main();

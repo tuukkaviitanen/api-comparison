@@ -1,0 +1,6 @@
+const databaseUrl = process.env.DATABASE_URL
+
+module.exports = {
+  config: "sequelize.config.js",
+  url: databaseUrl,
+};
