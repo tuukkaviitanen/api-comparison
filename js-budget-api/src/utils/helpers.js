@@ -7,4 +7,6 @@ const generateHash = (string) => {
   return result;
 };
 
-module.exports = { generateHash };
+const roundToTwoDecimals = (num) => Math.round(num * 100) / 100;
+
+module.exports = { generateHash, roundToTwoDecimals };

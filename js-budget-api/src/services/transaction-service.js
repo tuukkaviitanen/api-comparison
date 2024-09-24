@@ -34,13 +34,28 @@ const getTransaction = async (transactionId) => {
   return mapTransaction(transaction);
 };
 
-const createTransaction = async (transactionDetails) => {
-  const createdTransaction = await Transaction.create(transactionDetails);
+const createTransaction = async ({
+  category,
+  description,
+  value,
+  timestamp,
+  credentialId,
+}) => {
+  const createdTransaction = await Transaction.create({
+    category: category.toLowerCase(),
+    description: description.toLowerCase(),
+    value,
+    timestamp,
+    credentialId,
+  });
 
   return mapTransaction(createdTransaction);
 };
 
-const updateTransaction = async (transactionId, transactionDetails) => {
+const updateTransaction = async (
+  transactionId,
+  { category, description, value, timestamp },
+) => {
   const foundTransaction = await Transaction.findOne({
     where: { id: transactionId },
   });
@@ -49,7 +64,12 @@ const updateTransaction = async (transactionId, transactionDetails) => {
     return null;
   }
 
-  await foundTransaction.update(transactionDetails);
+  await foundTransaction.update({
+    category: category.toLowerCase(),
+    description: description.toLowerCase(),
+    value,
+    timestamp,
+  });
 
   return mapTransaction(foundTransaction);
 };
