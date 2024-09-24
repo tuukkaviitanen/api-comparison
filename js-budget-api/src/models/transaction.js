@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.belongsTo(models.Credential, {
         onDelete: "CASCADE",
         foreignKey: {
+          field: "credentialId",
           allowNull: false,
+          name: "credentialId",
         },
       });
     }

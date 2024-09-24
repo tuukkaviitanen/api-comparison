@@ -1,9 +1,18 @@
 const express = require("express");
+const { getTransactions } = require("../services/transaction-service");
 
 const transactionRouter = express.Router();
 
-transactionRouter.get("/", (req, res) => {
-  res.sendStatus(200);
+transactionRouter.get("/", async (req, res, next) => {
+  try {
+    const { credentialId } = req;
+
+    const transactions = await getTransactions(credentialId);
+
+    res.status(200).json(transactions);
+  } catch (error) {
+    next(error);
+  }
 });
 
 transactionRouter.get("/:transactionId", (req, res) => {

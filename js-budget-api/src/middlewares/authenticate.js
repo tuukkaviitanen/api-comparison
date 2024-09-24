@@ -50,10 +50,8 @@ const authenticate = async (req, res, next) => {
 
     const { username, password } = regexResult.groups;
 
-    console.log({ username, password });
-
     const credentialId = await getCredentialId(username, password);
-    console.log({ credentialId });
+
     if (!credentialId) {
       return sendAuthorizationError(res);
     }
