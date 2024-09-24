@@ -3,7 +3,8 @@ const {
   getTransactions,
   createTransaction,
   getTransaction,
-  upsertTransaction,
+  updateTransaction,
+  deleteTransaction,
 } = require("../services/transaction-service");
 
 const transactionRouter = express.Router();
@@ -25,6 +26,10 @@ transactionRouter.get("/:transactionId", async (req, res, next) => {
     const { transactionId } = req.params;
 
     const transaction = await getTransaction(transactionId);
+
+    if (!transaction) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
 
     res.status(200).json(transaction);
   } catch (error) {
@@ -56,7 +61,7 @@ transactionRouter.put("/:transactionId", async (req, res, next) => {
     const { transactionId } = req.params;
     const { category, description, value, timestamp } = req.body;
 
-    const updatedTransaction = await upsertTransaction(transactionId, {
+    const updatedTransaction = await updateTransaction(transactionId, {
       category,
       description,
       value,
@@ -73,8 +78,20 @@ transactionRouter.put("/:transactionId", async (req, res, next) => {
   }
 });
 
-transactionRouter.delete("/", (req, res) => {
-  res.sendStatus(204);
+transactionRouter.delete("/:transactionId", async (req, res, next) => {
+  try {
+    const { transactionId } = req.params;
+
+    const deleteSuccessful = await deleteTransaction(transactionId);
+
+    if (!deleteSuccessful) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    return res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = transactionRouter;

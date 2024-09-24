@@ -40,7 +40,7 @@ const createTransaction = async (transactionDetails) => {
   return mapTransaction(createdTransaction);
 };
 
-const upsertTransaction = async (transactionId, transactionDetails) => {
+const updateTransaction = async (transactionId, transactionDetails) => {
   const foundTransaction = await Transaction.findOne({
     where: { id: transactionId },
   });
@@ -54,9 +54,20 @@ const upsertTransaction = async (transactionId, transactionDetails) => {
   return mapTransaction(foundTransaction);
 };
 
+const deleteTransaction = async (transactionId) => {
+  const deleteCount = await Transaction.destroy({
+    where: { id: transactionId },
+  });
+
+  const isDeleteSuccessful = deleteCount > 0;
+
+  return isDeleteSuccessful;
+};
+
 module.exports = {
   getTransactions,
   createTransaction,
   getTransaction,
-  upsertTransaction,
+  updateTransaction,
+  deleteTransaction,
 };
