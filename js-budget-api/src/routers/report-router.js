@@ -9,11 +9,12 @@ const reportRouter = express.Router();
 reportRouter.get(
   "/",
   query("category")
+    .optional()
     .isString()
     .toLowerCase()
     .isIn(transactionCategories)
     .withMessage("invalid category"),
-  query(["from", "to"]).isString().isDate(),
+  query(["from", "to"]).optional().isISO8601(),
   checkValidationResult,
   async (req, res, next) => {
     try {

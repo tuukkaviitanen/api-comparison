@@ -19,7 +19,7 @@ transactionRouter.get(
     .isString()
     .toLowerCase()
     .isIn(transactionCategories),
-  query(["from", "to"]).optional().isDate(),
+  query(["from", "to"]).optional().isISO8601(),
   query("sort")
     .default("timestamp")
     .isString()
@@ -59,8 +59,9 @@ transactionRouter.get(
   async (req, res, next) => {
     try {
       const { transactionId } = req.params;
+      const { credentialId } = req;
 
-      const transaction = await getTransaction(transactionId);
+      const transaction = await getTransaction(transactionId, credentialId);
 
       if (!transaction) {
         return res.status(404).json({ error: "Transaction not found" });
@@ -84,7 +85,7 @@ transactionRouter.post(
   body("value")
     .isFloat({ min: -1_000_000_000, max: 1_000_000_000 })
     .isDecimal({ decimal_digits: "0,2" }),
-  body("timestamp").isString().isISO8601(),
+  body("timestamp").isISO8601(),
   checkValidationResult,
   async (req, res, next) => {
     try {
@@ -109,25 +110,33 @@ transactionRouter.post(
 transactionRouter.put(
   "/:transactionId",
   param("transactionId").isUUID(),
-  body("category").isString().toLowerCase().isIn(transactionCategories),
+  body("category")
+    .isString()
+    .toLowerCase()
+    .isIn(transactionCategories)
+    .withMessage("Invalid category"),
   body("description").isString().isLength({ min: 4, max: 200 }),
   body("value")
-    .isString()
     .isFloat({ min: -1_000_000_000, max: 1_000_000_000 })
     .isDecimal({ decimal_digits: "0,2" }),
-  body("timestamp").isString().isDate(),
+  body("timestamp").isISO8601(),
   checkValidationResult,
   async (req, res, next) => {
     try {
       const { transactionId } = req.params;
       const { category, description, value, timestamp } = req.body;
+      const { credentialId } = req;
 
-      const updatedTransaction = await updateTransaction(transactionId, {
-        category,
-        description,
-        value,
-        timestamp,
-      });
+      const updatedTransaction = await updateTransaction(
+        transactionId,
+        credentialId,
+        {
+          category,
+          description,
+          value,
+          timestamp,
+        },
+      );
 
       if (!updatedTransaction) {
         return res.status(404).json({ error: "Transaction not found" });
@@ -147,8 +156,12 @@ transactionRouter.delete(
   async (req, res, next) => {
     try {
       const { transactionId } = req.params;
+      const { credentialId } = req;
 
-      const deleteSuccessful = await deleteTransaction(transactionId);
+      const deleteSuccessful = await deleteTransaction(
+        transactionId,
+        credentialId,
+      );
 
       if (!deleteSuccessful) {
         return res.status(404).json({ error: "Transaction not found" });

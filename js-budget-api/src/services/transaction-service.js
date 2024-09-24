@@ -37,10 +37,11 @@ const getTransactions = async (
   return transactions.map(mapTransaction);
 };
 
-const getTransaction = async (transactionId) => {
+const getTransaction = async (transactionId, credentialId) => {
   const transaction = await Transaction.findOne({
     where: {
       id: transactionId,
+      credentialId,
     },
   });
 
@@ -55,8 +56,8 @@ const createTransaction = async ({
   credentialId,
 }) => {
   const createdTransaction = await Transaction.create({
-    category: category.toLowerCase(),
-    description: description.toLowerCase(),
+    category,
+    description,
     value,
     timestamp,
     credentialId,
@@ -67,10 +68,11 @@ const createTransaction = async ({
 
 const updateTransaction = async (
   transactionId,
+  credentialId,
   { category, description, value, timestamp },
 ) => {
   const foundTransaction = await Transaction.findOne({
-    where: { id: transactionId },
+    where: { id: transactionId, credentialId },
   });
 
   if (!foundTransaction) {
@@ -78,8 +80,8 @@ const updateTransaction = async (
   }
 
   await foundTransaction.update({
-    category: category.toLowerCase(),
-    description: description.toLowerCase(),
+    category: category,
+    description: description,
     value,
     timestamp,
   });
@@ -87,9 +89,9 @@ const updateTransaction = async (
   return mapTransaction(foundTransaction);
 };
 
-const deleteTransaction = async (transactionId) => {
+const deleteTransaction = async (transactionId, credentialId) => {
   const deleteCount = await Transaction.destroy({
-    where: { id: transactionId },
+    where: { id: transactionId, credentialId },
   });
 
   const isDeleteSuccessful = deleteCount > 0;
