@@ -1,4 +1,5 @@
 const crypto = require("node:crypto");
+const { Op } = require("sequelize");
 
 const generateHash = (string) => {
   const hash = crypto.createHash("sha256");
@@ -9,4 +10,26 @@ const generateHash = (string) => {
 
 const roundToTwoDecimals = (num) => Math.round(num * 100) / 100;
 
-module.exports = { generateHash, roundToTwoDecimals };
+const getTimestampFilter = (from, to) => {
+  if (from && to) {
+    return { [Op.between]: [from, to] };
+  } else if (from) {
+    return { [Op.gte]: from };
+  } else if (to) {
+    return { [Op.lte]: to };
+  } else {
+    return undefined;
+  }
+};
+
+const getTransactionsWhereClause = (credentialId, category, from, to) => ({
+  credentialId,
+  ...(category && { category: category.toLowerCase() }),
+  ...((from || to) && { timestamp: getTimestampFilter(from, to) }),
+});
+
+module.exports = {
+  generateHash,
+  roundToTwoDecimals,
+  getTransactionsWhereClause,
+};
