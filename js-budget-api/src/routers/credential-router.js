@@ -4,20 +4,28 @@ const {
   createCredential,
   deleteCredential,
 } = require("../services/credential-service");
+const checkValidationResult = require("../middlewares/checkValidationResult");
+const { body } = require("express-validator");
 
 const credentialRouter = express.Router();
 
-credentialRouter.post("/", async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
+credentialRouter.post(
+  "/",
+  body("username").isString().isLength({ min: 4, max: 50 }),
+  body("password").isString().isLength({ min: 8, max: 50 }),
+  checkValidationResult,
+  async (req, res, next) => {
+    try {
+      const { username, password } = req.body;
 
-    await createCredential(username, password);
+      await createCredential(username, password);
 
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
-  }
-});
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 credentialRouter.delete("/", authenticate, async (req, res, next) => {
   try {

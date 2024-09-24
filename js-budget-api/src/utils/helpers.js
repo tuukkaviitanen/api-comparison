@@ -28,8 +28,18 @@ const getTransactionsWhereClause = (credentialId, category, from, to) => ({
   ...((from || to) && { timestamp: getTimestampFilter(from, to) }),
 });
 
+const transactionCategories = [
+  "household & services",
+  "food & drinks",
+  "transport",
+  "recreation",
+  "health",
+  "other",
+];
+
 module.exports = {
   generateHash,
   roundToTwoDecimals,
   getTransactionsWhereClause,
+  transactionCategories,
 };
