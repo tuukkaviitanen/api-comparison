@@ -1,15 +1,13 @@
 require("dotenv");
-const { Sequelize } = require("sequelize");
+const db = require("./models");
 const app = require("./app");
 
 const main = async () => {
-  const DATABASE_URL = process.env.DATABASE_URL;
-
   try {
-    const sequelize = new Sequelize(DATABASE_URL);
-    await sequelize.authenticate();
+    await db.sequelize.authenticate();
   } catch (error) {
     console.error("Database connection couldn't be created", error);
+    process.exit(1); // Failure code
   }
 
   const PORT = Number(process.env.PORT) || 8080;

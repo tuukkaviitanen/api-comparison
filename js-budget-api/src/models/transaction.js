@@ -12,14 +12,20 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.belongsTo(models.Credential, {
         onDelete: "CASCADE",
         foreignKey: {
+          field: "credentialId",
           allowNull: false,
+          name: "credentialId",
         },
       });
     }
   }
   Transaction.init(
     {
-      id: DataTypes.UUID,
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
       credentialId: DataTypes.UUID,
       category: DataTypes.STRING(50),
       description: DataTypes.STRING(200),

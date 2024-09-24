@@ -10,18 +10,23 @@ module.exports = (sequelize, DataTypes) => {
 
     static associate(models) {
       // define association here
-      Credential.hasMany(models.Transaction);
+      Credential.hasMany(models.Transaction, { foreignKey: "credentialId" });
     }
   }
   Credential.init(
     {
-      id: DataTypes.UUID,
-      username: DataTypes.STRING(50),
-      passwordHash: DataTypes.STRING(50),
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
+      username: { type: DataTypes.STRING(50), unique: true },
+      passwordHash: DataTypes.STRING(64),
     },
     {
       sequelize,
       modelName: "Credential",
+      timpestamps: false,
     },
   );
   return Credential;

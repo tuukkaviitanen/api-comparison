@@ -5,9 +5,15 @@ module.exports = {
   development: {
     url,
     dialect: "postgres",
+    define: {
+      timestamps: false,
+    },
   },
   production: {
     url,
     dialect: "postgres",
+    define: {
+      timestamps: false,
+    },
   },
 };
