@@ -8,6 +8,8 @@ const credentialRouter = require("./routers/credential-router");
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/openapi.yaml", (_req, res) => res.sendStatus(200));
 
 app.use("/reports", authenticate, reportRouter);

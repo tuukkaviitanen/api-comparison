@@ -5,8 +5,8 @@ erDiagram
 
 Credentials {
     uuid id PK
-    varchar(50) username
-    varchar(50) passwordHash
+    varchar(50) username unique
+    varchar(64) passwordHash
 }
 
 Transactions {

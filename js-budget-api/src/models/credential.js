@@ -15,13 +15,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   Credential.init(
     {
-      id: DataTypes.UUID,
-      username: DataTypes.STRING(50),
-      passwordHash: DataTypes.STRING(50),
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
+      username: { type: DataTypes.STRING(50), unique: true },
+      passwordHash: DataTypes.STRING(64),
     },
     {
       sequelize,
       modelName: "Credential",
+      timpestamps: false,
     },
   );
   return Credential;

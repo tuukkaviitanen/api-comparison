@@ -42,8 +42,6 @@ paths:
       responses:
         204:
           description: Credentials deleted successfully
-        400:
-          $ref: '#/components/responses/ValidationError'
         401:
           $ref: '#/components/responses/AuthenticationError'
         500:

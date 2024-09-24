@@ -1,4 +1,3 @@
-const crypto = require("node:crypto");
 const { getCredentialId } = require("../services/credential-service");
 
 const decryptBase64 = (base64) => {
@@ -8,13 +7,6 @@ const decryptBase64 = (base64) => {
   } catch {
     return null;
   }
-};
-
-const generateHash = (string) => {
-  const hash = crypto.createHash("sha256");
-  hash.update(string);
-  const result = hash.digest("hex");
-  return result;
 };
 
 const sendAuthorizationError = (res) => {
@@ -56,12 +48,12 @@ const authenticate = async (req, res, next) => {
       return sendAuthorizationError(res);
     }
 
-    const [username, password] = regexResult;
+    const { username, password } = regexResult.groups;
 
-    const passwordHash = generateHash(password);
+    console.log({ username, password });
 
-    const credentialId = await getCredentialId(username, passwordHash);
-
+    const credentialId = await getCredentialId(username, password);
+    console.log({ credentialId });
     if (!credentialId) {
       return sendAuthorizationError(res);
     }
