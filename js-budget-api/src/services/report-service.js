@@ -1,18 +1,8 @@
 const { Transaction } = require("../models");
-const { Op } = require("sequelize");
-const { roundToTwoDecimals } = require("../utils/helpers");
-
-const getTimestampFilter = (from, to) => {
-  if (from && to) {
-    return { [Op.between]: [from, to] };
-  } else if (from) {
-    return { [Op.gte]: from };
-  } else if (to) {
-    return { [Op.lte]: to };
-  } else {
-    return undefined;
-  }
-};
+const {
+  roundToTwoDecimals,
+  getTransactionsWhereClause,
+} = require("../utils/helpers");
 
 const initialReport = {
   transactions_sum: 0,
@@ -46,11 +36,7 @@ const mapReport = (transactions) =>
   }, initialReport);
 
 const generateReport = async (credentialId, category, from, to) => {
-  const where = {
-    credentialId,
-    ...(category && { category: category.toLowerCase() }),
-    ...((from || to) && { timestamp: getTimestampFilter(from, to) }),
-  };
+  const where = getTransactionsWhereClause(credentialId, category, from, to);
   const transactions = await Transaction.findAll({
     where,
   });

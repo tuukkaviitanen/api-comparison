@@ -1,4 +1,5 @@
 const { Transaction } = require("../models");
+const { getTransactionsWhereClause } = require("../utils/helpers");
 
 const mapTransaction = (transaction) => {
   if (!transaction) {
@@ -14,11 +15,28 @@ const mapTransaction = (transaction) => {
   };
 };
 
-const getTransactions = async (credentialId) => {
+const defaultSort = "timestamp";
+const defaultOrder = "ASC";
+const defaultLimit = 10;
+const defaultSkip = 0;
+
+const getTransactions = async (
+  credentialId,
+  category,
+  from,
+  to,
+  sort = defaultSort,
+  order = defaultOrder,
+  limit = defaultLimit,
+  skip = defaultSkip,
+) => {
+  const where = getTransactionsWhereClause(credentialId, category, from, to);
+
   const transactions = await Transaction.findAll({
-    where: {
-      credentialId,
-    },
+    where,
+    order: [[sort, order]],
+    limit,
+    offset: skip,
   });
 
   return transactions.map(mapTransaction);

@@ -12,8 +12,18 @@ const transactionRouter = express.Router();
 transactionRouter.get("/", async (req, res, next) => {
   try {
     const { credentialId } = req;
+    const { category, from, to, sort, order, limit, skip } = req.query;
 
-    const transactions = await getTransactions(credentialId);
+    const transactions = await getTransactions(
+      credentialId,
+      category,
+      from,
+      to,
+      sort,
+      order,
+      limit,
+      skip,
+    );
 
     res.status(200).json(transactions);
   } catch (error) {
