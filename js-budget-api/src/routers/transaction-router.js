@@ -2,6 +2,8 @@ const express = require("express");
 const {
   getTransactions,
   createTransaction,
+  getTransaction,
+  upsertTransaction,
 } = require("../services/transaction-service");
 
 const transactionRouter = express.Router();
@@ -18,8 +20,16 @@ transactionRouter.get("/", async (req, res, next) => {
   }
 });
 
-transactionRouter.get("/:transactionId", (req, res) => {
-  res.sendStatus(200);
+transactionRouter.get("/:transactionId", async (req, res, next) => {
+  try {
+    const { transactionId } = req.params;
+
+    const transaction = await getTransaction(transactionId);
+
+    res.status(200).json(transaction);
+  } catch (error) {
+    next(error);
+  }
 });
 
 transactionRouter.post("/", async (req, res, next) => {
@@ -41,8 +51,26 @@ transactionRouter.post("/", async (req, res, next) => {
   }
 });
 
-transactionRouter.put("/", (req, res) => {
-  res.sendStatus(200);
+transactionRouter.put("/:transactionId", async (req, res, next) => {
+  try {
+    const { transactionId } = req.params;
+    const { category, description, value, timestamp } = req.body;
+
+    const updatedTransaction = await upsertTransaction(transactionId, {
+      category,
+      description,
+      value,
+      timestamp,
+    });
+
+    if (!updatedTransaction) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    return res.status(200).json(updatedTransaction);
+  } catch (error) {
+    next(error);
+  }
 });
 
 transactionRouter.delete("/", (req, res) => {

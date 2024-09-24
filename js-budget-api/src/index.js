@@ -7,6 +7,7 @@ const main = async () => {
     await db.sequelize.authenticate();
   } catch (error) {
     console.error("Database connection couldn't be created", error);
+    process.exit(1); // Failure code
   }
 
   const PORT = Number(process.env.PORT) || 8080;
