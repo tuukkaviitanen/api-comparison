@@ -15,20 +15,15 @@ const mapTransaction = (transaction) => {
   };
 };
 
-const defaultSort = "timestamp";
-const defaultOrder = "ASC";
-const defaultLimit = 10;
-const defaultSkip = 0;
-
 const getTransactions = async (
   credentialId,
   category,
   from,
   to,
-  sort = defaultSort,
-  order = defaultOrder,
-  limit = defaultLimit,
-  skip = defaultSkip,
+  sort,
+  order,
+  limit,
+  skip,
 ) => {
   const where = getTransactionsWhereClause(credentialId, category, from, to);
 
