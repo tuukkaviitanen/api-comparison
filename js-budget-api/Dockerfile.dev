@@ -2,10 +2,12 @@ FROM node:22
 
 WORKDIR /usr/src/app
 
-COPY ./package*.json ./
+COPY ./js-budget-api/package*.json ./
 
 RUN npm ci
 
-COPY . .
+COPY ./js-budget-api .
+
+COPY ./docs/openapi.yaml .
 
 CMD npm run docker:dev

@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 
 const reportRouter = require("./routers/report-router");
 const transactionRouter = require("./routers/transaction-router");
@@ -10,7 +11,12 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/openapi.yaml", (_req, res) => res.sendStatus(200));
+const projectRootPath = process.cwd();
+const openapiFileName = "openapi.yaml";
+
+app.get("/openapi.yaml", (req, res) =>
+  res.sendFile(path.resolve(projectRootPath, openapiFileName)),
+);
 
 app.use("/reports", authenticate, reportRouter);
 app.use("/transactions", authenticate, transactionRouter);
