@@ -1,0 +1,6 @@
+version: '3'
+
+tasks:
+  api-tests:
+    cmds:
+      - docker compose -f ./k6/docker-compose-test.yaml up
