@@ -9,4 +9,12 @@ export default [
   pluginJs.configs.recommended,
   eslintConfigPrettier, // Disables eslint formatting rules
   eslintPluginPrettierRecommended, // Adds prettier formatting rules to eslint
+  {
+    files: ["**/*.test.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+  },
 ];
