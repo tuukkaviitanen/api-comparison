@@ -40,8 +40,8 @@ const postCredentials = (username, password) => {
     return http.post(`${BASE_URL}/credentials`, requestBody, params);
 }
 
-const deleteCredentials = (username, password) => {
-    const params = {
+const deleteCredentials = (username, password, optionalParams = undefined) => {
+    const params = optionalParams ?? {
         headers: {
             'Authorization': getBasicAuthHeader(username, password)
         },
@@ -87,6 +87,56 @@ const putTransaction = (transactionId, category, description, value, timestamp, 
     })
 
     return http.put(`${BASE_URL}/transactions/${transactionId}`, payload, params)
+}
+
+const getSingleTransaction = (transactionId, params) => {
+    return http.get(`${BASE_URL}/transactions/${transactionId}`, params)
+}
+
+/**
+ * Runs authentication tests for the given request
+ * @param {(requestParams: ReturnType<typeof getTransactionParams>) => http.RefinedResponse<http.ResponseType | undefined>} requestFactory A function that runs the request when called. Takes the request params object as params
+ */
+const runAuthenticationTests = (requestFactory) => {
+    describe('should throw authentication error on', () => {
+        describe('invalid credentials', () => {
+            const newUsername = randomString(10)
+            const newPassword = randomString(10)
+            const newRequestParams = getTransactionParams(newUsername, newPassword)
+
+            const response = requestFactory(newRequestParams)
+
+            expect(response.status, 'response status').to.equal(401)
+            assertValidErrorBody(response)
+        })
+
+        describe('invalid authentication header', () => {
+            const newRequestParams = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'invalid'
+                },
+            };
+
+            const response = requestFactory(newRequestParams)
+
+            expect(response.status, 'response status').to.equal(401)
+            assertValidErrorBody(response)
+        })
+
+        describe('missing authentication header', () => {
+            const newRequestParams = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const response = requestFactory(newRequestParams)
+
+            expect(response.status, 'response status').to.equal(401)
+            assertValidErrorBody(response)
+        })
+    })
 }
 
 export default function () {
@@ -138,11 +188,7 @@ export default function () {
                     expect(response.body, 'response status').to.be.null
                 })
 
-                describe('should respond with 401 when unable to authenticate', () => {
-                    const response = deleteCredentials(username, password)
-                    expect(response.status, 'response status').to.equal(401)
-                    assertValidErrorBody(response)
-                })
+                runAuthenticationTests((requestParams) => deleteCredentials(username, password, requestParams))
             })
         });
 
@@ -201,44 +247,29 @@ export default function () {
                     }
                 })
 
-                describe('should throw authentication error on', () => {
-                    describe('invalid credentials', () => {
-                        const newUsername = randomString(10)
-                        const newPassword = randomString(10)
-                        const newRequestParams = getTransactionParams(newUsername, newPassword)
+                runAuthenticationTests((requestParams) => postTransaction(category, description, value, timestamp, requestParams))
+            })
 
-                        const response = postTransaction(category, description, value, timestamp, newRequestParams)
+            describe('GET', () => {
+                describe('single', () => {
+                    const postResponse = postTransaction(category, description, value, timestamp, requestParams)
+                    const transactionId = postResponse.json().id
 
-                        expect(response.status, 'response status').to.equal(401)
-                        assertValidErrorBody(response)
+                    describe('should return transaction successfully', () => {
+                        const response = getSingleTransaction(transactionId, requestParams)
+
+                        expect(response.status, 'response status').to.equal(200)
+                        expect(response).to.have.validJsonBody();
+
+                        const jsonBody = response.json()
+                        expect(jsonBody.id, "id").to.be.a("string")
+                        expect(jsonBody.category, "category").to.equal(category)
+                        expect(jsonBody.description, "description").to.equal(description)
+                        expect(jsonBody.value, "value").to.equal(value)
+                        expect(jsonBody.timestamp, "timestamp").to.equal("2024-01-01T00:00:00.000Z")
                     })
 
-                    describe('invalid authentication header', () => {
-                        const newRequestParams = {
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'invalid'
-                            },
-                        };
-
-                        const response = postTransaction(category, description, value, timestamp, newRequestParams)
-
-                        expect(response.status, 'response status').to.equal(401)
-                        assertValidErrorBody(response)
-                    })
-
-                    describe('missing authentication header', () => {
-                        const newRequestParams = {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        };
-
-                        const response = postTransaction(category, description, value, timestamp, newRequestParams)
-
-                        expect(response.status, 'response status').to.equal(401)
-                        assertValidErrorBody(response)
-                    })
+                    runAuthenticationTests((requestParams) => getSingleTransaction(transactionId, requestParams))
                 })
             })
 
@@ -278,45 +309,7 @@ export default function () {
                     }
                 })
 
-                describe('should throw authentication error on', () => {
-                    describe('invalid credentials', () => {
-                        const newUsername = randomString(10)
-                        const newPassword = randomString(10)
-                        const newRequestParams = getTransactionParams(newUsername, newPassword)
-
-                        const response = putTransaction(transactionId, category, description, value, timestamp, newRequestParams)
-
-                        expect(response.status, 'response status').to.equal(401)
-                        assertValidErrorBody(response)
-                    })
-
-                    describe('invalid authentication header', () => {
-                        const newRequestParams = {
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'invalid'
-                            },
-                        };
-
-                        const response = putTransaction(transactionId, category, description, value, timestamp, newRequestParams)
-
-                        expect(response.status, 'response status').to.equal(401)
-                        assertValidErrorBody(response)
-                    })
-
-                    describe('missing authentication header', () => {
-                        const newRequestParams = {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        };
-
-                        const response = putTransaction(transactionId, category, description, value, timestamp, newRequestParams)
-
-                        expect(response.status, 'response status').to.equal(401)
-                        assertValidErrorBody(response)
-                    })
-                })
+                runAuthenticationTests((requestParams) => putTransaction(transactionId, category, description, value, timestamp, requestParams))
             })
 
             describe('DELETE', () => {
