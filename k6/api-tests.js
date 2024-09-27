@@ -269,6 +269,22 @@ export default function () {
                         expect(jsonBody.timestamp, "timestamp").to.equal("2024-01-01T00:00:00.000Z")
                     })
 
+                    describe('should return authentication error when invalid uuid', () => {
+                        const invalidTransactionId = randomString(10)
+                        const response = getSingleTransaction(invalidTransactionId, requestParams)
+
+                        expect(response.status, 'response status').to.equal(400)
+                        assertValidErrorBody(response)
+                    })
+
+                    describe('should return 404 error when transaction does not exist', () => {
+                        const nonExistentTransactionId = "3bc4f068-d09e-4723-b020-a4800508b88f"
+                        const response = getSingleTransaction(nonExistentTransactionId, requestParams)
+
+                        expect(response.status, 'response status').to.equal(404)
+                        assertValidErrorBody(response)
+                    })
+
                     runAuthenticationTests((requestParams) => getSingleTransaction(transactionId, requestParams))
                 })
             })
