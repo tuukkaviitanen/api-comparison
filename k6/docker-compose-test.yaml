@@ -6,3 +6,5 @@ services:
     volumes:
       - ./api-tests.js:/api-tests.js
     network_mode: "host"
+    environment:
+      - BASE_URL=http://localhost:8080
