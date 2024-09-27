@@ -93,6 +93,10 @@ const getSingleTransaction = (transactionId, params) => {
     return http.get(`${BASE_URL}/transactions/${transactionId}`, params)
 }
 
+const getTransactions = (category, from, to, sort, order, limit, skip) => {
+    return http.get(`${BASE_URL}/transactions?category=${category}&from=${from}&to=${to}&sort=${sort}&order=${order}&limit=${limit}&skip=${skip}`, params)
+}
+
 const deleteTransaction = (transactionId, params) => {
     return http.del(`${BASE_URL}/transactions/${transactionId}`, undefined, params)
 }
@@ -290,6 +294,28 @@ export default function () {
                     })
 
                     runAuthenticationTests((requestParams) => getSingleTransaction(transactionId, requestParams))
+                })
+
+                // TODO: Gets only transactions from these credentials
+                describe('many', () => {
+                    const transactions = [{
+                        category: "health", description: "Doctor's appointment", value: -50, timestamp: "2024-01-01",
+                        category: "recreation", description: 'Hotel for one night', value: -120, timestamp: "2023-01-01",
+                        category: "food & drinks", description: "Doctor's appointment", value: -50, timestamp: "2022-01-01",
+                        category: "transport", description: "Doctor's appointment", value: -50, timestamp: "2021-01-01",
+                        category: 'household & services', description: 'work income', value: 2000, timestamp: "2020-01-01",
+                    }]
+
+                    for (const transaction of transactions) {
+                        const response = postTransaction(transaction.category, transaction.description, transaction.value, transaction.timestamp, requestParams)
+                        expect(response.status, 'response status').to.equal(201)
+                    }
+
+                    describe('should fetch correct transactions when', () => {
+                        const testCases = [
+                            ["invalid category", { category: "invalid category", description, value, timestamp }],
+                        ]
+                    })
                 })
             })
 
