@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import { describe, expect } from 'https://jslib.k6.io/k6chaijs/4.3.4.3/index.js';
-import { randomString } from 'https://jslib.k6.io/k6-utils/1.0.0/index.js';
+import { randomString, uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 import encoding from 'k6/encoding';
 import exec from 'k6/execution';
 
@@ -91,6 +91,10 @@ const putTransaction = (transactionId, category, description, value, timestamp, 
 
 const getSingleTransaction = (transactionId, params) => {
     return http.get(`${BASE_URL}/transactions/${transactionId}`, params)
+}
+
+const deleteTransaction = (transactionId, params) => {
+    return http.del(`${BASE_URL}/transactions/${transactionId}`, undefined, params)
 }
 
 /**
@@ -278,7 +282,7 @@ export default function () {
                     })
 
                     describe('should return 404 error when transaction does not exist', () => {
-                        const nonExistentTransactionId = "3bc4f068-d09e-4723-b020-a4800508b88f"
+                        const nonExistentTransactionId = uuidv4()
                         const response = getSingleTransaction(nonExistentTransactionId, requestParams)
 
                         expect(response.status, 'response status').to.equal(404)
@@ -312,6 +316,22 @@ export default function () {
                     expect(jsonBody.timestamp, "timestamp").to.equal("2024-06-01T00:00:00.000Z")
                 })
 
+                describe('should return 400 when invlid uuid', () => {
+                    const invalidTransactionId = randomString(10)
+                    const response = putTransaction(invalidTransactionId, category, description, value, timestamp, requestParams)
+
+                    expect(response.status, 'response status').to.equal(400)
+                    assertValidErrorBody(response)
+                })
+
+                describe('should return 404 when non-existent transaction id', () => {
+                    const nonExistentTransactionId = uuidv4()
+                    const response = putTransaction(nonExistentTransactionId, category, description, value, timestamp, requestParams)
+
+                    expect(response.status, 'response status').to.equal(404)
+                    assertValidErrorBody(response)
+                })
+
                 describe('should throw validation error on', () => {
                     for (const errorTestCase of validationErrorTestCases) {
                         const [name, parameters] = errorTestCase
@@ -329,7 +349,31 @@ export default function () {
             })
 
             describe('DELETE', () => {
+                const postResponse = postTransaction(category, description, value, timestamp, requestParams)
+                const transactionId = postResponse.json().id
 
+                describe('should successfully delete transaction', () => {
+                    const response = deleteTransaction(transactionId, requestParams)
+
+                    expect(response.status, 'response status').to.equal(204)
+                    expect(response.body, 'response status').to.be.null
+                })
+
+                describe('should return 400 when invlid uuid', () => {
+                    const invalidTransactionId = randomString(10)
+                    const response = deleteTransaction(invalidTransactionId, requestParams)
+
+                    expect(response.status, 'response status').to.equal(400)
+                    assertValidErrorBody(response)
+                })
+
+                describe('should return 404 when transaction does not exist', () => {
+                    const nonExistentTransactionId = uuidv4()
+                    const response = deleteTransaction(nonExistentTransactionId, requestParams)
+
+                    expect(response.status, 'response status').to.equal(404)
+                    assertValidErrorBody(response)
+                })
             })
         })
     })
