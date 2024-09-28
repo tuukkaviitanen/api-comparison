@@ -50,6 +50,9 @@ jobs:
         run: npm test
         working-directory: ./node-budget-api
 
+      - name: Copy openapi.yaml to application directory
+        run: cp ./docs/openapi.yaml ./node-budget-api/
+
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
 
