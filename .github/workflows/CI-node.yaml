@@ -68,6 +68,8 @@ jobs:
         uses: grafana/run-k6-action@v1
         with:
           path: "k6/api-tests.js"
+        env:
+          BASE_URL: http://localhost:8080
 
   publish_docker_image:
     needs: [verification]
