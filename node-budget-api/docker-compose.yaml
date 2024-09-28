@@ -2,7 +2,7 @@ services:
   server:
     build:
       context: ../
-      dockerfile: ./js-budget-api/Dockerfile.dev
+      dockerfile: ./node-budget-api/Dockerfile.dev
     volumes:
       - ./src:/usr/src/app/src
     environment:
