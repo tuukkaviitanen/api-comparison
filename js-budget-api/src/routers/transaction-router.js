@@ -25,7 +25,7 @@ transactionRouter.get(
     .isString()
     .toLowerCase()
     .isIn(["timestamp", "category"]),
-  query("order").default("ASC").isString().toUpperCase().isIn(["ASC", "DESC"]),
+  query("order").default("DESC").isString().toUpperCase().isIn(["ASC", "DESC"]),
   query("limit").default(10).isInt({ min: 0 }).toInt(),
   query("skip").default(0).isInt({ min: 0 }).toInt(),
   checkValidationResult,

@@ -46,6 +46,17 @@ describe("generateReport", () => {
         incomes_count: 2,
       },
     ],
+    [
+      [],
+      {
+        transactions_sum: 0,
+        expenses_sum: 0,
+        incomes_sum: 0,
+        transactions_count: 0,
+        expenses_count: 0,
+        incomes_count: 0,
+      },
+    ],
   ])(
     "should create report correctly with values: %p",
     async (transactionValues, expectedReport) => {
