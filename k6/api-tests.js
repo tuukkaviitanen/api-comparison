@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { describe, expect } from 'https://jslib.k6.io/k6chaijs/4.3.4.0/index.js';
+import chai, { describe, expect } from 'https://jslib.k6.io/k6chaijs/4.3.4.3/index.js';
 import { randomString, uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 import encoding from 'k6/encoding';
 import exec from 'k6/execution';
@@ -10,6 +10,8 @@ const BASE_URL = __ENV.BASE_URL
 if (!BASE_URL) {
     exec.test.abort("BASE_URL not provided")
 }
+
+chai.config.logFailures = true;
 
 export const options = {
     vus: 1,
@@ -124,6 +126,22 @@ const getTransactions = (category = "", from = "", to = "", sort = "", order = "
 
 const deleteTransaction = (transactionId, params) => {
     return http.del(`${BASE_URL}/transactions/${transactionId}`, undefined, params)
+}
+
+const getReport = (category = "", from = "", to = "", params) => {
+    const url = new URL(`${BASE_URL}/reports`)
+
+    if (category) {
+        url.searchParams.append('category', category);
+    }
+    if (from) {
+        url.searchParams.append('from', from);
+    }
+    if (to) {
+        url.searchParams.append('to', to);
+    }
+
+    return http.get(url.toString(), params)
 }
 
 /**
@@ -256,6 +274,9 @@ export default function () {
 
                 ["transaction with minimum value", { category, description, value: -1000000000, timestamp }, { category, description, value: -1000000000, timestamp }],
                 ["transaction with maximum value", { category, description, value: 1000000000, timestamp }, { category, description, value: 1000000000, timestamp }],
+                ["transaction with zero decimals", { category, description, value: 10, timestamp }, { category, description, value: 10, timestamp }],
+                ["transaction with one decimals", { category, description, value: 10.0, timestamp }, { category, description, value: 10.0, timestamp }],
+                ["transaction with two decimals", { category, description, value: 10.00, timestamp }, { category, description, value: 10.00, timestamp }],
 
                 ["transaction with date only timestamp", { category, description, value, timestamp: "2024-01-01" }, { category, description, value, timestamp: "2024-01-01T00:00:00.000Z" }],
                 ["transaction with timestamp without sub-seconds", { category, description, value, timestamp: "2024-01-01T00:00:00Z" }, { category, description, value, timestamp: "2024-01-01T00:00:00.000Z" }],
@@ -359,8 +380,8 @@ export default function () {
                     const transactions = [
                         { category: "health", description: "Doctor's appointment", value: -50, timestamp: "2024-01-01T00:00:00.000Z", },
                         { category: "recreation", description: 'Hotel for one night', value: -120, timestamp: "2023-01-01T00:00:00.000Z", },
-                        { category: "food & drinks", description: "Doctor's appointment", value: -50, timestamp: "2022-01-01T00:00:00.000Z", },
-                        { category: "transport", description: "Doctor's appointment", value: -50, timestamp: "2021-01-01T00:00:00.000Z", },
+                        { category: "food & drinks", description: "Restaurant", value: -50, timestamp: "2022-01-01T00:00:00.000Z", },
+                        { category: "transport", description: "Taxi", value: -50, timestamp: "2021-01-01T00:00:00.000Z", },
                         { category: 'household & services', description: 'work income', value: 2000, timestamp: "2020-01-01T00:00:00.000Z", },
                     ]
 
@@ -385,9 +406,34 @@ export default function () {
                                 transactions
                             ],
                             [
-                                "filtering by category",
-                                { category: "health", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                "filtering by category: Household & Services",
+                                { category: "Household & Services", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                [transactions[4]]
+                            ],
+                            [
+                                "filtering by category: Food & Drinks",
+                                { category: "Food & Drinks", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                [transactions[2]]
+                            ],
+                            [
+                                "filtering by category: Transport",
+                                { category: "Transport", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                [transactions[3]]
+                            ],
+                            [
+                                "filtering by category: Recreation",
+                                { category: "Recreation", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                [transactions[1]]
+                            ],
+                            [
+                                "filtering by category: Health",
+                                { category: "Health", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
                                 [transactions[0]]
+                            ],
+                            [
+                                "filtering by category: Other",
+                                { category: "Other", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                []
                             ],
                             [
                                 "filtering starting from specific timestamp",
@@ -572,7 +618,197 @@ export default function () {
 
         describe('Reports endpoint', () => {
             describe('GET', () => {
+                const transactions = [
+                    { category: "health", description: "Doctor's appointment", value: -50, timestamp: "2024-01-01T00:00:00.000Z", },
+                    { category: "health", description: "Doctor's appointment", value: -50, timestamp: "2024-06-01T00:00:00.000Z", },
+                    { category: "health", description: "Doctor's appointment", value: -50, timestamp: "2023-01-01T00:00:00.000Z", },
+                    { category: "recreation", description: 'Hotel for one night', value: -120, timestamp: "2023-01-01T00:00:00.000Z", },
+                    { category: "food & drinks", description: "Restaurant", value: -50, timestamp: "2022-01-01T00:00:00.000Z", },
+                    { category: "transport", description: "Taxi", value: -50, timestamp: "2021-01-01T00:00:00.000Z", },
+                    { category: 'household & services', description: 'Work income', value: 1000, timestamp: "2022-01-01T00:00:00.000Z", },
+                    { category: 'household & services', description: 'Work income', value: 1000, timestamp: "2020-01-01T00:00:00.000Z", },
+                ]
 
+                const username = randomString(10)
+                const password = randomString(10)
+                postCredentials(username, password)
+
+                const requestParams = getTransactionParams(username, password)
+
+                for (const transaction of transactions) {
+                    const response = postTransaction(transaction.category, transaction.description, transaction.value, transaction.timestamp, requestParams)
+                    expect(response.status, 'response status').to.equal(201)
+
+                    transaction.id = response.json().id
+                }
+
+                describe('should generate proper report when', () => {
+                    const testCases = [
+                        [
+                            "fetching all",
+                            { category: undefined, from: undefined, to: undefined },
+                            {
+                                transactions_sum: 1630,
+                                expenses_sum: -370,
+                                incomes_sum: 2000,
+                                transactions_count: 8,
+                                expenses_count: 6,
+                                incomes_count: 2
+                            }
+                        ],
+                        [
+                            "filtering by Household & Services category",
+                            { category: "Household & Services", from: undefined, to: undefined },
+                            {
+                                transactions_sum: 2000,
+                                expenses_sum: 0,
+                                incomes_sum: 2000,
+                                transactions_count: 2,
+                                expenses_count: 0,
+                                incomes_count: 2
+                            }
+                        ],
+                        [
+                            "filtering by Food & Drinks category",
+                            { category: "Food & Drinks", from: undefined, to: undefined },
+                            {
+                                transactions_sum: -50,
+                                expenses_sum: -50,
+                                incomes_sum: 0,
+                                transactions_count: 1,
+                                expenses_count: 1,
+                                incomes_count: 0
+                            }
+                        ],
+                        [
+                            "filtering by Transport category",
+                            { category: "Transport", from: undefined, to: undefined },
+                            {
+                                transactions_sum: -50,
+                                expenses_sum: -50,
+                                incomes_sum: 0,
+                                transactions_count: 1,
+                                expenses_count: 1,
+                                incomes_count: 0
+                            }
+                        ],
+                        [
+                            "filtering by Recreation category",
+                            { category: "Recreation", from: undefined, to: undefined },
+                            {
+                                transactions_sum: -120,
+                                expenses_sum: -120,
+                                incomes_sum: 0,
+                                transactions_count: 1,
+                                expenses_count: 1,
+                                incomes_count: 0
+                            }
+                        ],
+                        [
+                            "filtering by Health category",
+                            { category: "Health", from: undefined, to: undefined },
+                            {
+                                transactions_sum: -150,
+                                expenses_sum: -150,
+                                incomes_sum: 0,
+                                transactions_count: 3,
+                                expenses_count: 3,
+                                incomes_count: 0
+                            }
+                        ],
+                        [
+                            "filtering by Other",
+                            { category: "Other", from: undefined, to: undefined },
+                            {
+                                transactions_sum: 0,
+                                expenses_sum: 0,
+                                incomes_sum: 0,
+                                transactions_count: 0,
+                                expenses_count: 0,
+                                incomes_count: 0
+                            }
+                        ],
+                        [
+                            "filtering starting from specific timestamp",
+                            { category: undefined, from: "2022-01-01", to: undefined },
+                            {
+                                transactions_sum: 680,
+                                expenses_sum: -320,
+                                incomes_sum: 1000,
+                                transactions_count: 6,
+                                expenses_count: 5,
+                                incomes_count: 1
+                            }
+                        ],
+                        [
+                            "filtering until specific timestamp",
+                            { category: undefined, from: undefined, to: "2022-01-01" },
+                            {
+                                transactions_sum: 1900,
+                                expenses_sum: -100,
+                                incomes_sum: 2000,
+                                transactions_count: 4,
+                                expenses_count: 2,
+                                incomes_count: 2
+                            }
+                        ],
+                        [
+                            "combining params",
+                            { category: "health", from: "2023-09-01", to: "2024-03-01" },
+                            {
+                                transactions_sum: -50,
+                                expenses_sum: -50,
+                                incomes_sum: 0,
+                                transactions_count: 1,
+                                expenses_count: 1,
+                                incomes_count: 0
+                            }
+                        ],
+                    ]
+
+                    for (const testCase of testCases) {
+                        const [name, parameters, expectedBody] = testCase
+
+                        describe(name, () => {
+                            const response = getReport(parameters.category, parameters.from, parameters.to, requestParams)
+                            expect(response.status, 'response status').to.equal(200)
+                            expect(response).to.have.validJsonBody()
+
+                            const jsonBody = response.json()
+
+                            expect(jsonBody, "response body is as expected").to.deep.equal(expectedBody);
+                        })
+                    }
+                })
+
+                describe('should return validation error when', () => {
+                    const testCases = [
+                        [
+                            "filtering by invalid category",
+                            { category: "recreational", from: undefined, to: undefined },
+                        ],
+                        [
+                            "filtering by invalid from timestamp",
+                            { category: undefined, from: "invalid", to: undefined },
+                        ],
+                        [
+                            "filtering by invalid to timestamp",
+                            { category: undefined, from: undefined, to: "invalid" },
+                        ],
+                    ]
+
+                    for (const testCase of testCases) {
+                        const [name, parameters] = testCase
+
+                        describe(name, () => {
+                            const response = getTransactions(parameters.category, parameters.from, parameters.to, parameters.sort, parameters.order, parameters.limit, parameters.skip, requestParams)
+                            expect(response.status, 'response status').to.equal(400)
+                            assertValidErrorBody(response)
+                        })
+                    }
+                })
+
+                runAuthenticationTests((requestParams) => getReport(undefined, undefined, undefined, requestParams))
             })
         })
 
