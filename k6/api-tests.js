@@ -236,24 +236,70 @@ export default function () {
             const category = 'health'
             const description = "Doctor's appointment"
             const value = -99.99
-            const timestamp = "2024-01-01"
+            const timestamp = "2024-01-01T00:00:00.000Z"
+
+            const minLengthDescription = randomString(4)
+            const maxLengthDescription = randomString(200)
+
+            const transactionTestCases = [
+                ["default transaction", { category, description, value, timestamp }, { category, description, value, timestamp }],
+
+                ["transaction with category: Household & Services", { category: "Household & Services", description, value, timestamp }, { category: "household & services", description, value, timestamp }],
+                ["transaction with category: Food & Drinks", { category: "Food & Drinks", description, value, timestamp }, { category: "food & drinks", description, value, timestamp }],
+                ["transaction with category: Transport", { category: "Transport", description, value, timestamp }, { category: "transport", description, value, timestamp }],
+                ["transaction with category: Recreation", { category: "Recreation", description, value, timestamp }, { category: "recreation", description, value, timestamp }],
+                ["transaction with category: Health", { category: "Health", description, value, timestamp }, { category: "health", description, value, timestamp }],
+                ["transaction with category: Other", { category: "Other", description, value, timestamp }, { category: "other", description, value, timestamp }],
+
+                ["transaction with minimum length description", { category, description: minLengthDescription, value, timestamp }, { category, description: minLengthDescription, value, timestamp }],
+                ["transaction with maximum length description", { category, description: maxLengthDescription, value, timestamp }, { category, description: maxLengthDescription, value, timestamp }],
+
+                ["transaction with minimum value", { category, description, value: -1000000000, timestamp }, { category, description, value: -1000000000, timestamp }],
+                ["transaction with maximum value", { category, description, value: 1000000000, timestamp }, { category, description, value: 1000000000, timestamp }],
+
+                ["transaction with date only timestamp", { category, description, value, timestamp: "2024-01-01" }, { category, description, value, timestamp: "2024-01-01T00:00:00.000Z" }],
+                ["transaction with timestamp without sub-seconds", { category, description, value, timestamp: "2024-01-01T00:00:00Z" }, { category, description, value, timestamp: "2024-01-01T00:00:00.000Z" }],
+                ["transaction with timestamp without timezone", { category, description, value, timestamp: "2024-01-01T00:00:00.000" }, { category, description, value, timestamp: "2024-01-01T00:00:00.000Z" }],
+                ["transaction with timestamp with different timezone", { category, description, value, timestamp: "2024-01-01T00:00:00.000+05:00" }, { category, description, value, timestamp: "2023-12-31T19:00:00.000Z" }],
+            ]
 
             const validationErrorTestCases = [
                 ["invalid category", { category: "invalid category", description, value, timestamp }],
                 ["null category", { category: null, description, value, timestamp }],
+
                 ["too short description", { category, description: randomString(3), value, timestamp }],
                 ["too long description", { category, description: randomString(201), value, timestamp }],
                 ["null description", { category, description: null, value, timestamp }],
+
                 ["too small value", { category, description, value: -1000000001, timestamp }],
                 ["too big value", { category, description, value: 1000000001, timestamp }],
                 ["too many decimals in value", { category, description, value: 0.001, timestamp }],
                 ["null value", { category, description, value: null, timestamp }],
+
                 ["invalid timestamp", { category, description, value, timestamp: "invalid timestamp" }],
                 ["null timestamp", { category, description, value, timestamp: null }],
             ]
 
             describe('POST', () => {
-                describe('should create transaction successfully', () => {
+                describe('should create transaction successfully when', () => {
+                    for (const testCase of transactionTestCases) {
+                        const [name, parameters, expectedBody] = testCase
+
+                        describe(name, () => {
+                            const response = postTransaction(parameters.category, parameters.description, parameters.value, parameters.timestamp, requestParams)
+
+                            expect(response.status, 'response status').to.equal(201)
+                            expect(response).to.have.validJsonBody();
+
+                            const jsonBody = response.json()
+                            expect(jsonBody.id, "id").to.be.a("string")
+                            expect(jsonBody.category, "category").to.equal(expectedBody.category)
+                            expect(jsonBody.description, "description").to.equal(expectedBody.description)
+                            expect(jsonBody.value, "value").to.equal(expectedBody.value)
+                            expect(jsonBody.timestamp, "timestamp").to.equal(expectedBody.timestamp)
+                        })
+                    }
+
                     const response = postTransaction(category, description, value, timestamp, requestParams)
 
                     expect(response.status, 'response status').to.equal(201)
@@ -467,7 +513,7 @@ export default function () {
                     expect(response).to.have.validJsonBody();
 
                     const jsonBody = response.json()
-                    expect(jsonBody.id, "category").to.equal(transactionId)
+                    expect(jsonBody.id, "id").to.equal(transactionId)
                     expect(jsonBody.category, "category").to.equal(newCategory)
                     expect(jsonBody.description, "description").to.equal(newDescription)
                     expect(jsonBody.value, "value").to.equal(newValue)
