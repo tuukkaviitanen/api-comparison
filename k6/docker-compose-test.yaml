@@ -1,7 +1,6 @@
 services:
   k6:
     image: grafana/k6
-    user: root
     command: run /api-tests.js
     volumes:
       - ./api-tests.js:/api-tests.js
