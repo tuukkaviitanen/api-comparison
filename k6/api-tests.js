@@ -11,11 +11,9 @@ if (!BASE_URL) {
     exec.test.abort("BASE_URL not provided")
 }
 
-chai.config.logFailures = true;
-
 export const options = {
-    vus: 1,
-    iterations: 1,
+    vus: 5,
+    iterations: 5,
     thresholds: {
         checks: ['rate==1'], // Ensure all checks pass
     },
