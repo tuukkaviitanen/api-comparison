@@ -569,5 +569,21 @@ export default function () {
                 })
             })
         })
+
+        describe('Reports endpoint', () => {
+            describe('GET', () => {
+
+            })
+        })
+
+        describe('OpenAPI document', () => {
+            describe('should be served successfully', () => {
+                const response = http.get(`${BASE_URL}/openapi.yaml`)
+
+                expect(response.status, 'response status').to.equal(200)
+                expect(response.headers['Content-Type']).to.equal('text/yaml; charset=UTF-8')
+                expect(response.headers['Content-Length']).to.above(10000)
+            })
+        })
     })
 }
