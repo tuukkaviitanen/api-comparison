@@ -299,18 +299,6 @@ export default function () {
                             expect(jsonBody.timestamp, "timestamp").to.equal(expectedBody.timestamp)
                         })
                     }
-
-                    const response = postTransaction(category, description, value, timestamp, requestParams)
-
-                    expect(response.status, 'response status').to.equal(201)
-                    expect(response).to.have.validJsonBody();
-
-                    const jsonBody = response.json()
-                    expect(jsonBody.id, "id").to.be.a("string")
-                    expect(jsonBody.category, "category").to.equal(category)
-                    expect(jsonBody.description, "description").to.equal(description)
-                    expect(jsonBody.value, "value").to.equal(value)
-                    expect(jsonBody.timestamp, "timestamp").to.equal("2024-01-01T00:00:00.000Z")
                 })
 
                 describe('should throw validation error on', () => {
@@ -501,23 +489,24 @@ export default function () {
                 const postResponse = postTransaction(category, description, value, timestamp, requestParams)
                 const transactionId = postResponse.json().id
 
-                describe('should update transaction successfully', () => {
-                    const newCategory = 'recreation'
-                    const newDescription = "Ice cream"
-                    const newValue = -5
-                    const newTimestamp = "2024-06-01"
+                describe('should update transaction successfully when', () => {
+                    for (const testCase of transactionTestCases) {
+                        const [name, parameters, expectedBody] = testCase
 
-                    const response = putTransaction(transactionId, newCategory, newDescription, newValue, newTimestamp, requestParams)
+                        describe(name, () => {
+                            const response = putTransaction(transactionId, parameters.category, parameters.description, parameters.value, parameters.timestamp, requestParams)
 
-                    expect(response.status, 'response status').to.equal(200)
-                    expect(response).to.have.validJsonBody();
+                            expect(response.status, 'response status').to.equal(200)
+                            expect(response).to.have.validJsonBody();
 
-                    const jsonBody = response.json()
-                    expect(jsonBody.id, "id").to.equal(transactionId)
-                    expect(jsonBody.category, "category").to.equal(newCategory)
-                    expect(jsonBody.description, "description").to.equal(newDescription)
-                    expect(jsonBody.value, "value").to.equal(newValue)
-                    expect(jsonBody.timestamp, "timestamp").to.equal("2024-06-01T00:00:00.000Z")
+                            const jsonBody = response.json()
+                            expect(jsonBody.id, "id").to.equal(transactionId)
+                            expect(jsonBody.category, "category").to.equal(expectedBody.category)
+                            expect(jsonBody.description, "description").to.equal(expectedBody.description)
+                            expect(jsonBody.value, "value").to.equal(expectedBody.value)
+                            expect(jsonBody.timestamp, "timestamp").to.equal(expectedBody.timestamp)
+                        })
+                    }
                 })
 
                 describe('should return 400 when invlid uuid', () => {
