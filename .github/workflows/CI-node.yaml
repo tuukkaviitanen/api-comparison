@@ -29,10 +29,6 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
 
-    defaults:
-      run:
-        working-directory: ./node-budget-api
-
     steps:
       - name: Fetch code
         uses: actions/checkout@v4
@@ -66,11 +62,9 @@ jobs:
 
       - name: Run K6 functional API tests
         uses: grafana/run-k6-action@v1
-        env:
-          BASE_URL: http://localhost:8080
         with:
           path: k6/api-tests.js
-
+          flags: -e BASE_URL=http://localhost:8080
 
   publish_docker_image:
     needs: [verification]
