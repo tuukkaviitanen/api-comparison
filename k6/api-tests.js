@@ -1,8 +1,9 @@
 import http from 'k6/http';
-import { describe, expect } from 'https://jslib.k6.io/k6chaijs/4.3.4.3/index.js';
+import { describe, expect } from 'https://jslib.k6.io/k6chaijs/4.3.4.0/index.js';
 import { randomString, uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 import encoding from 'k6/encoding';
 import exec from 'k6/execution';
+import { URL } from 'https://jslib.k6.io/url/1.0.0/index.js';
 
 const BASE_URL = __ENV.BASE_URL
 
@@ -93,8 +94,32 @@ const getSingleTransaction = (transactionId, params) => {
     return http.get(`${BASE_URL}/transactions/${transactionId}`, params)
 }
 
-const getTransactions = (category, from, to, sort, order, limit, skip) => {
-    return http.get(`${BASE_URL}/transactions?category=${category}&from=${from}&to=${to}&sort=${sort}&order=${order}&limit=${limit}&skip=${skip}`, params)
+const getTransactions = (category = "", from = "", to = "", sort = "", order = "", limit = "", skip = "", params) => {
+    const url = new URL(`${BASE_URL}/transactions`)
+
+    if (category) {
+        url.searchParams.append('category', category);
+    }
+    if (from) {
+        url.searchParams.append('from', from);
+    }
+    if (to) {
+        url.searchParams.append('to', to);
+    }
+    if (sort) {
+        url.searchParams.append('sort', sort);
+    }
+    if (order) {
+        url.searchParams.append('order', order);
+    }
+    if (limit) {
+        url.searchParams.append('limit', limit);
+    }
+    if (skip) {
+        url.searchParams.append('skip', skip);
+    }
+
+    return http.get(url.toString(), params)
 }
 
 const deleteTransaction = (transactionId, params) => {
@@ -296,26 +321,133 @@ export default function () {
                     runAuthenticationTests((requestParams) => getSingleTransaction(transactionId, requestParams))
                 })
 
-                // TODO: Gets only transactions from these credentials
                 describe('many', () => {
-                    const transactions = [{
-                        category: "health", description: "Doctor's appointment", value: -50, timestamp: "2024-01-01",
-                        category: "recreation", description: 'Hotel for one night', value: -120, timestamp: "2023-01-01",
-                        category: "food & drinks", description: "Doctor's appointment", value: -50, timestamp: "2022-01-01",
-                        category: "transport", description: "Doctor's appointment", value: -50, timestamp: "2021-01-01",
-                        category: 'household & services', description: 'work income', value: 2000, timestamp: "2020-01-01",
-                    }]
+                    const transactions = [
+                        { category: "health", description: "Doctor's appointment", value: -50, timestamp: "2024-01-01T00:00:00.000Z", },
+                        { category: "recreation", description: 'Hotel for one night', value: -120, timestamp: "2023-01-01T00:00:00.000Z", },
+                        { category: "food & drinks", description: "Doctor's appointment", value: -50, timestamp: "2022-01-01T00:00:00.000Z", },
+                        { category: "transport", description: "Doctor's appointment", value: -50, timestamp: "2021-01-01T00:00:00.000Z", },
+                        { category: 'household & services', description: 'work income', value: 2000, timestamp: "2020-01-01T00:00:00.000Z", },
+                    ]
+
+                    const username = randomString(10)
+                    const password = randomString(10)
+                    postCredentials(username, password)
+
+                    const requestParams = getTransactionParams(username, password)
 
                     for (const transaction of transactions) {
                         const response = postTransaction(transaction.category, transaction.description, transaction.value, transaction.timestamp, requestParams)
                         expect(response.status, 'response status').to.equal(201)
+
+                        transaction.id = response.json().id
                     }
 
                     describe('should fetch correct transactions when', () => {
                         const testCases = [
-                            ["invalid category", { category: "invalid category", description, value, timestamp }],
+                            [
+                                "fetching all",
+                                { category: undefined, from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                transactions
+                            ],
+                            [
+                                "filtering by category",
+                                { category: "health", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                [transactions[0]]
+                            ],
+                            [
+                                "filtering starting from specific timestamp",
+                                { category: undefined, from: "2022-02-01", to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                [transactions[0], transactions[1]]
+                            ],
+                            [
+                                "filtering until specific timestamp",
+                                { category: undefined, from: undefined, to: "2022-02-01", sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                                [transactions[2], transactions[3], transactions[4]]
+                            ],
+                            [
+                                "sorting by category in ascending order",
+                                { category: undefined, from: undefined, to: undefined, sort: "category", order: "ASC", limit: undefined, skip: undefined },
+                                [transactions[2], transactions[0], transactions[4], transactions[1], transactions[3]]
+                            ],
+                            [
+                                "limiting to 2",
+                                { category: undefined, from: undefined, to: undefined, sort: undefined, order: undefined, limit: 2, skip: undefined },
+                                [transactions[0], transactions[1]]
+                            ],
+                            [
+                                "skipping by 1",
+                                { category: undefined, from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: 1 },
+                                [transactions[1], transactions[2], transactions[3], transactions[4]]
+                            ],
+                            [
+                                "combining params",
+                                { category: undefined, from: "2021-01-01", to: "2023-01-01", sort: "category", order: "ASC", limit: 1, skip: 1 },
+                                [transactions[1]]
+                            ],
                         ]
+
+                        for (const testCase of testCases) {
+                            const [name, parameters, expectedBody] = testCase
+
+                            describe(name, () => {
+                                const response = getTransactions(parameters.category, parameters.from, parameters.to, parameters.sort, parameters.order, parameters.limit, parameters.skip, requestParams)
+                                expect(response.status, 'response status').to.equal(200)
+                                expect(response).to.have.validJsonBody()
+
+                                const jsonBody = response.json()
+
+                                expect(jsonBody, "response body").to.have.lengthOf(expectedBody.length);
+                                expect(jsonBody, "response body is as expected").to.deep.equal(expectedBody);
+                            })
+                        }
                     })
+
+                    describe('should return validation error when', () => {
+                        const testCases = [
+                            [
+                                "filtering by invalid category",
+                                { category: "recreational", from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                            ],
+                            [
+                                "filtering by invalid from timestamp",
+                                { category: undefined, from: "invalid", to: undefined, sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                            ],
+                            [
+                                "filtering by invalid to timestamp",
+                                { category: undefined, from: undefined, to: "invalid", sort: undefined, order: undefined, limit: undefined, skip: undefined },
+                            ],
+                            [
+                                "sorting by invalid field",
+                                { category: undefined, from: undefined, to: undefined, sort: "invalid", order: undefined, limit: undefined, skip: undefined },
+                            ],
+                            [
+                                "sorting by invalid order",
+                                { category: undefined, from: undefined, to: undefined, sort: undefined, order: "invalid", limit: undefined, skip: undefined },
+                            ],
+                            [
+                                "limiting by invalid number",
+                                { category: undefined, from: undefined, to: undefined, sort: undefined, order: undefined, limit: -2, skip: undefined },
+                            ],
+                            [
+                                "skipping by invalid number",
+                                { category: undefined, from: undefined, to: undefined, sort: undefined, order: undefined, limit: undefined, skip: -1 },
+                            ]
+                        ]
+
+                        for (const testCase of testCases) {
+                            const [name, parameters] = testCase
+
+                            describe(name, () => {
+                                const response = getTransactions(parameters.category, parameters.from, parameters.to, parameters.sort, parameters.order, parameters.limit, parameters.skip, requestParams)
+                                expect(response.status, 'response status').to.equal(400)
+                                assertValidErrorBody(response)
+                            })
+                        }
+                    })
+
+                    runAuthenticationTests((requestParams) => getTransactions(undefined, undefined, undefined, undefined, undefined, undefined, undefined, requestParams))
+
                 })
             })
 
