@@ -1,0 +1,11 @@
+FROM oven/bun
+
+WORKDIR /usr/src/app
+
+COPY ./bun-budget-api/package.json ./bun-budget-api/bun.lockb ./
+
+RUN bun install --frozen-lockfile
+
+COPY . .
+
+CMD bun run dev
