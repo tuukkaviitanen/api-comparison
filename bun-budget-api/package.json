@@ -1,9 +1,9 @@
 {
-  "name": "app",
-  "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "lint": "eslint",
+    "lint:fix": "bun run lint -- --fix"
   },
   "dependencies": {
     "elysia": "latest"
@@ -17,6 +17,5 @@
     "globals": "^15.9.0",
     "prettier": "^3.3.3",
     "typescript-eslint": "^8.8.0"
-  },
-  "module": "src/index.js"
+  }
 }
