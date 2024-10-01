@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/index.ts",
+    "lint": "eslint",
+    "lint:fix": "bun run lint -- --fix",
+    "build": "bun build ./src/index.ts --outdir ./out --minify",
+    "start": "bun run out/index.js"
+  },
+  "dependencies": {
+    "elysia": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "bun-types": "latest",
+    "eslint": "^9.11.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.9.0",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.8.0"
+  }
+}
