@@ -3,7 +3,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
     "lint": "eslint",
-    "lint:fix": "bun run lint -- --fix"
+    "lint:fix": "bun run lint -- --fix",
+    "build": "bun build ./src/index.ts --outdir ./out --minify",
+    "start": "bun run out/index.js"
   },
   "dependencies": {
     "elysia": "latest"
