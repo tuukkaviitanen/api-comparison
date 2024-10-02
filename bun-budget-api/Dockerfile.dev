@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 COPY ./bun-budget-api/package.json ./bun-budget-api/bun.lockb ./
 
+COPY ./docs/openapi.yaml .
+
 RUN bun install --frozen-lockfile
 
 COPY . .
