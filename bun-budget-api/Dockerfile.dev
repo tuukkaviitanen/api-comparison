@@ -8,6 +8,8 @@ COPY ./docs/openapi.yaml .
 
 RUN bun install --frozen-lockfile
 
-COPY . .
+COPY ./bun-budget-api .
+
+RUN bunx prisma generate
 
 CMD bun run dev
