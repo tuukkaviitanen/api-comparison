@@ -2,7 +2,7 @@ import Elysia from "elysia";
 import credentialRouter from "./routers/credential-router";
 import transactionRouter from "./routers/transaction-router";
 import reportRouter from "./routers/report-router";
-import AuthenticationError from "./errors/AuthenticationError";
+import AuthenticationError from "./errors/authentication-error";
 
 const app = new Elysia()
   .onError(({ error, set }) => {

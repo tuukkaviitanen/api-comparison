@@ -1,6 +1,6 @@
 import { Context } from "elysia";
 import { getCredentialId } from "../services/credential-service";
-import AuthenticationError from "../errors/AuthenticationError";
+import AuthenticationError from "../errors/authentication-error";
 
 const basicAuthHeaderRegex = /^basic (?<authString>.+)/i;
 const basicAuthDecryptedFormatRegex = /(?<username>.+):(?<password>.+)/;
