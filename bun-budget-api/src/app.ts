@@ -4,6 +4,7 @@ import transactionRouter from "./routers/transaction-router";
 import reportRouter from "./routers/report-router";
 import AuthenticationError from "./errors/authentication-error";
 import UniqueError from "./errors/unique-error";
+import NotFoundError from "./errors/not-found-error";
 
 const app = new Elysia()
   .onError(({ error, set }) => {
@@ -24,6 +25,13 @@ const app = new Elysia()
       set.status = 400;
       return {
         error: `Unique error: ${error.message}`,
+      };
+    }
+
+    if (error instanceof NotFoundError) {
+      set.status = 404;
+      return {
+        error: `Not found: ${error.message}`,
       };
     }
 

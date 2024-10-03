@@ -1,6 +1,9 @@
 import Elysia, { t } from "elysia";
 import authenticate from "../middlewares/authenticate";
-import { createCredential } from "../services/credential-service";
+import {
+  createCredential,
+  deleteCredential,
+} from "../services/credential-service";
 
 const credentialRouter = new Elysia({ prefix: "/credentials" })
   .post(
@@ -18,7 +21,8 @@ const credentialRouter = new Elysia({ prefix: "/credentials" })
     },
   )
   .resolve(authenticate)
-  .delete("/", ({ set }) => {
+  .delete("/", async ({ set, credentialId }) => {
+    await deleteCredential(credentialId);
     set.status = 204;
   });
 
