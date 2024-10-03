@@ -8,7 +8,7 @@ import NotFoundError from "./errors/not-found-error";
 
 const app = new Elysia()
   .onError(({ error, set }) => {
-    console.error(error.message);
+    console.error("Error occurred", error.message);
 
     if (error instanceof AuthenticationError) {
       set.headers["www-authenticate"] = "Basic";
