@@ -1,10 +1,6 @@
-import { Context, error } from "elysia";
+import { Context } from "elysia";
 import { getCredentialId } from "../services/credential-service";
-
-const authenticationError = (set: Context["set"], message: string) => {
-  set.headers["www-authenticate"] = "Basic";
-  return error(401, { error: `Authentication error: ${message}` });
-};
+import AuthenticationError from "../errors/AuthenticationError";
 
 const basicAuthHeaderRegex = /^basic (?<authString>.+)/i;
 const basicAuthDecryptedFormatRegex = /(?<username>.+):(?<password>.+)/;
@@ -18,23 +14,25 @@ const decryptBase64 = (base64: string) => {
   }
 };
 
-const authenticate = async ({ headers, set }: Context) => {
-  const authorizationHeader = headers["Authorization"];
+const authenticate = async ({ headers }: Context) => {
+  const authorizationHeader = headers.authorization;
 
   if (!authorizationHeader) {
-    return authenticationError(set, "Authorization header missing");
+    throw new AuthenticationError("Authorization header missing");
   }
 
   const authHeaderRegexResult = basicAuthHeaderRegex.exec(authorizationHeader);
 
   if (!authHeaderRegexResult) {
-    return authenticationError(set, "Invalid authorization header");
+    throw new AuthenticationError("Invalid authorization header");
   }
 
-  const decryptedAuthorization = decryptBase64(authorizationHeader);
+  const { authString } = authHeaderRegexResult.groups as { authString: string };
+
+  const decryptedAuthorization = decryptBase64(authString);
 
   if (!decryptedAuthorization) {
-    return authenticationError(set, "Invalid base64 string");
+    throw new AuthenticationError("Invalid base64 string");
   }
 
   const decryptedAuthRegexResult = basicAuthDecryptedFormatRegex.exec(
@@ -42,7 +40,7 @@ const authenticate = async ({ headers, set }: Context) => {
   );
 
   if (!decryptedAuthRegexResult) {
-    return authenticationError(set, "Invalid credentials format");
+    throw new AuthenticationError("Invalid credentials format");
   }
 
   const { username, password } = decryptedAuthRegexResult.groups as {
@@ -53,7 +51,7 @@ const authenticate = async ({ headers, set }: Context) => {
   const credentialId = await getCredentialId(username, password);
 
   if (!credentialId) {
-    return authenticationError(set, "Invalid credentials");
+    throw new AuthenticationError("Invalid credentials");
   }
 
   return { credentialId };
