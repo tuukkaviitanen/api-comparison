@@ -1,6 +1,13 @@
 import Elysia, { t } from "elysia";
 import authenticate from "../middlewares/authenticate";
-import { createTransaction } from "../services/transaction-service";
+import {
+  createTransaction,
+  deleteTransaction,
+  getTransaction,
+  getTransactions,
+  updateTransaction,
+} from "../services/transaction-service";
+import ValidationError from "../errors/validation-error";
 
 const categoryType = t.Union(
   [
@@ -15,6 +22,8 @@ const categoryType = t.Union(
     error: "Invalid category",
   },
 );
+
+const hasAtMostTwoDecimals = (number: number) => (number * 100) % 1 === 0;
 
 const transactionRouter = new Elysia({ prefix: "/transactions" })
   .resolve(authenticate)
@@ -37,7 +46,11 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       body: t.Object({
         category: categoryType,
         description: t.String({ error: "Invalid description" }),
-        value: t.Number({ error: "Invalid value" }),
+        value: t.Number({
+          minimum: -1_000_000_000,
+          maximum: 1_000_000_000,
+          error: "Invalid value",
+        }),
         timestamp: t.Date({ error: "Invalid timestamp" }),
       }),
       transform: ({ body }) => {
@@ -45,20 +58,63 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
           body.category = body.category.toLowerCase() as typeof body.category;
         }
       },
+      beforeHandle: ({ body }) => {
+        if (!hasAtMostTwoDecimals(body.value)) {
+          throw new ValidationError("Invalid value");
+        }
+      },
     },
   )
-  .get("/", () => {
-    return;
+  .get("/", async ({ credentialId }) => {
+    const transactions = await getTransactions(credentialId);
+    return transactions;
   })
-  .get("/:transactionId", () => {
-    return;
+  .get("/:transactionId", async ({ params, credentialId }) => {
+    const { transactionId } = params;
+    const transactions = await getTransaction(transactionId, credentialId);
+    return transactions;
   })
-  .put("/:transactionId", () => {
-    return;
-  })
-  .delete("/:transactionId", ({ set }) => {
+  .put(
+    "/:transactionId",
+    async ({ params, credentialId, body }) => {
+      const { transactionId } = params;
+      const { category, description, timestamp, value } = body;
+      const updatedTransaction = await updateTransaction(transactionId, {
+        category,
+        credentialId,
+        description,
+        timestamp,
+        value,
+      });
+      return updatedTransaction;
+    },
+    {
+      body: t.Object({
+        category: categoryType,
+        description: t.String({ error: "Invalid description" }),
+        value: t.Number({
+          minimum: -1_000_000_000,
+          maximum: 1_000_000_000,
+          error: "Invalid value",
+        }),
+        timestamp: t.Date({ error: "Invalid timestamp" }),
+      }),
+      transform: ({ body }) => {
+        if (typeof body?.category === "string") {
+          body.category = body.category.toLowerCase() as typeof body.category;
+        }
+      },
+      beforeHandle: ({ body }) => {
+        if (!hasAtMostTwoDecimals(body.value)) {
+          throw new ValidationError("Invalid value");
+        }
+      },
+    },
+  )
+  .delete("/:transactionId", async ({ set, params, credentialId }) => {
+    const { transactionId } = params;
+    await deleteTransaction(transactionId, credentialId);
     set.status = 204;
-    return;
   });
 
 export default transactionRouter;

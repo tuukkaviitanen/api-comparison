@@ -3,6 +3,7 @@ import credentialRouter from "./routers/credential-router";
 import transactionRouter from "./routers/transaction-router";
 import reportRouter from "./routers/report-router";
 import AuthenticationError from "./errors/authentication-error";
+import CustomValidationError from "./errors/validation-error";
 import UniqueError from "./errors/unique-error";
 import NotFoundError from "./errors/not-found-error";
 
@@ -16,7 +17,10 @@ const app = new Elysia()
       return { error: `Authentication error: ${error.message}` };
     }
 
-    if (error instanceof ValidationError) {
+    if (
+      error instanceof ValidationError ||
+      error instanceof CustomValidationError
+    ) {
       set.status = 400;
       return { error: `Validation error: ${error.message}` };
     }

@@ -20,11 +20,13 @@ type ProcessedTransaction = {
 };
 
 const mapTransaction = ({
+  id,
   category,
   description,
   value,
   timestamp,
 }: ProcessedTransaction) => ({
+  id,
   category,
   description,
   value: Number(value),
