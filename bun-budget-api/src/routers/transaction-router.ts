@@ -8,22 +8,7 @@ import {
   updateTransaction,
 } from "../services/transaction-service";
 import ValidationError from "../errors/validation-error";
-
-const categoryType = t.Union(
-  [
-    t.Literal("household & services"),
-    t.Literal("food & drinks"),
-    t.Literal("transport"),
-    t.Literal("recreation"),
-    t.Literal("health"),
-    t.Literal("other"),
-  ],
-  {
-    error: "Invalid category",
-  },
-);
-
-const hasAtMostTwoDecimals = (number: number) => (number * 100) % 1 === 0;
+import { categoryType, hasAtMostTwoDecimals } from "../utils/helpers";
 
 const transactionRouter = new Elysia({ prefix: "/transactions" })
   .resolve(authenticate)
@@ -83,7 +68,7 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
         category,
         credentialId,
         description,
-        timestamp,
+        timestamp: new Date(timestamp),
         value,
       });
       return updatedTransaction;
@@ -97,7 +82,10 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
           maximum: 1_000_000_000,
           error: "Invalid value",
         }),
-        timestamp: t.Date({ error: "Invalid timestamp" }),
+        timestamp: t.String({
+          format: "date-time",
+          error: "Invalid timestamp",
+        }),
       }),
       transform: ({ body }) => {
         if (typeof body?.category === "string") {
