@@ -1,8 +1,9 @@
-import Elysia from "elysia";
+import Elysia, { ValidationError } from "elysia";
 import credentialRouter from "./routers/credential-router";
 import transactionRouter from "./routers/transaction-router";
 import reportRouter from "./routers/report-router";
 import AuthenticationError from "./errors/authentication-error";
+import UniqueError from "./errors/unique-error";
 
 const app = new Elysia()
   .onError(({ error, set }) => {
@@ -12,6 +13,18 @@ const app = new Elysia()
       set.headers["www-authenticate"] = "Basic";
       set.status = 401;
       return { error: `Authentication error: ${error.message}` };
+    }
+
+    if (error instanceof ValidationError) {
+      set.status = 400;
+      return { error: `Validation error: ${error.message}` };
+    }
+
+    if (error instanceof UniqueError) {
+      set.status = 400;
+      return {
+        error: `Unique error: ${error.message}`,
+      };
     }
 
     set.status = 500;
