@@ -1,23 +1,7 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Transaction as ProcessedTransaction } from "@prisma/client";
 import NotFoundError from "../errors/not-found-error";
 import prisma from "../utils/prisma";
-
-type Transaction = {
-  category: string;
-  description: string;
-  value: number;
-  timestamp: Date;
-  credentialId: string;
-};
-
-type ProcessedTransaction = {
-  id: string;
-  category: string;
-  description: string;
-  value: Prisma.Decimal;
-  timestamp: Date;
-  credentialId: string;
-};
+import Transaction from "../types/Transaction";
 
 const mapTransaction = ({
   id,
