@@ -1,9 +1,9 @@
 import { Context, error } from "elysia";
-
 import { getCredentialId } from "../services/credential-service";
+
 const authenticationError = (set: Context["set"], message: string) => {
   set.headers["www-authenticate"] = "Basic";
-  error(401, { error: `Authentication error: ${message}` });
+  return error(401, { error: `Authentication error: ${message}` });
 };
 
 const basicAuthHeaderRegex = /^basic (?<authString>.+)/i;
