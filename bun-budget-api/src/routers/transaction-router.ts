@@ -1,6 +1,8 @@
 import Elysia from "elysia";
+import authenticate from "../middlewares/authenticate";
 
 const transactionRouter = new Elysia({ prefix: "/transactions" })
+  .resolve(authenticate)
   .post("/", ({ set }) => {
     set.status = 201;
     return;
