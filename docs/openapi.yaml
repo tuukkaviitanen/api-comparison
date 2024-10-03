@@ -61,6 +61,10 @@ paths:
       responses:
         201:
           description: Transactions added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessedTransaction'
         400:
           $ref: '#/components/responses/ValidationError'
         401:
