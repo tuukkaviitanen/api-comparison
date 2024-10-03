@@ -10,4 +10,6 @@ RUN bun install --frozen-lockfile
 
 COPY ./bun-budget-api .
 
+RUN bunx prisma generate
+
 CMD bun run dev
