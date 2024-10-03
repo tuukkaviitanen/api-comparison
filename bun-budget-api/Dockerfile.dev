@@ -8,6 +8,6 @@ COPY ./docs/openapi.yaml .
 
 RUN bun install --frozen-lockfile
 
-COPY . .
+COPY ./bun-budget-api .
 
 CMD bun run dev
