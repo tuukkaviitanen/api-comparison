@@ -1,7 +1,11 @@
 import Elysia, { t } from "elysia";
 import authenticate from "../middlewares/authenticate";
-import { categoryType } from "../utils/helpers";
 import { generateReport } from "../services/report-service";
+import {
+  categoryDefinition,
+  fromDefinition,
+  toDefinition,
+} from "../utils/parameter-definitions";
 
 const reportRouter = new Elysia({ prefix: "/reports" })
   .resolve(authenticate)
@@ -22,12 +26,9 @@ const reportRouter = new Elysia({ prefix: "/reports" })
     {
       query: t.Partial(
         t.Object({
-          category: categoryType,
-          from: t.String({
-            format: "date-time",
-            error: "Invalid from timestamp",
-          }),
-          to: t.String({ format: "date-time", error: "Invalid to timestamp" }),
+          category: categoryDefinition,
+          from: fromDefinition,
+          to: toDefinition,
         }),
       ),
       transform: ({ query }) => {

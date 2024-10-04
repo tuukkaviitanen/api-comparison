@@ -8,7 +8,20 @@ import {
   updateTransaction,
 } from "../services/transaction-service";
 import ValidationError from "../errors/validation-error";
-import { categoryType, hasAtMostTwoDecimals } from "../utils/helpers";
+import { hasAtMostTwoDecimals } from "../utils/helpers";
+import {
+  categoryDefinition,
+  descriptionDefinition,
+  fromDefinition,
+  limitDefinition,
+  orderDefinition,
+  skipDefinition,
+  sortDefinition,
+  timestampDefinition,
+  toDefinition,
+  transactionIdDefinition,
+  valueDefinition,
+} from "../utils/parameter-definitions";
 
 const transactionRouter = new Elysia({ prefix: "/transactions" })
   .resolve(authenticate)
@@ -29,21 +42,10 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
     },
     {
       body: t.Object({
-        category: categoryType,
-        description: t.String({
-          minLength: 4,
-          maxLength: 200,
-          error: "Invalid description",
-        }),
-        value: t.Number({
-          minimum: -1_000_000_000,
-          maximum: 1_000_000_000,
-          error: "Invalid value",
-        }),
-        timestamp: t.String({
-          format: "date-time",
-          error: "Invalid timestamp",
-        }),
+        category: categoryDefinition,
+        description: descriptionDefinition,
+        value: valueDefinition,
+        timestamp: timestampDefinition,
       }),
       transform: ({ body }) => {
         if (typeof body?.category === "string") {
@@ -76,29 +78,13 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
     {
       query: t.Partial(
         t.Object({
-          category: categoryType,
-          from: t.String({ format: "date-time", error: "Invalid from value" }),
-          to: t.String({ format: "date-time", error: "Invalid to value" }),
-          sort: t.Union([t.Literal("timestamp"), t.Literal("category")], {
-            error: "Invalid sort value",
-            default: "timestamp",
-          }),
-          order: t.Union([t.Literal("asc"), t.Literal("desc")], {
-            error: "Invalid order",
-            default: "desc",
-          }),
-          limit: t.Number({
-            minimum: 0,
-            multipleOf: 1,
-            error: "Invalid limit value",
-            default: 10,
-          }),
-          skip: t.Number({
-            minimum: 0,
-            multipleOf: 1,
-            error: "Invalid skip value",
-            default: 0,
-          }),
+          category: categoryDefinition,
+          from: fromDefinition,
+          to: toDefinition,
+          sort: sortDefinition,
+          order: orderDefinition,
+          limit: limitDefinition,
+          skip: skipDefinition,
         }),
       ),
       transform: ({ query }) => {
@@ -122,7 +108,7 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       const transactions = await getTransaction(transactionId, credentialId);
       return transactions;
     },
-    { params: t.Object({ transactionId: t.String({ format: "uuid" }) }) },
+    { params: transactionIdDefinition },
   )
   .put(
     "/:transactionId",
@@ -139,23 +125,12 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       return updatedTransaction;
     },
     {
-      params: t.Object({ transactionId: t.String({ format: "uuid" }) }),
+      params: transactionIdDefinition,
       body: t.Object({
-        category: categoryType,
-        description: t.String({
-          minLength: 4,
-          maxLength: 200,
-          error: "Invalid description",
-        }),
-        value: t.Number({
-          minimum: -1_000_000_000,
-          maximum: 1_000_000_000,
-          error: "Invalid value",
-        }),
-        timestamp: t.String({
-          format: "date-time",
-          error: "Invalid timestamp",
-        }),
+        category: categoryDefinition,
+        description: descriptionDefinition,
+        value: valueDefinition,
+        timestamp: timestampDefinition,
       }),
       transform: ({ body }) => {
         if (typeof body?.category === "string") {
@@ -177,7 +152,7 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       set.status = 204;
     },
 
-    { params: t.Object({ transactionId: t.String({ format: "uuid" }) }) },
+    { params: transactionIdDefinition },
   );
 
 export default transactionRouter;
