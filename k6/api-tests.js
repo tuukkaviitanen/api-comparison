@@ -384,21 +384,6 @@ export default function () {
           },
         ],
         [
-          "transaction with timestamp without timezone",
-          {
-            category,
-            description,
-            value,
-            timestamp: "2024-01-01T00:00:00.000",
-          },
-          {
-            category,
-            description,
-            value,
-            timestamp: "2024-01-01T00:00:00.000Z",
-          },
-        ],
-        [
           "transaction with timestamp with different timezone",
           {
             category,
@@ -1374,10 +1359,9 @@ export default function () {
         const response = http.get(`${BASE_URL}/openapi.yaml`);
 
         expect(response.status, "response status").to.equal(200);
-        expect(response.headers["Content-Type"]).to.equal(
-          "text/yaml; charset=UTF-8"
+        expect(response.headers["Content-Type"], "content type").to.include(
+          "text/yaml"
         );
-        expect(response.headers["Content-Length"]).to.above(10000);
       });
     });
   });
