@@ -5,3 +5,4 @@
 **/docker-compose*.yaml
 **/Dockerfile*
 .dockerignore
+**/prisma/client

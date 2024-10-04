@@ -1,4 +1,7 @@
-import { Prisma, Transaction as ProcessedTransaction } from "@prisma/client";
+import {
+  Prisma,
+  Transaction as ProcessedTransaction,
+} from "../../prisma/client";
 import NotFoundError from "../errors/not-found-error";
 import prisma from "../utils/prisma";
 import Transaction from "../types/Transaction";

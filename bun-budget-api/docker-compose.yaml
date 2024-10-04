@@ -12,7 +12,7 @@ services:
   server:
     build:
       context: ../
-      dockerfile: ./bun-budget-api/Dockerfile.dev
+      dockerfile: ./bun-budget-api/Dockerfile.prod
     volumes:
       - ./src:/usr/src/app/src
     ports:
