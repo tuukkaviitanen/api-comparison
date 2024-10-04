@@ -74,19 +74,23 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
           to: t.String({ format: "date-time", error: "Invalid to value" }),
           sort: t.Union([t.Literal("timestamp"), t.Literal("category")], {
             error: "Invalid sort value",
+            default: "timestamp",
           }),
           order: t.Union([t.Literal("asc"), t.Literal("desc")], {
             error: "Invalid order",
+            default: "desc",
           }),
           limit: t.Number({
             minimum: 0,
             multipleOf: 1,
             error: "Invalid limit value",
+            default: 10,
           }),
           skip: t.Number({
             minimum: 0,
             multipleOf: 1,
             error: "Invalid skip value",
+            default: 0,
           }),
         }),
       ),
