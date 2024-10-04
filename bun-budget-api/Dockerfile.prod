@@ -1,4 +1,4 @@
-FROM oven/bun AS build-stage
+FROM oven/bun:slim AS build-stage
 
 WORKDIR /usr/src/app
 
@@ -14,7 +14,7 @@ RUN bun run build
 
 CMD bun run start
 
-FROM oven/bun
+FROM oven/bun:slim
 
 WORKDIR /usr/src/app
 
