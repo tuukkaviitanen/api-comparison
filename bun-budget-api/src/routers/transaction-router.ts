@@ -19,7 +19,7 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       const createdTransaction = await createTransaction({
         category,
         description,
-        timestamp,
+        timestamp: new Date(timestamp),
         value,
         credentialId,
       });
@@ -30,13 +30,20 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
     {
       body: t.Object({
         category: categoryType,
-        description: t.String({ error: "Invalid description" }),
+        description: t.String({
+          minLength: 4,
+          maxLength: 200,
+          error: "Invalid description",
+        }),
         value: t.Number({
           minimum: -1_000_000_000,
           maximum: 1_000_000_000,
           error: "Invalid value",
         }),
-        timestamp: t.Date({ error: "Invalid timestamp" }),
+        timestamp: t.String({
+          format: "date-time",
+          error: "Invalid timestamp",
+        }),
       }),
       transform: ({ body }) => {
         if (typeof body?.category === "string") {
@@ -108,11 +115,15 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       },
     },
   )
-  .get("/:transactionId", async ({ params, credentialId }) => {
-    const { transactionId } = params;
-    const transactions = await getTransaction(transactionId, credentialId);
-    return transactions;
-  })
+  .get(
+    "/:transactionId",
+    async ({ params, credentialId }) => {
+      const { transactionId } = params;
+      const transactions = await getTransaction(transactionId, credentialId);
+      return transactions;
+    },
+    { params: t.Object({ transactionId: t.String({ format: "uuid" }) }) },
+  )
   .put(
     "/:transactionId",
     async ({ params, credentialId, body }) => {
@@ -128,9 +139,14 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       return updatedTransaction;
     },
     {
+      params: t.Object({ transactionId: t.String({ format: "uuid" }) }),
       body: t.Object({
         category: categoryType,
-        description: t.String({ error: "Invalid description" }),
+        description: t.String({
+          minLength: 4,
+          maxLength: 200,
+          error: "Invalid description",
+        }),
         value: t.Number({
           minimum: -1_000_000_000,
           maximum: 1_000_000_000,
@@ -153,10 +169,15 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       },
     },
   )
-  .delete("/:transactionId", async ({ set, params, credentialId }) => {
-    const { transactionId } = params;
-    await deleteTransaction(transactionId, credentialId);
-    set.status = 204;
-  });
+  .delete(
+    "/:transactionId",
+    async ({ set, params, credentialId }) => {
+      const { transactionId } = params;
+      await deleteTransaction(transactionId, credentialId);
+      set.status = 204;
+    },
+
+    { params: t.Object({ transactionId: t.String({ format: "uuid" }) }) },
+  );
 
 export default transactionRouter;
