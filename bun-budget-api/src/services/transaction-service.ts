@@ -43,9 +43,23 @@ export const getTransaction = async (
   return mapTransaction(foundTransaction);
 };
 
-export const getTransactions = async (credentialId: string) => {
+export const getTransactions = async (
+  credentialId: string,
+  category?: string,
+  from?: Date,
+  to?: Date,
+  sort?: string,
+  order?: string,
+  limit?: number,
+  skip?: number,
+) => {
+  const orderBy = sort && order ? { [sort]: order } : undefined;
+
   const foundTransactions = await prisma.transaction.findMany({
-    where: { credentialId },
+    where: { credentialId, category, timestamp: { gte: from, lte: to } },
+    orderBy,
+    skip,
+    take: limit,
   });
 
   return foundTransactions.map(mapTransaction);

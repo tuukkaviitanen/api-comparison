@@ -50,10 +50,60 @@ const transactionRouter = new Elysia({ prefix: "/transactions" })
       },
     },
   )
-  .get("/", async ({ credentialId }) => {
-    const transactions = await getTransactions(credentialId);
-    return transactions;
-  })
+  .get(
+    "/",
+    async ({ credentialId, query }) => {
+      const { category, from, to, sort, order, limit, skip } = query;
+      const transactions = await getTransactions(
+        credentialId,
+        category,
+        from ? new Date(from) : undefined,
+        to ? new Date(to) : undefined,
+        sort,
+        order,
+        limit,
+        skip,
+      );
+      return transactions;
+    },
+    {
+      query: t.Partial(
+        t.Object({
+          category: categoryType,
+          from: t.String({ format: "date-time", error: "Invalid from value" }),
+          to: t.String({ format: "date-time", error: "Invalid to value" }),
+          sort: t.Union([t.Literal("timestamp"), t.Literal("category")], {
+            error: "Invalid sort value",
+          }),
+          order: t.Union([t.Literal("asc"), t.Literal("desc")], {
+            error: "Invalid order",
+          }),
+          limit: t.Number({
+            minimum: 0,
+            multipleOf: 1,
+            error: "Invalid limit value",
+          }),
+          skip: t.Number({
+            minimum: 0,
+            multipleOf: 1,
+            error: "Invalid skip value",
+          }),
+        }),
+      ),
+      transform: ({ query }) => {
+        if (typeof query?.category === "string") {
+          query.category =
+            query.category.toLowerCase() as typeof query.category;
+        }
+        if (typeof query?.sort === "string") {
+          query.sort = query.sort.toLowerCase() as typeof query.sort;
+        }
+        if (typeof query?.order === "string") {
+          query.order = query.order.toLowerCase() as typeof query.order;
+        }
+      },
+    },
+  )
   .get("/:transactionId", async ({ params, credentialId }) => {
     const { transactionId } = params;
     const transactions = await getTransaction(transactionId, credentialId);
