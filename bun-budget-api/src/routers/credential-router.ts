@@ -4,6 +4,10 @@ import {
   createCredential,
   deleteCredential,
 } from "../services/credential-service";
+import {
+  passwordDefinition,
+  usernameDefinition,
+} from "../utils/parameter-definitions";
 
 const credentialRouter = new Elysia({ prefix: "/credentials" })
   .post(
@@ -15,8 +19,8 @@ const credentialRouter = new Elysia({ prefix: "/credentials" })
     },
     {
       body: t.Object({
-        username: t.String({ minLength: 4, maxLength: 50 }),
-        password: t.String({ minLength: 8, maxLength: 50 }),
+        username: usernameDefinition,
+        password: passwordDefinition,
       }),
     },
   )
