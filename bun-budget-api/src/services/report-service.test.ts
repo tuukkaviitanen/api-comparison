@@ -9,7 +9,6 @@ mock.module("../utils/prisma", () => ({
 }));
 
 describe("generateReport", () => {
-  // Using 'let' just to initialize multiple variables at the same time. 'const' doesn't allow that
   const dummy = "dummy";
   const dummyDate = new Date();
   const dummyCredentialId = dummy;
