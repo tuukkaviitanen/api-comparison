@@ -8,20 +8,27 @@ RUN bun install --frozen-lockfile
 
 COPY ./bun-budget-api .
 
+# Generate prisma engine
 RUN bunx prisma generate
 
-RUN bun run build
+# Compile application to binary
+RUN bun run compile
 
-CMD bun run start
-
-FROM oven/bun:slim
+FROM debian:bookworm-slim
 
 WORKDIR /usr/src/app
 
-COPY --from=build-stage /usr/src/app/out ./out
-COPY --from=build-stage /usr/src/app/prisma ./prisma
-COPY --from=build-stage /usr/src/app/package.json /usr/src/app/bun.lockb  ./
+# Install Prisma dependencies
+RUN apt-get update && apt-get install libssl-dev ca-certificates -y
 
+# Import compiled binary
+COPY --from=build-stage /usr/src/app/out ./out
+
+# Import generated Prisma engine
+COPY --from=build-stage /usr/src/app/prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ./prisma/client/libquery_engine-debian-openssl-3.0.x.so.node
+
+# Import openapi doc
 COPY ./docs/openapi.yaml .
 
-CMD bun run start
+# Run binary
+CMD ./out

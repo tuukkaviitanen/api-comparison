@@ -4,6 +4,7 @@
     "dev": "bun run --watch src/index.ts",
     "lint": "eslint",
     "lint:fix": "bun run lint -- --fix",
+    "compile": "bun build ./src/index.ts --outfile out --minify --target bun --compile",
     "build": "bun build ./src/index.ts --outdir ./out --minify --target bun",
     "start": "bun run out/index.js"
   },
