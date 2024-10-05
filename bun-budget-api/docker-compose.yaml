@@ -38,8 +38,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  adminer:
-    image: adminer:4
-    restart: always
-    ports:
-      - 8081:8080
