@@ -14,7 +14,7 @@ RUN bunx prisma generate
 # Compile application to binary
 RUN bun run compile
 
-FROM debian:bookworm-slim
+FROM debian:bullseye-slim
 
 WORKDIR /usr/src/app
 
@@ -25,10 +25,10 @@ RUN apt-get update && apt-get install libssl-dev ca-certificates -y
 COPY --from=build-stage /usr/src/app/out ./out
 
 # Import generated Prisma engine
-COPY --from=build-stage /usr/src/app/prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ./prisma/client/libquery_engine-debian-openssl-3.0.x.so.node
+COPY --from=build-stage /usr/src/app/prisma/client/libquery_engine-debian-openssl-1.1.x.so.node ./prisma/client/libquery_engine-debian-openssl-1.1.x.so.node
 
 # Import openapi doc
 COPY ./docs/openapi.yaml .
 
 # Run binary
-CMD ./out
+CMD ["./out"]
