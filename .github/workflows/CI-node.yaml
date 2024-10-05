@@ -50,18 +50,12 @@ jobs:
         run: npm test
         working-directory: ./node-budget-api
 
-      - name: Copy openapi.yaml to application directory
-        run: cp ./docs/openapi.yaml ./node-budget-api/
+      - name: Run full environment with docker compose
+        run: docker compose up --wait
+        working-directory: ./node-budget-api
 
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
-
-      - name: Start server for k6 testing
-        run: npm run docker:start &
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
-          PORT: 8080
-        working-directory: ./node-budget-api
 
       - name: Run K6 API tests
         run: BASE_URL=http://localhost:8080 k6 run k6/api-tests.js
