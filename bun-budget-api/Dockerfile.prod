@@ -14,7 +14,7 @@ RUN bunx prisma generate
 # Compile application to binary
 RUN bun run compile
 
-FROM debian:bookworm-slim
+FROM debian:bullseye-slim
 
 WORKDIR /usr/src/app
 
@@ -31,4 +31,4 @@ COPY --from=build-stage /usr/src/app/prisma/client/libquery_engine-debian-openss
 COPY ./docs/openapi.yaml .
 
 # Run binary
-CMD ./out
+CMD ["./out"]

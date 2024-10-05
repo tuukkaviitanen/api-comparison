@@ -10,4 +10,4 @@ COPY ./node-budget-api .
 
 COPY ./docs/openapi.yaml .
 
-CMD npm run docker:start
+CMD ["npm", "run", "docker:start"]
