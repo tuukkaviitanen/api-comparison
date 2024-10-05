@@ -12,7 +12,7 @@ services:
   server:
     build:
       context: ../
-      dockerfile: ./bun-budget-api/Dockerfile.prod
+      dockerfile: ./bun-budget-api/Dockerfile.dev
     volumes:
       - ./src:/usr/src/app/src
     ports:
@@ -38,3 +38,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  adminer:
+    image: adminer:4
+    restart: always
+    ports:
+      - 8081:8080

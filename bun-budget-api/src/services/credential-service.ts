@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../prisma/client";
 import prisma from "../utils/prisma";
 import UniqueError from "../errors/unique-error";
 

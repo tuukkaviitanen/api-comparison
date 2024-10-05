@@ -71,3 +71,15 @@ export const skipDefinition = t.Number({
   error: "Invalid skip value",
   default: 0,
 });
+
+export const usernameDefinition = t.String({
+  minLength: 4,
+  maxLength: 50,
+  error: "Invalid username value",
+});
+
+export const passwordDefinition = t.String({
+  minLength: 8,
+  maxLength: 50,
+  error: "Invalid password value",
+});

@@ -1,4 +1,4 @@
-import { Transaction as ProcessedTransaction } from "@prisma/client";
+import { Transaction as ProcessedTransaction } from "../../prisma/client";
 import prisma from "../utils/prisma";
 
 const roundToTwoDecimals = (num: number) => Math.round(num * 100) / 100;

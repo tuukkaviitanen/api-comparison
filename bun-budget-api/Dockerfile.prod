@@ -1,0 +1,34 @@
+FROM oven/bun:slim AS build-stage
+
+WORKDIR /usr/src/app
+
+COPY ./bun-budget-api/package.json ./bun-budget-api/bun.lockb ./
+
+RUN bun install --frozen-lockfile
+
+COPY ./bun-budget-api .
+
+# Generate prisma engine
+RUN bunx prisma generate
+
+# Compile application to binary
+RUN bun run compile
+
+FROM debian:bookworm-slim
+
+WORKDIR /usr/src/app
+
+# Install Prisma dependencies
+RUN apt-get update && apt-get install libssl-dev ca-certificates -y
+
+# Import compiled binary
+COPY --from=build-stage /usr/src/app/out ./out
+
+# Import generated Prisma engine
+COPY --from=build-stage /usr/src/app/prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ./prisma/client/libquery_engine-debian-openssl-3.0.x.so.node
+
+# Import openapi doc
+COPY ./docs/openapi.yaml .
+
+# Run binary
+CMD ./out

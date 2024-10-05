@@ -2,7 +2,7 @@ services:
   server:
     build:
       context: ../
-      dockerfile: ./node-budget-api/Dockerfile
+      dockerfile: ./node-budget-api/Dockerfile.dev
     volumes:
       - ./src:/usr/src/app/src
     environment:
@@ -25,3 +25,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  adminer:
+    image: adminer:4
+    restart: always
+    ports:
+      - 8081:8080
