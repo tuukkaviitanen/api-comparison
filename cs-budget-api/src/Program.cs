@@ -3,4 +3,4 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 
-app.Run("http://localhost:8080");
+app.Run("http://*:8080");
