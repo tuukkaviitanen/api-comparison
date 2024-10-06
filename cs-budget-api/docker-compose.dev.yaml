@@ -4,7 +4,7 @@ services:
       context: ../
       dockerfile: ./cs-budget-api/Dockerfile.dev
     volumes:
-      - ./main/src:/usr/src/app/main/src
+      - ./main/src:/usr/src/app/src
     environment:
       PORT: 8080
       DATABASE_URL: postgresql://user:password@postgres/budget_api
