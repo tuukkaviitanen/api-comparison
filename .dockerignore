@@ -7,5 +7,5 @@
 .dockerignore
 **/prisma/client
 out
-bin
-obj
+**/bin/
+**/obj/

@@ -2,6 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0
 
 WORKDIR /usr/src/app
 
-COPY ./cs-budget-api/ .
+COPY ./cs-budget-api/main .
+
+RUN dotnet restore
 
 CMD ["dotnet", "watch", "run"]
