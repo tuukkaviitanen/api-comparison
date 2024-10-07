@@ -4,3 +4,9 @@ tasks:
   run:
     cmds:
       - docker compose -f docker-compose.dev.yaml up --build
+  format:fix:
+    cmds:
+      - dotnet format main
+  format:check:
+    cmds:
+      - dotnet format main --verify-no-changes
