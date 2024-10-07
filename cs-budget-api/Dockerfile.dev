@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 COPY ./cs-budget-api/main/ ./
 
+COPY ./docs/openapi.yaml .
+
 RUN dotnet restore
 
-CMD ["dotnet", "watch", "run"]
+CMD ["dotnet", "watch", "--no-hot-reload", "run"]
