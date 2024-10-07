@@ -1,0 +1,32 @@
+services:
+  server:
+    build:
+      context: ../
+      dockerfile: ./cs-budget-api/Dockerfile.dev
+    volumes:
+      - ./main/src:/usr/src/app/src
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgresql://user:password@postgres/budget_api
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+  postgres:
+    image: postgres:10.3
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: budget_api
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  adminer:
+    image: adminer:4
+    restart: always
+    ports:
+      - 8081:8080
