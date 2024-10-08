@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace Entities;
 
@@ -16,7 +15,6 @@ public class Transaction
 
     public decimal Value { get; set; }
 
-    [Precision(3)]
     public DateTime Timestamp { get; set; }
 
     [ForeignKey(nameof(CredentialId))]

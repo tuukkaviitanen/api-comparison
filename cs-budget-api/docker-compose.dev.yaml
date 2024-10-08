@@ -7,7 +7,7 @@ services:
       - ./main/src:/usr/src/app/src
     environment:
       PORT: 8080
-      CONNECTION_STRING: Host=localhost; Database=budget_api; Username=postgres; Password=password
+      CONNECTION_STRING: Host=localhost; Database=budget_api; Username=user; Password=password
     ports:
       - 8080:8080
     restart: unless-stopped
