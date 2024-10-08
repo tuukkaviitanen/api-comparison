@@ -4,9 +4,24 @@ tasks:
   run:
     cmds:
       - docker compose -f docker-compose.dev.yaml up --build
+  run:database:
+    cmds:
+      - docker compose -f docker-compose.dev.yaml up postgres adminer
   format:fix:
     cmds:
       - dotnet format main
   format:check:
     cmds:
       - dotnet format main --verify-no-changes
+  migrations:generate:
+    cmds:
+      - dotnet ef migrations add {{.MIGRATION_NAME}}
+    env:
+      CONNECTION_STRING: Host=localhost; Database=budget_api; Username=user; Password=password
+    dir: ./main
+  migrations:run:
+    cmds:
+      - dotnet ef database update
+    env:
+      CONNECTION_STRING: Host=localhost; Database=budget_api; Username=user; Password=password
+    dir: ./main
