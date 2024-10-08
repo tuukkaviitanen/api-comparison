@@ -4,9 +4,17 @@ tasks:
   run:
     cmds:
       - docker compose -f docker-compose.dev.yaml up --build
+  run:database:
+    cmds:
+      - docker compose -f docker-compose.dev.yaml up postgres
   format:fix:
     cmds:
       - dotnet format main
   format:check:
     cmds:
       - dotnet format main --verify-no-changes
+  migration:generate:
+    cmds:
+      - dotnet ef migrations add {{.MIGRATION_NAME}}
+    env:
+      CONNECTION_STRING: Host=localhost; Database=budget_api; Username=postgres; Password=password
