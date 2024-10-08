@@ -1,14 +1,15 @@
-
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Filters;
 
-public partial class AuthenticationFilter : IEndpointFilter
+public partial class AuthenticationFilter(CredentialService credentialService) : IEndpointFilter
 {
+    private CredentialService CredentialService => credentialService;
+
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        string? authenticationHeader = context.HttpContext.Request.Headers["Authorization"];
+        string? authenticationHeader = context.HttpContext.Request.Headers.Authorization;
 
         if (authenticationHeader is null)
         {
@@ -41,7 +42,14 @@ public partial class AuthenticationFilter : IEndpointFilter
         var username = basicAuthRegexMatch.Groups["username"].Value!;
         var password = basicAuthRegexMatch.Groups["password"].Value!;
 
-        context.HttpContext.Items["credentialId"] = username + password;
+        var credentialId = await CredentialService.GetCredentialIdAsync(username, password);
+
+        if (credentialId is null)
+        {
+            return UnauthorizedResult("Credentials invalid");
+        }
+
+        context.HttpContext.Items["credentialId"] = credentialId;
 
         return await next(context);
     }
