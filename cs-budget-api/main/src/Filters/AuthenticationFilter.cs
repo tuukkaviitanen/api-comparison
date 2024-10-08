@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using Utils;
 
 namespace Filters;
 
@@ -39,19 +40,20 @@ public partial class AuthenticationFilter(CredentialService credentialService) :
             return UnauthorizedResult("Invalid credentials format");
         }
 
-        var username = basicAuthRegexMatch.Groups["username"].Value!;
-        var password = basicAuthRegexMatch.Groups["password"].Value!;
+        var username = decryptedAuthRegexMatch.Groups["username"].Value!;
+        var password = decryptedAuthRegexMatch.Groups["password"].Value!;
 
         var credentialId = await CredentialService.GetCredentialIdAsync(username, password);
 
-        if (credentialId is null)
+        if (credentialId is Guid credentialIdGuid)
+        {
+            context.HttpContext.SetCredentialsId(credentialIdGuid);
+            return await next(context);
+        }
+        else
         {
             return UnauthorizedResult("Credentials invalid");
         }
-
-        context.HttpContext.Items["credentialId"] = credentialId;
-
-        return await next(context);
     }
 
     [GeneratedRegex(@"^basic (?<authString>.+)", RegexOptions.IgnoreCase)]
