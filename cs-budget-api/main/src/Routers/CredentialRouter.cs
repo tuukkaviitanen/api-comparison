@@ -1,3 +1,4 @@
+using Filters;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Routers;
@@ -9,7 +10,8 @@ public static class CredentialRouter
         var endpoints = app.MapGroup("/credentials");
 
         endpoints.MapPost("/", PostCredential);
-        endpoints.MapDelete("/", DeleteCredential);
+        endpoints.MapDelete("/", DeleteCredential)
+            .AddEndpointFilter<AuthenticationFilter>();
     }
 
     static NoContent PostCredential()
