@@ -1,9 +1,21 @@
+using Data;
+using Microsoft.EntityFrameworkCore;
 using Routers;
 
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
-
 var PORT = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+var CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+if (CONNECTION_STRING is null)
+{
+    Console.WriteLine("CONNECTION_STRING is not set");
+    Environment.Exit(1);
+}
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContextPool<DatabaseContext>(options => options.UseNpgsql(CONNECTION_STRING));
+
+var app = builder.Build();
 
 app.MapTransactionRouter();
 app.MapCredentialRouter();
