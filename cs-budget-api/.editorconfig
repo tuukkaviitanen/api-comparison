@@ -1,0 +1,10 @@
+root = true
+
+[*.cs]
+dotnet_diagnostic.IDE0005.severity = warning # Unused import
+insert_final_newline = true
+indent_style = space
+tab_width = 4
+end_of_line = lf
+charset = utf-8
+dotnet_style_readonly_field = true

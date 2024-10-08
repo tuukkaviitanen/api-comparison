@@ -14,6 +14,7 @@ if (CONNECTION_STRING is null)
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContextPool<DatabaseContext>(options => options.UseNpgsql(CONNECTION_STRING));
+builder.Services.AddScoped<CredentialService>();
 
 var app = builder.Build();
 

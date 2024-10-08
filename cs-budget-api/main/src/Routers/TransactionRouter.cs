@@ -1,3 +1,4 @@
+using Filters;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Routers;
@@ -6,7 +7,8 @@ public static class TransactionRouter
 {
     public static void MapTransactionRouter(this IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("/transactions");
+        var endpoints = app.MapGroup("/transactions")
+            .AddEndpointFilter<AuthenticationFilter>();
 
         endpoints.MapGet("/", GetAllTransactions);
         endpoints.MapGet("/{transactionId}", GetSingleTransaction);

@@ -1,4 +1,6 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using Errors;
+using Filters;
+using Utils;
 
 namespace Routers;
 
@@ -9,16 +11,31 @@ public static class CredentialRouter
         var endpoints = app.MapGroup("/credentials");
 
         endpoints.MapPost("/", PostCredential);
-        endpoints.MapDelete("/", DeleteCredential);
+        endpoints.MapDelete("/", DeleteCredential)
+            .AddEndpointFilter<AuthenticationFilter>();
     }
 
-    static NoContent PostCredential()
+    public record PostCredentialRequestBody(string Username, string Password);
+
+    static async Task<IResult> PostCredential(PostCredentialRequestBody body, CredentialService credentialService)
     {
-        return TypedResults.NoContent();
+        try
+        {
+            await credentialService.CreateCredentialAsync(body.Username, body.Password);
+            return Results.NoContent();
+        }
+        catch (UniqueError)
+        {
+            var response = new { error = $"Unique error: Username not unique" };
+            return Results.Json(response, statusCode: 400);
+        }
     }
 
-    static NoContent DeleteCredential()
+    static async Task<IResult> DeleteCredential(HttpContext context, CredentialService credentialService)
     {
-        return TypedResults.NoContent();
+        var credentialId = context.GetCredentialsId();
+
+        await credentialService.DeleteCredentialAsync(credentialId);
+        return Results.NoContent();
     }
 }
