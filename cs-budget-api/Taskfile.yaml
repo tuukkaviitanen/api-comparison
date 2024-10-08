@@ -18,3 +18,4 @@ tasks:
       - dotnet ef migrations add {{.MIGRATION_NAME}}
     env:
       CONNECTION_STRING: Host=localhost; Database=budget_api; Username=postgres; Password=password
+    dir: ./main

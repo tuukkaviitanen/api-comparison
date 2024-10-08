@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Entities;
 
 namespace Data;
 
@@ -33,9 +33,15 @@ public class DatabaseContext(DbContextOptions options) : DbContext(options)
             .HasMaxLength(200);
         modelBuilder.Entity<Transaction>()
             .Property(transaction => transaction.Value)
-            .HasColumnType("DECIMAL");
+            .HasColumnType("decimal");
         modelBuilder.Entity<Transaction>()
             .Property(transaction => transaction.Timestamp)
             .HasPrecision(3);
+
+        // Map relations
+        modelBuilder.Entity<Transaction>()
+            .HasOne((transaction) => transaction.Credential)
+            .WithMany((credential) => credential.Transactions)
+            .HasForeignKey((transaction) => transaction.CredentialId);
     }
 }

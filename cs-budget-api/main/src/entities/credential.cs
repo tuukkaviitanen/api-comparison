@@ -1,4 +1,4 @@
-namespace Models;
+namespace Entities;
 
 public class Credential
 {
