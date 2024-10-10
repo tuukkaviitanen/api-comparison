@@ -8,4 +8,6 @@ COPY ./docs/openapi.yaml .
 
 RUN dotnet restore
 
+RUN dotnet tool restore
+
 CMD ["dotnet", "watch", "--no-hot-reload", "run"]
