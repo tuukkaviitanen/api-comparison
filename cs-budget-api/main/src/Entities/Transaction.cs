@@ -18,7 +18,7 @@ public class Transaction
     public DateTime Timestamp { get; set; }
 
     [ForeignKey(nameof(CredentialId))]
-    public required Credential Credential { get; set; }
+    public virtual Credential Credential { get; set; } = null!;
 
     public required Guid CredentialId { get; set; }
 }

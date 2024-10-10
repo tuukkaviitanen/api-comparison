@@ -22,7 +22,7 @@ public static class TransactionRouter
         return TypedResults.NoContent();
     }
 
-    static NoContent GetSingleTransaction()
+    static NoContent GetSingleTransaction(Guid transactionId)
     {
         return TypedResults.NoContent();
     }
@@ -32,12 +32,12 @@ public static class TransactionRouter
         return TypedResults.NoContent();
     }
 
-    static NoContent PutTransaction()
+    static NoContent PutTransaction(Guid transactionId)
     {
         return TypedResults.NoContent();
     }
 
-    static NoContent DeleteTransaction()
+    static NoContent DeleteTransaction(Guid transactionId)
     {
         return TypedResults.NoContent();
     }

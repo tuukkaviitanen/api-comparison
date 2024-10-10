@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Utils;
 
+namespace Services;
+
 public class CredentialService(DatabaseContext dbContext)
 {
 
@@ -12,13 +14,11 @@ public class CredentialService(DatabaseContext dbContext)
 
     public async Task<Guid?> GetCredentialIdAsync(string username, string password)
     {
-        var asd = "asd";
         var passwordHash = Helpers.GenerateHash(password);
         var credential = await DbContext.Credentials
             .FirstOrDefaultAsync((credential) => credential.Username == username &&
                 credential.PasswordHash == passwordHash);
 
-        Console.WriteLine($"username: {username}, passwordHash: {passwordHash}, ID: {credential?.Id}, asd: {asd}");
         return credential?.Id;
     }
 

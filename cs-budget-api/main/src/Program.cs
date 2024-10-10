@@ -1,6 +1,7 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Routers;
+using Services;
 
 var PORT = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 var CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
