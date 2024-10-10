@@ -2,6 +2,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Routers;
 using Services;
+using FluentValidation;
 
 var PORT = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 var CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
@@ -18,9 +19,20 @@ builder.Services.AddDbContextPool<DatabaseContext>(options => options.UseNpgsql(
 builder.Services.AddScoped<CredentialService>();
 builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<ReportService>();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
 
+app.UseExceptionHandler(exceptionHandlerApp
+    => exceptionHandlerApp.Run(async context
+        => await Results.Json(new {error = "Unexpected error occurred"}, statusCode: 500)
+                     .ExecuteAsync(context)));
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("This is a hard-coded message.");
+    await next(context);
+});
 app.MapTransactionRouter();
 app.MapCredentialRouter();
 app.MapReportRouter();

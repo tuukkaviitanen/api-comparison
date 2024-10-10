@@ -32,7 +32,7 @@ public static class TransactionRouter
         [FromQuery] int limit = 10,
         [FromQuery] int skip = 0)
     {
-        var credentialId = context.GetCredentialsId();
+        var credentialId = context.GetCredentialId();
 
         var transactions = await transactionService.GetTransactionsAsync(credentialId, category, from, to, sort, order, limit, skip);
 
@@ -41,7 +41,7 @@ public static class TransactionRouter
 
     static async Task<IResult> GetSingleTransaction(Guid transactionId, HttpContext context, TransactionService transactionService)
     {
-        var credentialId = context.GetCredentialsId();
+        var credentialId = context.GetCredentialId();
 
         try
         {
@@ -56,7 +56,7 @@ public static class TransactionRouter
 
     static async Task<IResult> PostTransaction(TransactionRequest transactionRequest, HttpContext context, TransactionService transactionService)
     {
-        var credentialId = context.GetCredentialsId();
+        var credentialId = context.GetCredentialId();
 
         var createdTransaction = await transactionService.CreateTransactionAsync(credentialId, transactionRequest);
         return Results.Json(createdTransaction, statusCode: 201);
@@ -64,7 +64,7 @@ public static class TransactionRouter
 
     static async Task<IResult> PutTransaction(Guid transactionId, TransactionRequest transactionRequest, HttpContext context, TransactionService transactionService)
     {
-        var credentialId = context.GetCredentialsId();
+        var credentialId = context.GetCredentialId();
 
         try
         {
@@ -80,7 +80,7 @@ public static class TransactionRouter
 
     static async Task<IResult> DeleteTransaction(Guid transactionId, HttpContext context, TransactionService transactionService)
     {
-        var credentialId = context.GetCredentialsId();
+        var credentialId = context.GetCredentialId();
 
         try
         {

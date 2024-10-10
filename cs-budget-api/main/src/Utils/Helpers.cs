@@ -6,7 +6,7 @@ namespace Utils;
 public static class Helpers
 {
 
-    public static Guid GetCredentialsId(this HttpContext httpContext)
+    public static Guid GetCredentialId(this HttpContext httpContext)
     {
         if (httpContext.Items["credentialId"] is Guid credentialId)
         {
@@ -37,4 +37,14 @@ public static class Helpers
             return builder.ToString();
         }
     }
+
+    public static readonly string[] ValidCategories =
+    {
+        "household & services",
+        "food & drinks",
+        "transport",
+        "recreation",
+        "health",
+        "other",
+    };
 }

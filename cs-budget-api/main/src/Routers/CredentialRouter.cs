@@ -1,5 +1,6 @@
 using Errors;
 using Filters;
+using FluentValidation;
 using Services;
 using Utils;
 
@@ -11,12 +12,23 @@ public static class CredentialRouter
     {
         var endpoints = app.MapGroup("/credentials");
 
-        endpoints.MapPost("/", PostCredential);
+        endpoints.MapPost("/", PostCredential)
+            .AddEndpointFilter<ValidationFilter<PostCredentialRequestBody>>();
+
         endpoints.MapDelete("/", DeleteCredential)
             .AddEndpointFilter<AuthenticationFilter>();
     }
 
     public record PostCredentialRequestBody(string Username, string Password);
+
+    public class PostCredentialValidator : AbstractValidator<PostCredentialRequestBody>
+    {
+        public PostCredentialValidator()
+        {
+            RuleFor(x => x.Username).NotEmpty().Length(4, 50);
+            RuleFor(x => x.Password).NotEmpty().Length(8, 50);
+        }
+    }
 
     static async Task<IResult> PostCredential(PostCredentialRequestBody body, CredentialService credentialService)
     {
@@ -27,14 +39,14 @@ public static class CredentialRouter
         }
         catch (UniqueError)
         {
-            var response = new { error = $"Unique error: Username not unique" };
+            var response = new { error = $"Unique error: Username '{body.Username}' is already taken" };
             return Results.Json(response, statusCode: 400);
         }
     }
 
     static async Task<IResult> DeleteCredential(HttpContext context, CredentialService credentialService)
     {
-        var credentialId = context.GetCredentialsId();
+        var credentialId = context.GetCredentialId();
 
         await credentialService.DeleteCredentialAsync(credentialId);
         return Results.NoContent();
