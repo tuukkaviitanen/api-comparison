@@ -23,7 +23,8 @@ public static class Helpers
         httpContext.Items["credentialId"] = credentialsId;
     }
 
-    public static string GenerateHash(string stringValue) {
+    public static string GenerateHash(string stringValue)
+    {
         using (SHA256 sha256Hash = SHA256.Create())
         {
             var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(stringValue));

@@ -1,8 +1,8 @@
 using Data;
-using Microsoft.EntityFrameworkCore;
 using Entities;
-using Npgsql;
 using Errors;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Utils;
 
 public class CredentialService(DatabaseContext dbContext)
