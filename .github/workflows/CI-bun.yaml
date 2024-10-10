@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'bun-budget-api/**'
+      - 'k6/**'
   pull_request:
     branches:
       - main
+    paths:
+      - 'bun-budget-api/**'
+      - 'k6/**'
 
 jobs:
   verification:

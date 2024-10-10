@@ -1,0 +1,34 @@
+name: CI C#
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'cs-budget-api/**'
+      - 'k6/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'cs-budget-api/**'
+      - 'k6/**'
+
+jobs:
+  verification:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Fetch code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Run formatter
+        run: dotnet format main --verify-no-changes
+        working-directory: ./cs-budget-api
+
+      - name: Run build
+        run: dotnet build main
