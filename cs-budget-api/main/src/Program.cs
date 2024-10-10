@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContextPool<DatabaseContext>(options => options.UseNpgsql(CONNECTION_STRING));
 builder.Services.AddScoped<CredentialService>();
 builder.Services.AddScoped<TransactionService>();
+builder.Services.AddScoped<ReportService>();
 
 var app = builder.Build();
 

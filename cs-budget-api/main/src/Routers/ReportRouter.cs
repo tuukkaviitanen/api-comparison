@@ -1,5 +1,7 @@
 using Filters;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Services;
+using Utils;
 
 namespace Routers;
 
@@ -13,8 +15,19 @@ public static class ReportRouter
         endpoints.MapGet("/", GetReport);
     }
 
-    static NoContent GetReport()
+    static async Task<IResult> GetReport(
+        HttpContext context,
+        ReportService reportService,
+        [FromQuery] string? category,
+        [FromQuery] DateTimeOffset? from,
+        [FromQuery] DateTimeOffset? to)
     {
-        return TypedResults.NoContent();
+        var credentialId = context.GetCredentialsId();
+
+        Console.WriteLine($"Params, to:{to}, from:{from}");
+
+        var budgetReport = await reportService.GenerateReportAsync(credentialId, category, to, from);
+
+        return Results.Json(budgetReport);
     }
 }

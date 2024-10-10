@@ -48,7 +48,7 @@ public static class TransactionRouter
     {
         var credentialId = context.GetCredentialsId();
 
-        var createdTransaction = await transactionService.CreateTransaction(credentialId, transactionRequest);
+        var createdTransaction = await transactionService.CreateTransactionAsync(credentialId, transactionRequest);
         return Results.Json(createdTransaction, statusCode: 201);
     }
 
@@ -58,7 +58,7 @@ public static class TransactionRouter
 
         try
         {
-            var updatedTransaction = await transactionService.UpdateTransaction(transactionId, credentialId, transactionRequest);
+            var updatedTransaction = await transactionService.UpdateTransactionAsync(transactionId, credentialId, transactionRequest);
 
             return Results.Json(updatedTransaction, statusCode: 200);
         }
@@ -74,7 +74,7 @@ public static class TransactionRouter
 
         try
         {
-            await transactionService.DeleteTransaction(transactionId, credentialId);
+            await transactionService.DeleteTransactionAsync(transactionId, credentialId);
 
             return Results.NoContent();
         }
