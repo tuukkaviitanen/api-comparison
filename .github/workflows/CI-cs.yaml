@@ -32,3 +32,4 @@ jobs:
 
       - name: Run build
         run: dotnet build main
+        working-directory: ./cs-budget-api
