@@ -3,6 +3,7 @@ using Entities;
 using Errors;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using System.Linq.Dynamic.Core;
 
 namespace Services;
 
@@ -17,11 +18,24 @@ public class TransactionService(DatabaseContext dbContext)
             transaction.Value,
             transaction.Timestamp);
 
-
-    public async Task<List<ProcessedTransaction>> GetTransactionsAsync(Guid credentialId)
+    public async Task<List<ProcessedTransaction>> GetTransactionsAsync(
+        Guid credentialId,
+        string? category,
+        DateTimeOffset? from,
+        DateTimeOffset? to,
+        string sort,
+        string order,
+        int limit,
+        int skip)
     {
         var transactions = await DbContext.Transactions
-            .Where(transaction => transaction.CredentialId == credentialId)
+            .Where(transaction => transaction.CredentialId == credentialId
+                && (category == null || transaction.Category == category)
+                && (from == null || transaction.Timestamp >= from)
+                && (to == null || transaction.Timestamp <= to))
+            .OrderBy($"{sort} {order}") // Dynamic Linq
+            .Skip(skip)
+            .Take(limit)
             .Select(transaction => MapToProcessedTransaction(transaction))
             .ToListAsync();
 

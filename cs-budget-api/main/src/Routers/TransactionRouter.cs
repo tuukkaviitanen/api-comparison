@@ -1,5 +1,6 @@
 using Errors;
 using Filters;
+using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services;
 using Utils;
@@ -20,11 +21,20 @@ public static class TransactionRouter
         endpoints.MapDelete("/{transactionId}", DeleteTransaction);
     }
 
-    static async Task<IResult> GetAllTransactions(HttpContext context, TransactionService transactionService)
+    static async Task<IResult> GetAllTransactions(
+        HttpContext context,
+        TransactionService transactionService,
+        [FromQuery] string? category,
+        [FromQuery] DateTimeOffset? from,
+        [FromQuery] DateTimeOffset? to,
+        [FromQuery] string sort = "category",
+        [FromQuery] string order = "desc",
+        [FromQuery] int limit = 10,
+        [FromQuery] int skip = 0)
     {
         var credentialId = context.GetCredentialsId();
 
-        var transactions = await transactionService.GetTransactionsAsync(credentialId);
+        var transactions = await transactionService.GetTransactionsAsync(credentialId, category, from, to, sort, order, limit, skip);
 
         return Results.Json(transactions);
     }
