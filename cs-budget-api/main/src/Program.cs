@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Routers;
 using Services;
 using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 
 var PORT = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 var CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
@@ -21,18 +22,31 @@ builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
+builder.Services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadRequest = true);
+
 var app = builder.Build();
 
-app.UseExceptionHandler(exceptionHandlerApp
-    => exceptionHandlerApp.Run(async context
-        => await Results.Json(new {error = "Unexpected error occurred"}, statusCode: 500)
-                     .ExecuteAsync(context)));
-
-app.Use(async (context, next) =>
+app.UseExceptionHandler(appError =>
 {
-    Console.WriteLine("This is a hard-coded message.");
-    await next(context);
+    appError.Run(async context =>
+    {
+        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+        var exception = contextFeature?.Error;
+
+        if (exception is BadHttpRequestException)
+        {
+            await Results.Json(new { error = "Validation error: Parameter(s) of invalid type" }, statusCode: 400)
+                .ExecuteAsync(context);
+        }
+        else
+        {
+            await Results.Json(new { error = "Unexpected error occurred" }, statusCode: 500)
+                         .ExecuteAsync(context);
+        }
+
+    });
 });
+
 app.MapTransactionRouter();
 app.MapCredentialRouter();
 app.MapReportRouter();
