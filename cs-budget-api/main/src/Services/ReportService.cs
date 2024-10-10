@@ -7,7 +7,8 @@ public class ReportService(DatabaseContext dbContext)
 {
     private DatabaseContext DbContext => dbContext;
 
-    private static BudgetReport MapBudgetReport(List<decimal> transactionValues){
+    private static BudgetReport MapBudgetReport(List<decimal> transactionValues)
+    {
         var budgetReport = transactionValues.Aggregate(new BudgetReport(0, 0, 0, 0, 0, 0), (incompleteReport, value) =>
         {
             var isExpense = value < 0;
