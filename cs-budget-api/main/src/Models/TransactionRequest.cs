@@ -1,3 +1,7 @@
 namespace Models;
 
-public record TransactionRequest(string Category, string Description, decimal Value, DateTime Timestamp);
+public record TransactionRequest(
+    string Category,
+    string Description,
+    decimal Value,
+    DateTimeOffset Timestamp);

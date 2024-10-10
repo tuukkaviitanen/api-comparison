@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'node-budget-api/**'
+      - 'k6/**'
   pull_request:
     branches:
       - main
+    paths:
+      - 'node-budget-api/**'
+      - 'k6/**'
 
 jobs:
   verification:

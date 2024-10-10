@@ -15,7 +15,7 @@ public class Transaction
 
     public decimal Value { get; set; }
 
-    public DateTime Timestamp { get; set; }
+    public DateTimeOffset Timestamp { get; set; }
 
     [ForeignKey(nameof(CredentialId))]
     public virtual Credential Credential { get; set; } = null!;

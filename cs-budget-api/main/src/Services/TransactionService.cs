@@ -39,7 +39,7 @@ public class TransactionService(DatabaseContext dbContext)
         return transaction;
     }
 
-    public async Task<ProcessedTransaction> CreateTransaction(Guid credentialId, TransactionRequest transactionRequest)
+    public async Task<ProcessedTransaction> CreateTransactionAsync(Guid credentialId, TransactionRequest transactionRequest)
     {
         var transaction = new Transaction
         {
@@ -57,7 +57,7 @@ public class TransactionService(DatabaseContext dbContext)
         return MapToProcessedTransaction(transaction);
     }
 
-    public async Task<ProcessedTransaction> UpdateTransaction(Guid transactionId, Guid credentialId, TransactionRequest transactionRequest)
+    public async Task<ProcessedTransaction> UpdateTransactionAsync(Guid transactionId, Guid credentialId, TransactionRequest transactionRequest)
     {
         var existingTransaction = await DbContext.Transactions
             .Where(transaction => transaction.Id == transactionId
@@ -74,7 +74,7 @@ public class TransactionService(DatabaseContext dbContext)
         return MapToProcessedTransaction(existingTransaction);
     }
 
-    public async Task DeleteTransaction(Guid transactionId, Guid credentialId)
+    public async Task DeleteTransactionAsync(Guid transactionId, Guid credentialId)
     {
         var affectedRows = await DbContext.Transactions
             .Where(transaction => transaction.Id == transactionId
