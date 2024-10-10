@@ -1,5 +1,8 @@
+using Errors;
 using Filters;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Models;
+using Services;
+using Utils;
 
 namespace Routers;
 
@@ -17,28 +20,67 @@ public static class TransactionRouter
         endpoints.MapDelete("/{transactionId}", DeleteTransaction);
     }
 
-    static NoContent GetAllTransactions()
+    static async Task<IResult> GetAllTransactions(HttpContext context, TransactionService transactionService)
     {
-        return TypedResults.NoContent();
+        var credentialId = context.GetCredentialsId();
+
+        var transactions = await transactionService.GetTransactionsAsync(credentialId);
+
+        return Results.Json(transactions);
     }
 
-    static NoContent GetSingleTransaction()
+    static async Task<IResult> GetSingleTransaction(Guid transactionId, HttpContext context, TransactionService transactionService)
     {
-        return TypedResults.NoContent();
+        var credentialId = context.GetCredentialsId();
+
+        try
+        {
+            var transaction = await transactionService.GetTransactionAsync(transactionId, credentialId);
+            return Results.Json(transaction);
+        }
+        catch (NotFoundError)
+        {
+            return Results.Json(new { error = "Transaction not found" }, statusCode: 404);
+        }
     }
 
-    static NoContent PostTransaction()
+    static async Task<IResult> PostTransaction(TransactionRequest transactionRequest, HttpContext context, TransactionService transactionService)
     {
-        return TypedResults.NoContent();
+        var credentialId = context.GetCredentialsId();
+
+        var createdTransaction = await transactionService.CreateTransaction(credentialId, transactionRequest);
+        return Results.Json(createdTransaction, statusCode: 201);
     }
 
-    static NoContent PutTransaction()
+    static async Task<IResult> PutTransaction(Guid transactionId, TransactionRequest transactionRequest, HttpContext context, TransactionService transactionService)
     {
-        return TypedResults.NoContent();
+        var credentialId = context.GetCredentialsId();
+
+        try
+        {
+            var updatedTransaction = await transactionService.UpdateTransaction(transactionId, credentialId, transactionRequest);
+
+            return Results.Json(updatedTransaction, statusCode: 200);
+        }
+        catch (NotFoundError)
+        {
+            return Results.Json(new { error = "Transaction not found" }, statusCode: 404);
+        }
     }
 
-    static NoContent DeleteTransaction()
+    static async Task<IResult> DeleteTransaction(Guid transactionId, HttpContext context, TransactionService transactionService)
     {
-        return TypedResults.NoContent();
+        var credentialId = context.GetCredentialsId();
+
+        try
+        {
+            await transactionService.DeleteTransaction(transactionId, credentialId);
+
+            return Results.NoContent();
+        }
+        catch (NotFoundError)
+        {
+            return Results.Json(new { error = "Transaction not found" }, statusCode: 404);
+        }
     }
 }

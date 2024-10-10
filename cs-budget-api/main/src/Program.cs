@@ -1,6 +1,7 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Routers;
+using Services;
 
 var PORT = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 var CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContextPool<DatabaseContext>(options => options.UseNpgsql(CONNECTION_STRING));
 builder.Services.AddScoped<CredentialService>();
+builder.Services.AddScoped<TransactionService>();
 
 var app = builder.Build();
 
