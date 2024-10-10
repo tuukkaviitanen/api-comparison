@@ -24,8 +24,6 @@ public static class ReportRouter
     {
         var credentialId = context.GetCredentialsId();
 
-        Console.WriteLine($"Params, to:{to}, from:{from}");
-
         var budgetReport = await reportService.GenerateReportAsync(credentialId, category, to, from);
 
         return Results.Json(budgetReport);

@@ -31,8 +31,8 @@ public class ReportService(DatabaseContext dbContext)
         var transactionValues = await DbContext.Transactions
             .Where(transaction => transaction.CredentialId == credentialId
                 && (category == null || transaction.Category == category)
-                && (from == null || transaction.Timestamp > from)
-                && (to == null || transaction.Timestamp < to))
+                && (from == null || transaction.Timestamp >= from)
+                && (to == null || transaction.Timestamp <= to))
             .Select(transaction => transaction.Value)
             .ToListAsync();
 
