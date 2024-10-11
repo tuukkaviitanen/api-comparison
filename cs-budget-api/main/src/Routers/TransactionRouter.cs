@@ -1,5 +1,6 @@
 using Errors;
 using Filters;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services;
@@ -14,27 +15,65 @@ public static class TransactionRouter
         var endpoints = app.MapGroup("/transactions")
             .AddEndpointFilter<AuthenticationFilter>();
 
-        endpoints.MapGet("/", GetAllTransactions);
+        endpoints.MapGet("/", GetAllTransactions)
+            .AddEndpointFilter<ValidationFilter<GetAllTransactionsParams>>();
         endpoints.MapGet("/{transactionId}", GetSingleTransaction);
-        endpoints.MapPost("/", PostTransaction);
-        endpoints.MapPut("/{transactionId}", PutTransaction);
+        endpoints.MapPost("/", PostTransaction)
+            .AddEndpointFilter<ValidationFilter<TransactionRequest>>();
+        endpoints.MapPut("/{transactionId}", PutTransaction)
+            .AddEndpointFilter<ValidationFilter<TransactionRequest>>();
         endpoints.MapDelete("/{transactionId}", DeleteTransaction);
     }
 
+    static readonly string[] SortOptions = ["category", "timestamp"];
+    static readonly string[] OrderOptions = ["asc", "desc"];
+
+    public record GetAllTransactionsParams(
+        [FromQuery] string? Category,
+        [FromQuery] DateTimeOffset? From,
+        [FromQuery] DateTimeOffset? To,
+        [FromQuery] string Sort = "category",
+        [FromQuery] string Order = "desc",
+        [FromQuery] int Limit = 10,
+        [FromQuery] int Skip = 0);
+
+    public class GetAllTransactionsParamsValidator : AbstractValidator<GetAllTransactionsParams>
+    {
+        public GetAllTransactionsParamsValidator()
+        {
+            RuleFor(x => x.Category)
+                .Must((category) => Helpers.ValidCategories.Contains(category?.ToLower()))
+                .When(x => x.Category is not null)
+                .WithMessage("Invalid category");
+            RuleFor(x => x.Sort)
+                .Must(sort => SortOptions.Contains(sort.ToLower()))
+                .WithMessage("Invalid sort");
+            RuleFor(x => x.Sort)
+                .Must(order => OrderOptions.Contains(order.ToLower()))
+                .WithMessage("Invalid order");
+            RuleFor(x => x.Limit)
+                .GreaterThanOrEqualTo(1);
+            RuleFor(x => x.Skip)
+                .GreaterThanOrEqualTo(0);
+        }
+    }
+
     static async Task<IResult> GetAllTransactions(
+        [AsParameters] GetAllTransactionsParams parameters,
         HttpContext context,
-        TransactionService transactionService,
-        [FromQuery] string? category,
-        [FromQuery] DateTimeOffset? from,
-        [FromQuery] DateTimeOffset? to,
-        [FromQuery] string sort = "category",
-        [FromQuery] string order = "desc",
-        [FromQuery] int limit = 10,
-        [FromQuery] int skip = 0)
+        TransactionService transactionService)
     {
         var credentialId = context.GetCredentialId();
 
-        var transactions = await transactionService.GetTransactionsAsync(credentialId, category, from, to, sort, order, limit, skip);
+        var transactions = await transactionService.GetTransactionsAsync(
+            credentialId,
+            parameters.Category?.ToLower(),
+            parameters.From,
+            parameters.To,
+            parameters.Sort.ToLower(),
+            parameters.Order.ToLower(),
+            parameters.Limit,
+            parameters.Skip);
 
         return Results.Json(transactions);
     }
@@ -54,15 +93,38 @@ public static class TransactionRouter
         }
     }
 
+    public class TransactionRequestValidator : AbstractValidator<TransactionRequest>
+    {
+        public TransactionRequestValidator()
+        {
+            RuleFor(x => x.Category)
+                .Must((category) => Helpers.ValidCategories.Contains(category?.ToLower()))
+                .When(x => x.Category is not null)
+                .WithMessage("Invalid category");
+            RuleFor(x => x.Description)
+                .Length(4, 200);
+            RuleFor(x => x.Value)
+                .Must(x => decimal.Round(x, 2) == x)
+                .WithMessage("Value with too many decimal places")
+                .LessThanOrEqualTo(1_000_000_000);
+        }
+    }
+
     static async Task<IResult> PostTransaction(TransactionRequest transactionRequest, HttpContext context, TransactionService transactionService)
     {
         var credentialId = context.GetCredentialId();
 
-        var createdTransaction = await transactionService.CreateTransactionAsync(credentialId, transactionRequest);
+        var createdTransaction = await transactionService.CreateTransactionAsync(
+            credentialId,
+            new TransactionRequest(transactionRequest.Category.ToLower(),
+            transactionRequest.Description,
+            transactionRequest.Value,
+            transactionRequest.Timestamp));
+
         return Results.Json(createdTransaction, statusCode: 201);
     }
 
-    static async Task<IResult> PutTransaction(Guid transactionId, TransactionRequest transactionRequest, HttpContext context, TransactionService transactionService)
+    static async Task<IResult> PutTransaction(TransactionRequest transactionRequest, Guid transactionId,  HttpContext context, TransactionService transactionService)
     {
         var credentialId = context.GetCredentialId();
 

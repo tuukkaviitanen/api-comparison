@@ -28,6 +28,7 @@ public static class ReportRouter
         {
             RuleFor(x => x.Category)
                 .Must((category) => Helpers.ValidCategories.Contains(category?.ToLower()))
+                .When(x => x.Category is not null)
                 .WithMessage("Invalid category");
         }
     }
@@ -41,7 +42,7 @@ public static class ReportRouter
 
         var budgetReport = await reportService.GenerateReportAsync(
             credentialId,
-            parameters.Category,
+            parameters.Category?.ToLower(),
             parameters.To,
             parameters.From);
 
