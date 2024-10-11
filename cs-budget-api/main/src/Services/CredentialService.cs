@@ -9,13 +9,10 @@ namespace Services;
 
 public class CredentialService(DatabaseContext dbContext)
 {
-
-    private DatabaseContext DbContext => dbContext;
-
     public async Task<Guid?> GetCredentialIdAsync(string username, string password)
     {
         var passwordHash = Helpers.GenerateHash(password);
-        var credential = await DbContext.Credentials
+        var credential = await dbContext.Credentials
             .FirstOrDefaultAsync((credential) => credential.Username == username &&
                 credential.PasswordHash == passwordHash);
 
@@ -27,12 +24,12 @@ public class CredentialService(DatabaseContext dbContext)
         try
         {
             var passwordHash = Helpers.GenerateHash(password);
-            var credential = await DbContext.Credentials.AddAsync(new Credential
+            var credential = await dbContext.Credentials.AddAsync(new Credential
             {
                 Username = username,
                 PasswordHash = passwordHash
             });
-            await DbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
         catch (DbUpdateException error)
         when (error.InnerException is PostgresException pgException
@@ -44,7 +41,7 @@ public class CredentialService(DatabaseContext dbContext)
 
     public async Task DeleteCredentialAsync(Guid credentialId)
     {
-        await DbContext.Credentials
+        await dbContext.Credentials
             .Where((credential) => credential.Id == credentialId)
             .ExecuteDeleteAsync();
     }

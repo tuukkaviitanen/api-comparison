@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services;
+using System.Text.Json;
 using Utils;
 
 namespace Routers;
@@ -32,7 +33,7 @@ public static class TransactionRouter
         [FromQuery] string? Category,
         [FromQuery] DateTimeOffset? From,
         [FromQuery] DateTimeOffset? To,
-        [FromQuery] string Sort = "category",
+        [FromQuery] string Sort = "timestamp",
         [FromQuery] string Order = "desc",
         [FromQuery] int Limit = 10,
         [FromQuery] int Skip = 0);
@@ -42,13 +43,16 @@ public static class TransactionRouter
         public GetAllTransactionsParamsValidator()
         {
             RuleFor(x => x.Category)
+                .NotEmpty()
                 .Must((category) => Helpers.ValidCategories.Contains(category?.ToLower()))
                 .When(x => x.Category is not null)
                 .WithMessage("Invalid category");
             RuleFor(x => x.Sort)
+                .NotEmpty()
                 .Must(sort => SortOptions.Contains(sort.ToLower()))
                 .WithMessage("Invalid sort");
-            RuleFor(x => x.Sort)
+            RuleFor(x => x.Order)
+                .NotEmpty()
                 .Must(order => OrderOptions.Contains(order.ToLower()))
                 .WithMessage("Invalid order");
             RuleFor(x => x.Limit)
@@ -98,14 +102,16 @@ public static class TransactionRouter
         public TransactionRequestValidator()
         {
             RuleFor(x => x.Category)
+                .NotEmpty()
                 .Must((category) => Helpers.ValidCategories.Contains(category?.ToLower()))
-                .When(x => x.Category is not null)
                 .WithMessage("Invalid category");
             RuleFor(x => x.Description)
+                .NotEmpty()
                 .Length(4, 200);
             RuleFor(x => x.Value)
                 .Must(x => decimal.Round(x, 2) == x)
                 .WithMessage("Value with too many decimal places")
+                .GreaterThanOrEqualTo(-1_000_000_000)
                 .LessThanOrEqualTo(1_000_000_000);
         }
     }
@@ -124,13 +130,26 @@ public static class TransactionRouter
         return Results.Json(createdTransaction, statusCode: 201);
     }
 
-    static async Task<IResult> PutTransaction(TransactionRequest transactionRequest, Guid transactionId,  HttpContext context, TransactionService transactionService)
+    static async Task<IResult> PutTransaction(TransactionRequest transactionRequest, Guid transactionId, HttpContext context, TransactionService transactionService)
     {
         var credentialId = context.GetCredentialId();
 
         try
         {
-            var updatedTransaction = await transactionService.UpdateTransactionAsync(transactionId, credentialId, transactionRequest);
+            var updatedTransaction = await transactionService.UpdateTransactionAsync(
+                transactionId,
+                credentialId,
+                new TransactionRequest(
+                    transactionRequest.Category.ToLower(),
+                    transactionRequest.Description,
+                    transactionRequest.Value,
+                    transactionRequest.Timestamp));
+
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                Converters = { new DateTimeOffsetConverter() }
+            };
+
 
             return Results.Json(updatedTransaction, statusCode: 200);
         }
