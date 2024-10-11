@@ -1,9 +1,9 @@
 using Data;
+using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Routers;
 using Services;
-using FluentValidation;
-using Microsoft.AspNetCore.Diagnostics;
 
 var PORT = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 var CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");

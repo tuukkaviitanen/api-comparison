@@ -11,9 +11,9 @@ public class ValidationFilter<TRequest>(IValidator<TRequest> validator) : IEndpo
 
         var result = await validator.ValidateAsync(request, context.HttpContext.RequestAborted);
 
-        if(result.IsValid is false)
+        if (result.IsValid is false)
         {
-            return Results.Json(new {error = $"Validation error: {result}"}, statusCode: 400);
+            return Results.Json(new { error = $"Validation error: {result}" }, statusCode: 400);
         }
 
         return await next(context);
