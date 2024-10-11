@@ -9,8 +9,6 @@ namespace Services;
 
 public class TransactionService(DatabaseContext dbContext)
 {
-    private DatabaseContext DbContext => dbContext;
-
     private static ProcessedTransaction MapToProcessedTransaction(Transaction transaction) => new(
             transaction.Id,
             transaction.Category,
@@ -28,7 +26,7 @@ public class TransactionService(DatabaseContext dbContext)
         int limit,
         int skip)
     {
-        var transactions = await DbContext.Transactions
+        var transactions = await dbContext.Transactions
             .Where(transaction => transaction.CredentialId == credentialId
                 && (category == null || transaction.Category == category)
                 && (from == null || transaction.Timestamp >= from)
@@ -44,7 +42,7 @@ public class TransactionService(DatabaseContext dbContext)
 
     public async Task<ProcessedTransaction> GetTransactionAsync(Guid transactionId, Guid credentialId)
     {
-        var transaction = await DbContext.Transactions
+        var transaction = await dbContext.Transactions
             .Where(transaction => transaction.Id == transactionId
                 && transaction.CredentialId == credentialId)
             .Select(transaction => MapToProcessedTransaction(transaction))
@@ -59,21 +57,21 @@ public class TransactionService(DatabaseContext dbContext)
         {
             Category = transactionRequest.Category,
             Description = transactionRequest.Description,
-            Timestamp = transactionRequest.Timestamp,
+            Timestamp = transactionRequest.Timestamp.ToUniversalTime(),
             Value = transactionRequest.Value,
             CredentialId = credentialId
         };
 
-        await DbContext.Transactions.AddAsync(transaction);
+        await dbContext.Transactions.AddAsync(transaction);
 
-        await DbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 
         return MapToProcessedTransaction(transaction);
     }
 
     public async Task<ProcessedTransaction> UpdateTransactionAsync(Guid transactionId, Guid credentialId, TransactionRequest transactionRequest)
     {
-        var existingTransaction = await DbContext.Transactions
+        var existingTransaction = await dbContext.Transactions
             .Where(transaction => transaction.Id == transactionId
                 && transaction.CredentialId == credentialId)
             .FirstOrDefaultAsync() ?? throw new NotFoundError();
@@ -81,16 +79,16 @@ public class TransactionService(DatabaseContext dbContext)
         existingTransaction.Category = transactionRequest.Category;
         existingTransaction.Description = transactionRequest.Description;
         existingTransaction.Value = transactionRequest.Value;
-        existingTransaction.Timestamp = transactionRequest.Timestamp;
+        existingTransaction.Timestamp = transactionRequest.Timestamp.ToUniversalTime();
 
-        await DbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 
         return MapToProcessedTransaction(existingTransaction);
     }
 
     public async Task DeleteTransactionAsync(Guid transactionId, Guid credentialId)
     {
-        var affectedRows = await DbContext.Transactions
+        var affectedRows = await dbContext.Transactions
             .Where(transaction => transaction.Id == transactionId
                 && transaction.CredentialId == credentialId)
             .ExecuteDeleteAsync();

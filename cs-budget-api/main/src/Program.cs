@@ -1,4 +1,6 @@
 using Data;
+using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Routers;
 using Services;
@@ -18,8 +20,32 @@ builder.Services.AddDbContextPool<DatabaseContext>(options => options.UseNpgsql(
 builder.Services.AddScoped<CredentialService>();
 builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<ReportService>();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+builder.Services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadRequest = true);
 
 var app = builder.Build();
+
+app.UseExceptionHandler(appError =>
+{
+    appError.Run(async context =>
+    {
+        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+        var exception = contextFeature?.Error;
+
+        if (exception is BadHttpRequestException)
+        {
+            await Results.Json(new { error = "Validation error: Parameter(s) of invalid type" }, statusCode: 400)
+                .ExecuteAsync(context);
+        }
+        else
+        {
+            await Results.Json(new { error = "Unexpected error occurred" }, statusCode: 500)
+                         .ExecuteAsync(context);
+        }
+
+    });
+});
 
 app.MapTransactionRouter();
 app.MapCredentialRouter();

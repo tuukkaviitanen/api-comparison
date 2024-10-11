@@ -1,3 +1,5 @@
+namespace Models;
+
 public record BudgetReport
 (
     decimal transactions_sum,

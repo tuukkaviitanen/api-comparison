@@ -1,11 +1,11 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace Services;
 
 public class ReportService(DatabaseContext dbContext)
 {
-    private DatabaseContext DbContext => dbContext;
 
     private static BudgetReport MapBudgetReport(List<decimal> transactionValues)
     {
@@ -17,9 +17,9 @@ public class ReportService(DatabaseContext dbContext)
             return new BudgetReport(
                 transactions_sum: incompleteReport.transactions_sum + value,
                 transactions_count: incompleteReport.transactions_count + 1,
-                incomes_sum: isIncome ? incompleteReport.transactions_sum + value : incompleteReport.transactions_sum,
+                incomes_sum: isIncome ? incompleteReport.incomes_sum + value : incompleteReport.incomes_sum,
                 incomes_count: isIncome ? incompleteReport.incomes_count + 1 : incompleteReport.incomes_count,
-                expenses_sum: isExpense ? incompleteReport.expenses_sum + value : incompleteReport.expenses_count,
+                expenses_sum: isExpense ? incompleteReport.expenses_sum + value : incompleteReport.expenses_sum,
                 expenses_count: isExpense ? incompleteReport.expenses_count + 1 : incompleteReport.expenses_count
             );
         });
@@ -29,7 +29,7 @@ public class ReportService(DatabaseContext dbContext)
 
     public async Task<BudgetReport> GenerateReportAsync(Guid credentialId, string? category, DateTimeOffset? to, DateTimeOffset? from)
     {
-        var transactionValues = await DbContext.Transactions
+        var transactionValues = await dbContext.Transactions
             .Where(transaction => transaction.CredentialId == credentialId
                 && (category == null || transaction.Category == category)
                 && (from == null || transaction.Timestamp >= from)
