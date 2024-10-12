@@ -3,8 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data;
 
-public class DatabaseContext(DbContextOptions options) : DbContext(options)
+public class DatabaseContext : DbContext
 {
-    public required DbSet<Credential> Credentials { get; set; }
-    public required DbSet<Transaction> Transactions { get; set; }
+    public virtual required DbSet<Credential> Credentials { get; set; }
+    public virtual required DbSet<Transaction> Transactions { get; set; }
+
+    public DatabaseContext() { }
+
+    public DatabaseContext(DbContextOptions options) : base(options) { }
 }

@@ -25,3 +25,7 @@ tasks:
     env:
       CONNECTION_STRING: Host=localhost; Database=budget_api; Username=user; Password=password
     dir: ./main
+  test:
+    cmds:
+      - dotnet test
+    dir: ./test
