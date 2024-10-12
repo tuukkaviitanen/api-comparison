@@ -1,0 +1,38 @@
+services:
+  server:
+    build:
+      context: ../
+      dockerfile: ./cs-budget-api/Dockerfile.prod
+    environment:
+      PORT: 8080
+      CONNECTION_STRING: Host=postgres; Database=budget_api; Username=user; Password=password
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+  migrator:
+    build:
+      context: ../
+      dockerfile: ./cs-budget-api/Dockerfile.dev
+    environment:
+      CONNECTION_STRING: Host=postgres; Database=budget_api; Username=user; Password=password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: dotnet ef database update
+  postgres:
+    image: postgres:10.3
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: budget_api
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

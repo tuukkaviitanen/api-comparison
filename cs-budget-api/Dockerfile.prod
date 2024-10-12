@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-stage
+
+WORKDIR /usr/src/app
+
+COPY ./cs-budget-api/main/ ./
+
+RUN dotnet restore
+
+RUN dotnet publish -p:PublishReadyToRun=true -p:PublishSingleFile=true --output out
+
+FROM debian:bullseye-slim
+
+COPY --from=build-stage /usr/src/app/out/main .
+
+COPY ./docs/openapi.yaml .
+
+CMD ["./main"]
