@@ -33,3 +33,74 @@ jobs:
       - name: Run build
         run: dotnet build main
         working-directory: ./cs-budget-api
+
+      - name: Run unit tests
+        run: dotnet test test
+        working-directory: ./cs-budget-api
+
+      - name: Run full environment with docker compose
+        run: docker compose up --wait
+        working-directory: ./cs-budget-api
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run K6 API tests
+        run: BASE_URL=http://localhost:8080 k6 run k6/api-tests.js
+
+
+  publish_docker_image:
+    needs: [verification]
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    env:
+      # Use docker.io for Docker Hub if empty
+      REGISTRY: ghcr.io
+      # github.repository as <account>/<repo>
+      IMAGE_NAME: ${{ github.repository }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up BuildKit Docker container builder to be able to build
+      # multi-platform images and export cache
+      # https://github.com/docker/setup-buildx-action
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+
+      # Login against a Docker registry
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@master
+        with:
+          format: "YYYYMMDDHHmmss"
+
+      # Build and push Docker image with Buildx
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+        with:
+          context: .
+          file: bun-budget-api/Dockerfile.prod
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cs
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cs-${{ steps.time.outputs.time }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cs-latest
+          push: true
