@@ -36,6 +36,7 @@ jobs:
 
       - name: Run unit tests
         run: dotnet test test
+        working-directory: ./cs-budget-api
 
       - name: Run full environment with docker compose
         run: docker compose up --wait
