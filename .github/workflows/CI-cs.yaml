@@ -7,6 +7,7 @@ on:
     paths:
       - 'cs-budget-api/**'
       - 'k6/**'
+      - '**/CI-cs.yaml'
   pull_request:
     branches:
       - main
