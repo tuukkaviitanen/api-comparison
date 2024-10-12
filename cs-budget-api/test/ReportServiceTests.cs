@@ -10,7 +10,7 @@ namespace Tests;
 
 public class ReportServiceTests
 {
-    public static IEnumerable<object[]> GetTestCases()
+    public static IEnumerable<object[]> GetTestCases() // Generator method
     {
         yield return new object[]
         {
@@ -62,5 +62,19 @@ public class ReportServiceTests
         var report = await service.GenerateReportAsync(credentialId, null, null, null);
 
         Assert.Equal(expectedReport, report);
+    }
+
+    class MockException : Exception;
+
+    [Fact]
+    public async Task ShouldThrowExceptionWhenErrorOccurs()
+    {
+
+        var mockDbContext = new Mock<DatabaseContext>();
+        mockDbContext.Setup(x => x.Transactions).Throws(new MockException());
+
+        var service = new ReportService(mockDbContext.Object);
+
+        await Assert.ThrowsAsync<MockException>(() => service.GenerateReportAsync(Guid.Empty, null, null, null));
     }
 }
