@@ -1,2 +1,2 @@
 [build]
-  cmd = "go build -o ./tmp/main ./cmd/budget-api/main.go"
+  cmd = "go build -o ./tmp/main ./cmd/main/main.go"

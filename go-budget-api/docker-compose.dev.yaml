@@ -7,6 +7,11 @@ services:
       - ./cmd:/usr/src/app/cmd
       - ./internal:/usr/src/app/internal
     restart: unless-stopped
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgresql://user:password@postgres/budget_api
+    ports:
+      - 8080:8080
     depends_on:
       postgres:
         condition: service_healthy
