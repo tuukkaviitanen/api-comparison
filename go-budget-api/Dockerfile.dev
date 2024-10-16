@@ -1,0 +1,9 @@
+FROM golang:1.23.2
+
+WORKDIR /usr/src/app
+
+COPY go-budget-api/ ./
+
+COPY ./docs/openapi.yaml .
+
+CMD ["go", "run", "cmd/budget-api/main.go"]
