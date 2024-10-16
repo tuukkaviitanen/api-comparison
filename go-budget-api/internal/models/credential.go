@@ -6,14 +6,12 @@ import (
 )
 
 type Credential struct {
-	gorm.Model
-
 	Id uuid.UUID `gorm:"type:uuid;primary_key"`
-	Username string `gorm:"type:varchar(50);unique"`
-	Password string `gorm:"type:varchar(64)"`
+	Username string `gorm:"type:varchar(50);unique;NOT NULL"`
+	Password string `gorm:"type:varchar(64);NOT NULL"`
 }
 
-func (b *Credential) BeforeCreate(tx *gorm.DB) (err error) {
-	b.Id = uuid.New()
+func (c *Credential) BeforeCreate(tx *gorm.DB) (err error) {
+	c.Id = uuid.New()
 	return
    }

@@ -8,11 +8,16 @@ import (
 )
 
 type Transaction struct {
-	gorm.Model
-
-	Id uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
-	Category string `gorm:"type:varchar(50);unique"`
-	Description string `gorm:"type:varchar(200)"`
-	Value float32 `gorm:"type:decimal"`
-	Timestamp time.Time `gorm:"type:timestamp(3)"`
+	Id uuid.UUID `gorm:"type:uuid;primary_key"`
+	Category string `gorm:"type:varchar(50);unique;NOT NULL"`
+	Description string `gorm:"type:varchar(200);NOT NULL"`
+	Value float32 `gorm:"type:decimal;NOT NULL"`
+	Timestamp time.Time `gorm:"type:timestamp(3);NOT NULL"`
+	Credential Credential `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	CredentialId uuid.UUID `gorm:"NOT NULL"`
 }
+
+func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
+	t.Id = uuid.New()
+	return
+   }
