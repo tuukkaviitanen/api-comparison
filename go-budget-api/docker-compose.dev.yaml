@@ -1,0 +1,31 @@
+services:
+  server:
+    build:
+      context: ../
+      dockerfile: ./go-budget-api/Dockerfile.dev
+    volumes:
+      - ./cmd:/usr/src/app/cmd
+      - ./internal:/usr/src/app/internal
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres:10.3
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: budget_api
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  adminer:
+    image: adminer:4
+    restart: unless-stopped
+    ports:
+      - 8081:8080

@@ -1,0 +1,14 @@
+FROM golang:1.23.2
+
+WORKDIR /usr/src/app
+
+# Install live reload tool
+RUN go install github.com/air-verse/air@latest
+
+COPY go-budget-api/ ./
+
+COPY ./docs/openapi.yaml .
+
+RUN go mod download
+
+CMD ["air"]

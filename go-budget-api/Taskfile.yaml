@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  run:
+    cmds:
+      - docker compose -f docker-compose.dev.yaml up --build
+  build:
+    cmds:
+      - go build -o out cmd/budget-api/main.go
+  lint:
+    cmds:
+      - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.61.0 golangci-lint run
+  lint:fix:
+    cmds:
+      - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.61.0 golangci-lint run --fix
