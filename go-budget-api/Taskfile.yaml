@@ -7,3 +7,9 @@ tasks:
   build:
     cmds:
       - go build -o out cmd/budget-api/main.go
+  lint:
+    cmds:
+      - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.61.0 golangci-lint run
+  lint:fix:
+    cmds:
+      - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.61.0 golangci-lint run --fix
