@@ -9,12 +9,20 @@ services:
     restart: unless-stopped
     environment:
       PORT: 8080
-      DATABASE_URL: postgresql://user:password@postgres/budget_api
+      CONNECTION_STRING: host=postgres user=user password=password dbname=budget_api sslmode=disable
     ports:
       - 8080:8080
     depends_on:
+      migrator:
+        condition: service_completed_successfully
+  migrator:
+    build:
+      context: ../
+      dockerfile: ./go-budget-api/Dockerfile.dev
+    depends_on:
       postgres:
         condition: service_healthy
+    command: atlas migrate apply --url "postgresql://user:password@postgres/budget_api?sslmode=disable"
   postgres:
     image: postgres:10.3
     restart: unless-stopped

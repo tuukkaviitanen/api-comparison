@@ -2,7 +2,7 @@ package routers
 
 import "github.com/gin-gonic/gin"
 
-func MapCredentialsRouter(router *gin.Engine) {
+func mapCredentialsRouter(router *gin.Engine) {
 	credentials := router.Group("/credentials")
 	{
 		credentials.POST("/", func(context *gin.Context) {
