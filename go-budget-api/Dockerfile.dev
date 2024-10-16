@@ -5,6 +5,9 @@ WORKDIR /usr/src/app
 # Install live reload tool
 RUN go install github.com/air-verse/air@latest
 
+# Install migration tool
+RUN curl -sSf https://atlasgo.sh | sh
+
 COPY go-budget-api/ ./
 
 COPY ./docs/openapi.yaml .

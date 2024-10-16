@@ -16,3 +16,6 @@ tasks:
   migration:generate:
     cmds:
       - atlas migrate diff --env gorm
+  migration:run:
+    cmds:
+      - atlas migrate apply --url "postgresql://user:password@postgres/budget_api"
