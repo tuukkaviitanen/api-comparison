@@ -11,7 +11,7 @@ Credentials {
 
 Transactions {
     uuid id PK
-    char(36) credentialId FK
+    uuid credentialId FK
     varchar(50) category
     varchar(200) description
     decimal value
