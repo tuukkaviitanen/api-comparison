@@ -10,3 +10,9 @@ tasks:
   lint:fix:
     cmds:
       - task lint -- --fix
+  migration:inspect:
+    cmds:
+      - atlas schema inspect --env gorm --url "env://src"
+  migration:generate:
+    cmds:
+      - atlas migrate diff --env gorm
