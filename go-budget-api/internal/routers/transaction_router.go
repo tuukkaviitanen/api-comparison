@@ -21,29 +21,7 @@ func mapTransactionRouter(router *gin.Engine) {
 			context.Status(200)
 		})
 
-		transactions.POST("/", func(context *gin.Context) {
-			credentialId := context.GetString("credentialId")
-			var transaction models.TransactionRequest
-
-			if err := context.ShouldBindBodyWithJSON(&transaction); err != nil {
-				context.JSON(400, gin.H{"error": err.Error()})
-				return
-			}
-
-			processedTransaction, err := services.CreateTransaction(
-				transaction.Category,
-				transaction.Description,
-				transaction.Value,
-				transaction.Timestamp,
-				credentialId)
-
-			if err != nil {
-				context.AbortWithError(500, err)
-				return
-			}
-
-			context.JSON(201, processedTransaction)
-		})
+		transactions.POST("/", postTransaction())
 
 		transactions.PUT("/:transactionId", func(context *gin.Context) {
 			context.Status(200)
@@ -52,5 +30,31 @@ func mapTransactionRouter(router *gin.Engine) {
 		transactions.DELETE("/:transactionId", func(context *gin.Context) {
 			context.Status(204)
 		})
+	}
+}
+
+func postTransaction() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		credentialId := context.GetString("credentialId")
+		var transaction models.TransactionRequest
+
+		if err := context.ShouldBindBodyWithJSON(&transaction); err != nil {
+			context.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		processedTransaction, err := services.CreateTransaction(
+			transaction.Category,
+			transaction.Description,
+			transaction.Value,
+			transaction.Timestamp,
+			credentialId)
+
+		if err != nil {
+			context.AbortWithError(500, err)
+			return
+		}
+
+		context.JSON(201, processedTransaction)
 	}
 }
