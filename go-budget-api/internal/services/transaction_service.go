@@ -89,3 +89,18 @@ func UpdateTransaction(transactionId string, credentialId string, category strin
 
 	return mapProcessedTransaction(&transaction), nil
 }
+
+func DeleteTransaction(transactionid string, credentialId string) error {
+	result := db.Context.
+		Delete(&entities.Transaction{Id: transactionid, CredentialId: credentialId})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return ErrNotFound
+	}
+
+	return nil
+}

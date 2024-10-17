@@ -22,9 +22,7 @@ func mapTransactionRouter(router *gin.Engine) {
 
 		transactions.PUT("/:transactionId", putTransaction())
 
-		transactions.DELETE("/:transactionId", func(context *gin.Context) {
-			context.Status(204)
-		})
+		transactions.DELETE("/:transactionId", deleteTransaction())
 	}
 }
 
@@ -114,5 +112,24 @@ func putTransaction() gin.HandlerFunc {
 		}
 
 		context.JSON(200, processedTransaction)
+	}
+}
+
+func deleteTransaction() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		transactionId := context.Param("transactionId")
+		credentialId := context.GetString("credentialId")
+
+		if err := services.DeleteTransaction(transactionId, credentialId); err != nil {
+			if errors.Is(err, services.ErrNotFound) {
+				context.JSON(404, gin.H{"error": "Transaction not found"})
+				return
+			}
+
+			context.AbortWithError(500, err)
+			return
+		}
+
+		context.Status(204)
 	}
 }
