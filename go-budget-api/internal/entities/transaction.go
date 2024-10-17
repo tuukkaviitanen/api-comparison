@@ -14,7 +14,7 @@ type Transaction struct {
 	Value        float32    `gorm:"type:decimal;NOT NULL"`
 	Timestamp    time.Time  `gorm:"type:timestamp(3);NOT NULL"`
 	Credential   Credential `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	CredentialId uuid.UUID  `gorm:"NOT NULL"`
+	CredentialId string     `gorm:"NOT NULL"`
 }
 
 func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
