@@ -34,7 +34,6 @@ func getReport() gin.HandlerFunc {
 			reportRequest.Category,
 			reportRequest.From,
 			reportRequest.To)
-
 		if err != nil {
 			log.Printf("[GET Reports] Unexpected error: %s\n", err.Error())
 			_ = context.AbortWithError(500, err)

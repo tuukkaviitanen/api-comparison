@@ -31,7 +31,6 @@ func GetReport(credentialId string, category *string, from *time.Time, to *time.
 }
 
 func generateReport(values *[]float32) *models.BudgetReport {
-
 	report := models.BudgetReport{}
 
 	for _, value := range *values {
