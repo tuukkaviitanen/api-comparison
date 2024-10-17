@@ -4,6 +4,9 @@ tasks:
   run:
     cmds:
       - docker compose -f docker-compose.dev.yaml up --build
+  run:database:
+    cmds:
+      - docker compose -f docker-compose.dev.yaml up postgres adminer
   lint:
     cmds:
       - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.61.0 golangci-lint run {{.CLI_ARGS}}

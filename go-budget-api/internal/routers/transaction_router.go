@@ -1,10 +1,16 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"budget-api/internal/middlewares"
+
+	"github.com/gin-gonic/gin"
+)
 
 func mapTransactionRouter(router *gin.Engine) {
 	transactions := router.Group("/transactions")
 	{
+		transactions.Use(middlewares.Authenticate())
+
 		transactions.GET("/", func(context *gin.Context) {
 			context.Status(200)
 		})
