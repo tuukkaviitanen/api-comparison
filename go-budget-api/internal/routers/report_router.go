@@ -2,6 +2,7 @@ package routers
 
 import (
 	"budget-api/internal/middlewares"
+	"budget-api/internal/models"
 	"budget-api/internal/services"
 	"log"
 
@@ -21,7 +22,18 @@ func getReport() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		credentialId := context.GetString("credentialId")
 
-		report, err := services.GetReport(credentialId, nil, nil, nil)
+		var reportRequest models.ReportRequest
+
+		if err := context.ShouldBindQuery(&reportRequest); err != nil {
+			context.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		report, err := services.GetReport(
+			credentialId,
+			reportRequest.Category,
+			reportRequest.From,
+			reportRequest.To)
 
 		if err != nil {
 			log.Printf("[GET Reports] Unexpected error: %s\n", err.Error())

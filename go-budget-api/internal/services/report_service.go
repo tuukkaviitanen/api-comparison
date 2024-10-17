@@ -15,11 +15,11 @@ func GetReport(credentialId string, category *string, from *time.Time, to *time.
 	}
 
 	if from != nil {
-		query = query.Where("datetime >= ?", *from)
+		query = query.Where("timestamp >= ?", *from)
 	}
 
 	if to != nil {
-		query = query.Where("datetime <= ?", *to)
+		query = query.Where("timestamp <= ?", *to)
 	}
 
 	var transactionValues []float32
