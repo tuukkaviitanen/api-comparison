@@ -5,6 +5,7 @@ import (
 	"budget-api/internal/entities"
 	"budget-api/internal/models"
 	"errors"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -36,11 +37,29 @@ func CreateTransaction(category string, description string, value float32, times
 	return mapProcessedTransaction(&transaction), nil
 }
 
-func GetTransactions(credentialId string) ([]*models.ProcessedTransaction, error) {
+func GetTransactions(credentialId string, category *string, from *time.Time, to *time.Time, sort string, order string, skip int, limit int) ([]*models.ProcessedTransaction, error) {
 	var transactions []*models.ProcessedTransaction
-	if err := db.Context.
+
+	query := db.Context.
 		Model(&entities.Transaction{}).
-		Where(&entities.Transaction{CredentialId: credentialId}).
+		Where(&entities.Transaction{CredentialId: credentialId})
+
+	if category != nil {
+		query = query.Where("category = ?", *category)
+	}
+
+	if from != nil {
+		query = query.Where("timestamp >= ?", *from)
+	}
+
+	if to != nil {
+		query = query.Where("timestamp <= ?", *to)
+	}
+
+	if err := query.
+		Order(fmt.Sprintf("%s %s", sort, order)).
+		Offset(skip).
+		Limit(limit).
 		Find(&transactions).
 		Error; err != nil {
 		return nil, err
