@@ -20,9 +20,7 @@ func mapTransactionRouter(router *gin.Engine) {
 
 		transactions.POST("/", postTransaction())
 
-		transactions.PUT("/:transactionId", func(context *gin.Context) {
-			context.Status(200)
-		})
+		transactions.PUT("/:transactionId", putTransaction())
 
 		transactions.DELETE("/:transactionId", func(context *gin.Context) {
 			context.Status(204)
@@ -89,5 +87,32 @@ func getTransaction() gin.HandlerFunc {
 		}
 
 		context.JSON(200, transactions)
+	}
+}
+
+func putTransaction() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		transactionId := context.Param("transactionId")
+		credentialId := context.GetString("credentialId")
+		var transaction models.TransactionRequest
+
+		if err := context.ShouldBindBodyWithJSON(&transaction); err != nil {
+			context.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		processedTransaction, err := services.UpdateTransaction(transactionId, credentialId, transaction.Category, transaction.Description, transaction.Value, transaction.Timestamp)
+
+		if err != nil {
+			if errors.Is(err, services.ErrNotFound) {
+				context.JSON(404, gin.H{"error": "Transaction not found"})
+				return
+			}
+
+			context.AbortWithError(500, err)
+			return
+		}
+
+		context.JSON(200, processedTransaction)
 	}
 }

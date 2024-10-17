@@ -37,7 +37,7 @@ func CreateTransaction(category string, description string, value float32, times
 }
 
 func GetTransactions(credentialId string) ([]*models.ProcessedTransaction, error) {
-	var transactions = []*models.ProcessedTransaction{}
+	var transactions []*models.ProcessedTransaction
 	if err := db.Context.
 		Model(&entities.Transaction{}).
 		Where(&entities.Transaction{CredentialId: credentialId}).
@@ -50,11 +50,11 @@ func GetTransactions(credentialId string) ([]*models.ProcessedTransaction, error
 }
 
 func GetTransaction(transactionId string, credentialId string) (*models.ProcessedTransaction, error) {
-	var transaction = &models.ProcessedTransaction{}
+	var transaction models.ProcessedTransaction
 	if err := db.Context.
 		Model(&entities.Transaction{}).
 		Where(&entities.Transaction{Id: transactionId, CredentialId: credentialId}).
-		First(transaction).
+		First(&transaction).
 		Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, ErrNotFound
@@ -62,5 +62,30 @@ func GetTransaction(transactionId string, credentialId string) (*models.Processe
 		return nil, err
 	}
 
-	return transaction, nil
+	return &transaction, nil
+}
+
+func UpdateTransaction(transactionId string, credentialId string, category string, description string, value float32, timestamp time.Time) (*models.ProcessedTransaction, error) {
+	var transaction entities.Transaction
+
+	if err := db.Context.
+		Where(&entities.Transaction{Id: transactionId, CredentialId: credentialId}).
+		First(&transaction).
+		Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrNotFound
+		}
+		return nil, err
+	}
+
+	transaction.Category = category
+	transaction.Description = description
+	transaction.Value = value
+	transaction.Timestamp = timestamp
+
+	if err := db.Context.Save(&transaction).Error; err != nil {
+		return nil, err
+	}
+
+	return mapProcessedTransaction(&transaction), nil
 }
