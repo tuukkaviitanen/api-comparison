@@ -26,11 +26,22 @@ func CreateTransaction(category string, description string, value float32, times
 		CredentialId: credentialId,
 	}
 
-	result := db.Context.Create(&transaction)
-
-	if err := result.Error; err != nil {
-		return nil, result.Error
+	if err := db.Context.Create(&transaction).Error; err != nil {
+		return nil, err
 	}
 
 	return mapProcessedTransaction(&transaction), nil
+}
+
+func GetTransactions(credentialId string) ([]*models.ProcessedTransaction, error) {
+	var transactions = []*models.ProcessedTransaction{}
+	if err := db.Context.
+		Model(&entities.Transaction{}).
+		Where(&entities.Transaction{CredentialId: credentialId}).
+		Find(&transactions).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return transactions, nil
 }

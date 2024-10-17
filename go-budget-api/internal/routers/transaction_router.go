@@ -13,9 +13,7 @@ func mapTransactionRouter(router *gin.Engine) {
 	{
 		transactions.Use(middlewares.Authenticate())
 
-		transactions.GET("/", func(context *gin.Context) {
-			context.Status(200)
-		})
+		transactions.GET("/", getTransaction())
 
 		transactions.GET("/:transactionId", func(context *gin.Context) {
 			context.Status(200)
@@ -56,5 +54,20 @@ func postTransaction() gin.HandlerFunc {
 		}
 
 		context.JSON(201, processedTransaction)
+	}
+}
+
+func getTransaction() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		credentialId := context.GetString("credentialId")
+
+		transactions, err := services.GetTransactions(credentialId)
+
+		if err != nil {
+			context.AbortWithError(500, err)
+			return
+		}
+
+		context.JSON(200, transactions)
 	}
 }
