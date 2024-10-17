@@ -4,6 +4,7 @@ import (
 	"budget-api/internal/middlewares"
 	"budget-api/internal/models"
 	"budget-api/internal/services"
+	"errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,11 +14,9 @@ func mapTransactionRouter(router *gin.Engine) {
 	{
 		transactions.Use(middlewares.Authenticate())
 
-		transactions.GET("/", getTransaction())
+		transactions.GET("/", getTransactions())
 
-		transactions.GET("/:transactionId", func(context *gin.Context) {
-			context.Status(200)
-		})
+		transactions.GET("/:transactionId", getTransaction())
 
 		transactions.POST("/", postTransaction())
 
@@ -57,13 +56,34 @@ func postTransaction() gin.HandlerFunc {
 	}
 }
 
-func getTransaction() gin.HandlerFunc {
+func getTransactions() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		credentialId := context.GetString("credentialId")
 
 		transactions, err := services.GetTransactions(credentialId)
 
 		if err != nil {
+			context.AbortWithError(500, err)
+			return
+		}
+
+		context.JSON(200, transactions)
+	}
+}
+
+func getTransaction() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		transactionId := context.Param("transactionId")
+		credentialId := context.GetString("credentialId")
+
+		transactions, err := services.GetTransaction(transactionId, credentialId)
+
+		if err != nil {
+			if errors.Is(err, services.ErrNotFound) {
+				context.JSON(404, gin.H{"error": "Transaction not found"})
+				return
+			}
+
 			context.AbortWithError(500, err)
 			return
 		}

@@ -4,7 +4,10 @@ import (
 	"budget-api/internal/db"
 	"budget-api/internal/entities"
 	"budget-api/internal/models"
+	"errors"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 func mapProcessedTransaction(transaction *entities.Transaction) *models.ProcessedTransaction {
@@ -44,4 +47,20 @@ func GetTransactions(credentialId string) ([]*models.ProcessedTransaction, error
 	}
 
 	return transactions, nil
+}
+
+func GetTransaction(transactionId string, credentialId string) (*models.ProcessedTransaction, error) {
+	var transaction = &models.ProcessedTransaction{}
+	if err := db.Context.
+		Model(&entities.Transaction{}).
+		Where(&entities.Transaction{Id: transactionId, CredentialId: credentialId}).
+		First(transaction).
+		Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrNotFound
+		}
+		return nil, err
+	}
+
+	return transaction, nil
 }
