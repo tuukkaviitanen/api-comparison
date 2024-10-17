@@ -1,4 +1,4 @@
-package models
+package entities
 
 import (
 	"time"
@@ -8,7 +8,7 @@ import (
 )
 
 type Transaction struct {
-	Id           uuid.UUID  `gorm:"type:uuid;primary_key"`
+	Id           string     `gorm:"type:uuid;primary_key"`
 	Category     string     `gorm:"type:varchar(50);NOT NULL"`
 	Description  string     `gorm:"type:varchar(200);NOT NULL"`
 	Value        float32    `gorm:"type:decimal;NOT NULL"`
@@ -18,6 +18,6 @@ type Transaction struct {
 }
 
 func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
-	t.Id = uuid.New()
+	t.Id = uuid.New().String()
 	return
 }
