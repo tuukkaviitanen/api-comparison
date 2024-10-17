@@ -42,9 +42,8 @@ func postTransaction() gin.HandlerFunc {
 			transaction.Value,
 			transaction.Timestamp,
 			credentialId)
-
 		if err != nil {
-			context.AbortWithError(500, err)
+			_ = context.AbortWithError(500, err)
 			return
 		}
 
@@ -57,9 +56,8 @@ func getTransactions() gin.HandlerFunc {
 		credentialId := context.GetString("credentialId")
 
 		transactions, err := services.GetTransactions(credentialId)
-
 		if err != nil {
-			context.AbortWithError(500, err)
+			_ = context.AbortWithError(500, err)
 			return
 		}
 
@@ -73,14 +71,13 @@ func getTransaction() gin.HandlerFunc {
 		credentialId := context.GetString("credentialId")
 
 		transactions, err := services.GetTransaction(transactionId, credentialId)
-
 		if err != nil {
 			if errors.Is(err, services.ErrNotFound) {
 				context.JSON(404, gin.H{"error": "Transaction not found"})
 				return
 			}
 
-			context.AbortWithError(500, err)
+			_ = context.AbortWithError(500, err)
 			return
 		}
 
@@ -100,14 +97,13 @@ func putTransaction() gin.HandlerFunc {
 		}
 
 		processedTransaction, err := services.UpdateTransaction(transactionId, credentialId, transaction.Category, transaction.Description, transaction.Value, transaction.Timestamp)
-
 		if err != nil {
 			if errors.Is(err, services.ErrNotFound) {
 				context.JSON(404, gin.H{"error": "Transaction not found"})
 				return
 			}
 
-			context.AbortWithError(500, err)
+			_ = context.AbortWithError(500, err)
 			return
 		}
 
@@ -126,7 +122,7 @@ func deleteTransaction() gin.HandlerFunc {
 				return
 			}
 
-			context.AbortWithError(500, err)
+			_ = context.AbortWithError(500, err)
 			return
 		}
 
