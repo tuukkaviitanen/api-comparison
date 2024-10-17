@@ -26,7 +26,7 @@ func mapCredentialsRouter(router *gin.Engine) {
 					context.JSON(400, gin.H{"error": "Unique error: username is already taken"})
 				} else {
 					log.Printf("[POST Credential] Unexpected error: %s\n", err.Error())
-					context.AbortWithError(500, err)
+					_ = context.AbortWithError(500, err)
 				}
 				return
 			}
@@ -41,7 +41,7 @@ func mapCredentialsRouter(router *gin.Engine) {
 
 			if err := services.DeleteCredential(credentialId); err != nil {
 				log.Printf("[DELETE Credential] Unexpected error: %s\n", err.Error())
-				context.AbortWithError(500, err)
+				_ = context.AbortWithError(500, err)
 				return
 			}
 

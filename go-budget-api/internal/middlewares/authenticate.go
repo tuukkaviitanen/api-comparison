@@ -33,7 +33,7 @@ func Authenticate() gin.HandlerFunc {
 			return
 		}
 
-		var basicAuthRegexMatch = &basicAuthRegexGroups{}
+		basicAuthRegexMatch := &basicAuthRegexGroups{}
 		if err := basicAuthRegex.MatchToTarget(authorizationHeader, basicAuthRegexMatch); err != nil {
 			createAuthenticationError(context, "Invalid authorization header")
 			return
@@ -59,14 +59,13 @@ func Authenticate() gin.HandlerFunc {
 		password := basicAuthDecryptedFormatRegexMatch.Password
 
 		credentialId, err := services.GetCredentialId(username, password)
-
 		if err != nil {
 			if errors.Is(err, services.ErrNotFound) {
 				createAuthenticationError(context, "Invalid credentials")
 				return
 			}
 			log.Printf("[Authenticate] Error while fetching id %s\n", err.Error())
-			context.AbortWithError(500, err)
+			_ = context.AbortWithError(500, err)
 			return
 		}
 
