@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -21,17 +20,20 @@ func hashPassword(password string) string {
 	return fmt.Sprintf("%x", passwordHash)
 }
 
-func GetCredentialId(username string, password string) (*uuid.UUID, error) {
+func GetCredentialId(username string, password string) (*string, error) {
 	passwordHash := hashPassword(password)
 
-	var id uuid.UUID
+	var id string
 	result := db.Context.
 		Model(&entities.Credential{}).
 		Where(&entities.Credential{Username: username, PasswordHash: passwordHash}).
 		Select("id").
-		First(id)
+		First(&id)
 
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, ErrNotFound
+		}
 		return nil, result.Error
 	}
 
@@ -56,7 +58,7 @@ func CreateCredential(username string, password string) error {
 }
 
 func DeleteCredential(credentialId string) error {
-	result := db.Context.Delete(&entities.Credential{}, credentialId)
+	result := db.Context.Where(&entities.Credential{Id: credentialId}).Delete(&entities.Credential{})
 
 	if result.Error != nil {
 		return result.Error

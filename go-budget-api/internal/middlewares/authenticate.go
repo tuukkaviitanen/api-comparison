@@ -1,24 +1,27 @@
 package middlewares
 
 import (
+	"budget-api/internal/services"
 	b64 "encoding/base64"
+	"errors"
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oriser/regroup"
 )
 
-var basicAuthRegex = regroup.MustCompile(`^basic (?P<authString>.+)`)
+var basicAuthRegex = regroup.MustCompile(`(?i)^basic (?P<authString>.+)`)
 
 type basicAuthRegexGroups struct {
-	AuthString string `regroup:"string"`
+	AuthString string `regroup:"authString"`
 }
 
-var basicAuthDecryptedFormatRegex = regroup.MustCompile(`(?<username>.+):(?<password>.+)`)
+var basicAuthDecryptedFormatRegex = regroup.MustCompile(`(?P<username>.+):(?P<password>.+)`)
 
 type basicAuthDecryptedFormatRegexGroups struct {
-	Username string `regroup:"string"`
-	Password string `regroup:"string"`
+	Username string `regroup:"username"`
+	Password string `regroup:"password"`
 }
 
 func Authenticate() gin.HandlerFunc {
@@ -55,9 +58,19 @@ func Authenticate() gin.HandlerFunc {
 		username := basicAuthDecryptedFormatRegexMatch.Username
 		password := basicAuthDecryptedFormatRegexMatch.Password
 
-		credentialId := fmt.Sprintf("%s:%s", username, password)
+		credentialId, err := services.GetCredentialId(username, password)
 
-		context.Set("credentialId", credentialId)
+		if err != nil {
+			if errors.Is(err, services.ErrNotFound) {
+				createAuthenticationError(context, "Invalid credentials")
+				return
+			}
+			log.Printf("[Authenticate] Error while fetching id %s\n", err.Error())
+			context.AbortWithError(500, err)
+			return
+		}
+
+		context.Set("credentialId", *credentialId)
 
 		context.Next()
 	}
@@ -70,4 +83,5 @@ func createAuthenticationError(context *gin.Context, message string) {
 	context.JSON(401, gin.H{
 		"error": fullMessage,
 	})
+	context.Abort()
 }
