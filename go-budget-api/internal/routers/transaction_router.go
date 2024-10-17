@@ -55,7 +55,22 @@ func getTransactions() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		credentialId := context.GetString("credentialId")
 
-		transactions, err := services.GetTransactions(credentialId)
+		var body models.GetTransactionQuery
+
+		if err := context.ShouldBindQuery(&body); err != nil {
+			context.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		transactions, err := services.GetTransactions(
+			credentialId,
+			body.Category,
+			body.From,
+			body.To,
+			body.Sort,
+			body.Order,
+			body.Skip,
+			body.Limit)
 		if err != nil {
 			_ = context.AbortWithError(500, err)
 			return
