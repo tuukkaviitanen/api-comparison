@@ -54,7 +54,6 @@ var testCases = []TestCase{
 }
 
 func TestReportService(t *testing.T) {
-
 	for _, testCase := range testCases {
 		t.Run(fmt.Sprintf("Should generate correct report with: %+v", testCase.Values), func(t *testing.T) {
 			report := services.GenerateReport(&testCase.Values)
@@ -65,7 +64,5 @@ func TestReportService(t *testing.T) {
 				t.Fatalf("Report is not same as expected.\nReceived: %+v\nExpected: %+v\n", report, testCase.ExpectedReport)
 			}
 		})
-
 	}
-
 }
