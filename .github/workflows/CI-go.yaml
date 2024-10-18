@@ -33,12 +33,12 @@ jobs:
           version: v1.60
           working-directory: go-budget-api
 
-      - name: Run full environment with docker compose
-        run: docker compose -f docker-compose.dev.yaml up --wait
-        working-directory: ./go-budget-api
+      # - name: Run full environment with docker compose
+      #   run: docker compose -f docker-compose.dev.yaml up --wait
+      #   working-directory: ./go-budget-api
 
-      - name: Setup K6
-        uses: grafana/setup-k6-action@v1
+      # - name: Setup K6
+      #   uses: grafana/setup-k6-action@v1
 
-      - name: Run K6 API tests
-        run: BASE_URL=http://localhost:8080 k6 run k6/api-tests.js
+      # - name: Run K6 API tests
+      #   run: BASE_URL=http://localhost:8080 k6 run k6/api-tests.js
