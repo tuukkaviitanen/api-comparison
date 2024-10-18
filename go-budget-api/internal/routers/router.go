@@ -4,10 +4,13 @@ import (
 	"budget-api/internal/middlewares"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 func GetMainRouter() *gin.Engine {
 	router := gin.Default()
+
+	binding.Validator = &customValidator{}
 
 	router.Use(middlewares.ErrorHandler())
 

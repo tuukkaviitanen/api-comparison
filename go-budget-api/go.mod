@@ -6,6 +6,7 @@ require (
 	ariga.io/atlas-provider-gorm v0.5.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
+	github.com/gookit/validate v1.5.2
 	github.com/oriser/regroup v0.0.0-20240925165441-f6bb0e08289e
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.12
@@ -27,6 +28,8 @@ require (
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
+	github.com/gookit/filter v1.2.1 // indirect
+	github.com/gookit/goutil v0.6.17 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.7.1 // indirect
