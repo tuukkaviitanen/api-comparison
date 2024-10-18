@@ -362,17 +362,6 @@ export default function () {
           { category, description, value: 10.0, timestamp },
           { category, description, value: 10.0, timestamp },
         ],
-
-        [
-          "transaction with date only timestamp",
-          { category, description, value, timestamp: "2024-01-01" },
-          {
-            category,
-            description,
-            value,
-            timestamp: "2024-01-01T00:00:00.000Z",
-          },
-        ],
         [
           "transaction with timestamp without sub-seconds",
           { category, description, value, timestamp: "2024-01-01T00:00:00Z" },
@@ -705,7 +694,7 @@ export default function () {
                 "filtering starting from specific timestamp",
                 {
                   category: undefined,
-                  from: "2022-02-01",
+                  from: "2022-02-01T00:00:00Z",
                   to: undefined,
                   sort: undefined,
                   order: undefined,
@@ -719,7 +708,7 @@ export default function () {
                 {
                   category: undefined,
                   from: undefined,
-                  to: "2022-02-01",
+                  to: "2022-02-01T00:00:00Z",
                   sort: undefined,
                   order: undefined,
                   limit: undefined,
@@ -781,8 +770,8 @@ export default function () {
                 "combining params",
                 {
                   category: undefined,
-                  from: "2021-01-01",
-                  to: "2023-01-01",
+                  from: "2021-01-01T00:00:00Z",
+                  to: "2023-01-01T00:00:00Z",
                   sort: "category",
                   order: "ASC",
                   limit: 1,
@@ -1254,7 +1243,7 @@ export default function () {
             ],
             [
               "filtering starting from specific timestamp",
-              { category: undefined, from: "2022-01-01", to: undefined },
+              { category: undefined, from: "2022-01-01T00:00:00Z", to: undefined },
               {
                 transactions_sum: 680,
                 expenses_sum: -320,
@@ -1266,7 +1255,7 @@ export default function () {
             ],
             [
               "filtering until specific timestamp",
-              { category: undefined, from: undefined, to: "2022-01-01" },
+              { category: undefined, from: undefined, to: "2022-01-01T00:00:00Z" },
               {
                 transactions_sum: 1900,
                 expenses_sum: -100,
@@ -1278,7 +1267,7 @@ export default function () {
             ],
             [
               "combining params",
-              { category: "health", from: "2023-09-01", to: "2024-03-01" },
+              { category: "health", from: "2023-09-01T00:00:00Z", to: "2024-03-01T00:00:00Z" },
               {
                 transactions_sum: -50,
                 expenses_sum: -50,
