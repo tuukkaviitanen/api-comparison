@@ -33,6 +33,10 @@ jobs:
           version: v1.60
           working-directory: go-budget-api
 
+      - name: Run unit tests
+        run: go test -v ./...
+        working-directory: ./go-budget-api
+
       # - name: Run full environment with docker compose
       #   run: docker compose -f docker-compose.dev.yaml up --wait
       #   working-directory: ./go-budget-api

@@ -27,10 +27,10 @@ func GetReport(credentialId string, category *string, from *time.Time, to *time.
 		return nil, err
 	}
 
-	return generateReport(&transactionValues), nil
+	return GenerateReport(&transactionValues), nil
 }
 
-func generateReport(values *[]float64) *models.BudgetReport {
+func GenerateReport(values *[]float64) *models.BudgetReport {
 	report := models.BudgetReport{}
 
 	for _, value := range *values {

@@ -22,3 +22,6 @@ tasks:
   migration:run:
     cmds:
       - atlas migrate apply --url "postgresql://user:password@postgres/budget_api"
+  test:
+    cmds:
+      - go test -v ./...
