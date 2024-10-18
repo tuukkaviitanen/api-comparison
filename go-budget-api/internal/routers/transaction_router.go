@@ -82,10 +82,16 @@ func getTransactions() gin.HandlerFunc {
 
 func getTransaction() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		transactionId := context.Param("transactionId")
 		credentialId := context.GetString("credentialId")
 
-		transactions, err := services.GetTransaction(transactionId, credentialId)
+		var uri models.TransactionUri
+
+		if err := context.ShouldBindUri(&uri); err != nil {
+			context.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		transactions, err := services.GetTransaction(uri.TransactionId, credentialId)
 		if err != nil {
 			if errors.Is(err, services.ErrNotFound) {
 				context.JSON(404, gin.H{"error": "Transaction not found"})
@@ -102,16 +108,21 @@ func getTransaction() gin.HandlerFunc {
 
 func putTransaction() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		transactionId := context.Param("transactionId")
 		credentialId := context.GetString("credentialId")
 		var transaction models.TransactionRequest
+		var uri models.TransactionUri
+
+		if err := context.ShouldBindUri(&uri); err != nil {
+			context.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
 
 		if err := context.ShouldBindBodyWithJSON(&transaction); err != nil {
 			context.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
 
-		processedTransaction, err := services.UpdateTransaction(transactionId, credentialId, transaction.Category, transaction.Description, transaction.Value, transaction.Timestamp)
+		processedTransaction, err := services.UpdateTransaction(uri.TransactionId, credentialId, transaction.Category, transaction.Description, transaction.Value, transaction.Timestamp)
 		if err != nil {
 			if errors.Is(err, services.ErrNotFound) {
 				context.JSON(404, gin.H{"error": "Transaction not found"})
@@ -128,10 +139,15 @@ func putTransaction() gin.HandlerFunc {
 
 func deleteTransaction() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		transactionId := context.Param("transactionId")
 		credentialId := context.GetString("credentialId")
+		var uri models.TransactionUri
 
-		if err := services.DeleteTransaction(transactionId, credentialId); err != nil {
+		if err := context.ShouldBindUri(&uri); err != nil {
+			context.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := services.DeleteTransaction(uri.TransactionId, credentialId); err != nil {
 			if errors.Is(err, services.ErrNotFound) {
 				context.JSON(404, gin.H{"error": "Transaction not found"})
 				return

@@ -21,12 +21,12 @@ func mapProcessedTransaction(transaction *entities.Transaction) *models.Processe
 	}
 }
 
-func CreateTransaction(category string, description string, value float32, timestamp time.Time, credentialId string) (*models.ProcessedTransaction, error) {
+func CreateTransaction(category string, description string, value float64, timestamp time.Time, credentialId string) (*models.ProcessedTransaction, error) {
 	transaction := entities.Transaction{
 		Category:     category,
 		Description:  description,
 		Value:        value,
-		Timestamp:    timestamp,
+		Timestamp:    timestamp.UTC(),
 		CredentialId: credentialId,
 	}
 
@@ -49,11 +49,11 @@ func GetTransactions(credentialId string, category *string, from *time.Time, to 
 	}
 
 	if from != nil {
-		query = query.Where("timestamp >= ?", *from)
+		query = query.Where("timestamp >= ?", from.UTC())
 	}
 
 	if to != nil {
-		query = query.Where("timestamp <= ?", *to)
+		query = query.Where("timestamp <= ?", to.UTC())
 	}
 
 	if err := query.
@@ -84,7 +84,7 @@ func GetTransaction(transactionId string, credentialId string) (*models.Processe
 	return &transaction, nil
 }
 
-func UpdateTransaction(transactionId string, credentialId string, category string, description string, value float32, timestamp time.Time) (*models.ProcessedTransaction, error) {
+func UpdateTransaction(transactionId string, credentialId string, category string, description string, value float64, timestamp time.Time) (*models.ProcessedTransaction, error) {
 	var transaction entities.Transaction
 
 	if err := db.Context.
@@ -100,7 +100,7 @@ func UpdateTransaction(transactionId string, credentialId string, category strin
 	transaction.Category = category
 	transaction.Description = description
 	transaction.Value = value
-	transaction.Timestamp = timestamp
+	transaction.Timestamp = timestamp.UTC()
 
 	if err := db.Context.Save(&transaction).Error; err != nil {
 		return nil, err
