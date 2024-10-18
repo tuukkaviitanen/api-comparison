@@ -15,14 +15,14 @@ func GetReport(credentialId string, category *string, from *time.Time, to *time.
 	}
 
 	if from != nil {
-		query = query.Where("timestamp >= ?", *from)
+		query = query.Where("timestamp >= ?", from.UTC())
 	}
 
 	if to != nil {
-		query = query.Where("timestamp <= ?", *to)
+		query = query.Where("timestamp <= ?", to.UTC())
 	}
 
-	var transactionValues []float32
+	var transactionValues []float64
 	if err := query.Select("value").Find(&transactionValues).Error; err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func GetReport(credentialId string, category *string, from *time.Time, to *time.
 	return generateReport(&transactionValues), nil
 }
 
-func generateReport(values *[]float32) *models.BudgetReport {
+func generateReport(values *[]float64) *models.BudgetReport {
 	report := models.BudgetReport{}
 
 	for _, value := range *values {

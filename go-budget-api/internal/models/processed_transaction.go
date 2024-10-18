@@ -9,7 +9,7 @@ type ProcessedTransaction struct {
 	Id          string    `json:"id"`
 	Category    string    `json:"category"`
 	Description string    `json:"description"`
-	Value       float32   `json:"value"`
+	Value       float64   `json:"value"`
 	Timestamp   time.Time `json:"timestamp"`
 }
 
@@ -18,7 +18,7 @@ func (u *ProcessedTransaction) MarshalJSON() ([]byte, error) {
 		Id          string  `json:"id"`
 		Category    string  `json:"category"`
 		Description string  `json:"description"`
-		Value       float32 `json:"value"`
+		Value       float64 `json:"value"`
 		Timestamp   string  `json:"timestamp"`
 	}{
 		Id:          u.Id,
