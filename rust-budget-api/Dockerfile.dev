@@ -1,0 +1,13 @@
+FROM rust
+
+WORKDIR /usr/src/app
+
+COPY rust-budget-api/ ./
+
+COPY ./docs/openapi.yaml .
+
+# Install live reload tool
+RUN cargo install cargo-watch
+
+# Watch changes on source files and quietly execute cargo run on file changes
+CMD ["cargo", "watch", "-q", "-x", "run"]
