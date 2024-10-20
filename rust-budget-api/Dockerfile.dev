@@ -9,5 +9,7 @@ COPY ./docs/openapi.yaml .
 # Install live reload tool
 RUN cargo install cargo-watch
 
+RUN cargo build
+
 # Watch changes on source files and quietly execute cargo run on file changes
 CMD ["cargo", "watch", "-q", "-x", "run"]
