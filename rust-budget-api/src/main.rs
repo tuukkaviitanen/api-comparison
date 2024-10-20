@@ -1,10 +1,10 @@
-mod app;
+mod router;
 
 use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
-    let app = app::create_router();
+    let app = router::app();
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
