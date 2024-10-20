@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  run:
+    cmds:
+      - docker compose -f docker-compose.dev.yaml up --build
+  run:database:
+    cmds:
+      - docker compose -f docker-compose.dev.yaml up postgres adminer
+  lint:check:
+    cmds:
+      - cargo clippy
+  lint:fix:
+    cmds:
+      - cargo clippy --fix
+  format:check:
+    cmds:
+      - cargo fmt --check
+  format:fix:
+    cmds:
+      - cargo fmt
