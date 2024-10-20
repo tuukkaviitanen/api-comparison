@@ -6,9 +6,9 @@ use axum::Router;
 use tower_http::services::ServeFile;
 
 pub fn app() -> Router {
-    return Router::new()
+    Router::new()
         .nest("/credentials", credential_router::routes())
         .nest("/reports", report_router::routes())
         .nest("/transactions", transaction_router::routes())
-        .nest_service("/openapi.yaml", ServeFile::new("./openapi.yaml"));
+        .nest_service("/openapi.yaml", ServeFile::new("./openapi.yaml"))
 }

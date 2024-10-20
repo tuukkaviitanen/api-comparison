@@ -5,7 +5,7 @@ use axum::{
 };
 
 pub fn routes() -> Router {
-    return Router::new()
+    Router::new()
         .route("/", get(|| async { StatusCode::OK }))
         .route("/:transactionId", get(|| async { StatusCode::OK }))
         .route("/", post(|| async { StatusCode::CREATED }))
@@ -13,5 +13,5 @@ pub fn routes() -> Router {
         .route(
             "/:transactionId",
             delete(|| async { StatusCode::NO_CONTENT }),
-        );
+        )
 }

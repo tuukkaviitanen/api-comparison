@@ -5,7 +5,7 @@ use axum::{
 };
 
 pub fn routes() -> Router {
-    return Router::new()
+    Router::new()
         .route("/", post(|| async { StatusCode::NO_CONTENT }))
-        .route("/", delete(|| async { StatusCode::NO_CONTENT }));
+        .route("/", delete(|| async { StatusCode::NO_CONTENT }))
 }
