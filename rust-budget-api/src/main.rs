@@ -1,7 +1,9 @@
+pub mod model;
 mod router;
-use std::env;
+pub mod schema;
 
 use diesel::{Connection, PgConnection};
+use std::env;
 use tokio::net::TcpListener;
 
 #[tokio::main]

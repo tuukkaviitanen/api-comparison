@@ -22,3 +22,9 @@ tasks:
   diesel:
     cmds:
       - docker run --rm --network="rust-budget-api_default" -v "$(pwd)":/app willsquire/diesel-cli {{.CLI_ARGS}}
+  migration:run:
+    cmds:
+      - task diesel -- --database-url=postgresql://user:password@postgres/budget_api migration run
+  migration:redo:
+    cmds:
+      - task diesel -- --database-url=postgresql://user:password@postgres/budget_api migration redo
