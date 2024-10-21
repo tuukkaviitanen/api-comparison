@@ -9,8 +9,21 @@ services:
     ports:
       - 8080:8080
     depends_on:
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgresql://user:password@postgres/budget_api
+  migrator:
+    build:
+      context: ../
+      dockerfile: ./rust-budget-api/Dockerfile.dev
+    depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres/budget_api
+    command: diesel migration run
   postgres:
     image: postgres:10.3
     restart: unless-stopped
