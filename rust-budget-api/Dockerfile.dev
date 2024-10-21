@@ -3,7 +3,10 @@ FROM rust
 WORKDIR /usr/src/app
 
 # Install live reload tool
-RUN cargo install cargo-watch --locked
+RUN cargo install cargo-watch
+
+# Install database ORM cli tool
+RUN cargo install diesel_cli
 
 COPY rust-budget-api/ ./
 
