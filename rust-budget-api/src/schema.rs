@@ -25,7 +25,4 @@ diesel::table! {
 
 diesel::joinable!(transactions -> credentials (credential_id));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    credentials,
-    transactions,
-);
+diesel::allow_tables_to_appear_in_same_query!(credentials, transactions,);
