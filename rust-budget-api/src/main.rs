@@ -1,5 +1,5 @@
-pub mod model;
-mod router;
+pub mod models;
+mod routers;
 pub mod schema;
 
 use diesel::{Connection, PgConnection};
@@ -14,7 +14,7 @@ async fn main() {
     PgConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
 
-    let app = router::app();
+    let app = routers::app();
 
     let address = format!("0.0.0.0:{}", port);
 
