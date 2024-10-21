@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   run:
@@ -19,3 +19,6 @@ tasks:
   format:fix:
     cmds:
       - cargo fmt
+  diesel:
+    cmds:
+      - docker run --rm --network="rust-budget-api_default" -v "$(pwd)":/app willsquire/diesel-cli {{.CLI_ARGS}}

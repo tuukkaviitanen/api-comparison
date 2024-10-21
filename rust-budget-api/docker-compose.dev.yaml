@@ -11,6 +11,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgresql://user:password@postgres/budget_api
   postgres:
     image: postgres:10.3
     restart: unless-stopped
