@@ -6,7 +6,7 @@ diesel::table! {
         #[max_length = 50]
         username -> Varchar,
         #[max_length = 64]
-        password -> Varchar,
+        password_hash -> Varchar,
     }
 }
 
