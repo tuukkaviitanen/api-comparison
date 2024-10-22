@@ -3,6 +3,7 @@ pub mod errors;
 pub mod credentials_service {
     use crate::{database, models::Credential, schema::credentials::dsl::*};
     use diesel::prelude::*;
+    use sha2::Digest;
 
     use super::errors::ServiceError;
 
@@ -13,7 +14,7 @@ pub mod credentials_service {
         let mut db_connection =
             database::get_connection().map_err(|_| ServiceError::DatabaseConnectionFailed)?;
 
-        let password_hash_param = password_param;
+        let password_hash_param = generate_password_hash(password_param);
 
         let credential = credentials
             .filter(username.eq(username_param))
@@ -22,5 +23,15 @@ pub mod credentials_service {
             .map_err(|_| ServiceError::NotFoundError)?;
 
         return Ok(credential.id.to_string());
+    }
+
+    fn generate_password_hash(password: String) -> String {
+        let mut hasher = sha2::Sha256::new();
+
+        hasher.update(password);
+
+        let result = hasher.finalize();
+
+        format!("{:x}", result)
     }
 }
