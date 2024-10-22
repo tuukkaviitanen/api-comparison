@@ -3,16 +3,10 @@ use axum::{extract::Request, http::HeaderMap, middleware::Next, response::Respon
 use base64::Engine;
 use lazy_regex::regex_captures;
 
-pub async fn authenticate(
-    mut request: Request,
-    next: Next,
-    headers: HeaderMap,
-) -> Result<Response, Error> {
-    let authorization_header = headers
-        .get("Authorization")
-        .and_then(|h| h.to_str().ok())
-        .map(|s| s.to_string())
-        .ok_or_else(|| Error::AuthHeaderWrongFormat)?;
+pub async fn authenticate(mut request: Request, next: Next) -> Result<Response, Error> {
+    let headers = request.headers();
+
+    let authorization_header = read_auth_header(headers)?;
 
     let encoded_auth_string = parse_basic_auth_header(authorization_header)?;
 
@@ -27,9 +21,17 @@ pub async fn authenticate(
     Ok(next.run(request).await)
 }
 
+fn read_auth_header(headers: &HeaderMap) -> Result<String, Error> {
+    headers
+        .get("Authorization")
+        .and_then(|h| h.to_str().ok())
+        .map(|s| s.to_string())
+        .ok_or_else(|| Error::AuthHeaderMissingError)
+}
+
 fn parse_basic_auth_header(header: String) -> Result<String, Error> {
     let (_whole, auth_string) =
-        regex_captures!(r#"^basic (.+)"#, &header).ok_or(Error::AuthHeaderWrongFormat)?;
+        regex_captures!(r#"^basic (.+)"#i, &header).ok_or(Error::AuthHeaderWrongFormat)?;
 
     return Ok(auth_string.to_string());
 }

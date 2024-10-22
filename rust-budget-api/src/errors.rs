@@ -11,11 +11,10 @@ pub enum Error {
     AuthHeaderWrongFormat,
     AuthHeaderInvalidBase64,
     AuthInvalidCredentialsFormat,
-
-    ValidationError,
-    NotFoundError,
-    UniqueError,
-    UnexpectedError,
+    // ValidationError,
+    // NotFoundError,
+    // UniqueError,
+    // UnexpectedError,
 }
 
 impl IntoResponse for Error {
