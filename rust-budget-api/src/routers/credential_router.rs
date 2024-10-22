@@ -27,8 +27,8 @@ struct CredentialRequestBody {
 async fn post_credential(Json(json_body): Json<CredentialRequestBody>) -> Result<Response, Error> {
     credentials_service::create_credential(json_body.username, json_body.password)
         .map_err(|error| match error {
-            ServiceError::UniqueConstraintError => Error::UniqueError,
-            _ => Error::UnexpectedError,
+            ServiceError::UniqueConstraint => Error::UniqueConstraint,
+            _ => Error::Unexpected,
         })
         .map(|_| (StatusCode::NO_CONTENT).into_response())
 }
@@ -36,8 +36,8 @@ async fn post_credential(Json(json_body): Json<CredentialRequestBody>) -> Result
 async fn delete_credential(Extension(credential_id): Extension<Uuid>) -> Result<Response, Error> {
     credentials_service::delete_credential(credential_id)
         .map_err(|error| match error {
-            ServiceError::NotFoundError => Error::NotFoundError,
-            _ => Error::UnexpectedError,
+            ServiceError::NotFound => Error::NotFound,
+            _ => Error::Unexpected,
         })
         .map(|_| (StatusCode::NO_CONTENT).into_response())
 }

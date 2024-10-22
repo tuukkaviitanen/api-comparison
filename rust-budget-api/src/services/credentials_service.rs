@@ -14,7 +14,7 @@ pub fn get_credential_id(
             "[get_credential_id] Database connection error occurred, {:#?}",
             error
         );
-        ServiceError::DatabaseError
+        ServiceError::Database
     })?;
 
     let password_hash_param = generate_password_hash(password_param);
@@ -26,11 +26,11 @@ pub fn get_credential_id(
         .optional()
         .map_err(|error| {
             println!("[get_credential_id] Database query error, {:#?}", error);
-            ServiceError::DatabaseError
+            ServiceError::Database
         })?
-        .ok_or_else(|| ServiceError::NotFoundError)?;
+        .ok_or(ServiceError::NotFound)?;
 
-    return Ok(credential.id);
+    Ok(credential.id)
 }
 
 pub fn create_credential(
@@ -42,7 +42,7 @@ pub fn create_credential(
             "[create_credential] Database connection error occurred, {:#?}",
             error
         );
-        ServiceError::DatabaseError
+        ServiceError::Database
     })?;
 
     let password_hash_param = generate_password_hash(password_param);
@@ -60,14 +60,14 @@ pub fn create_credential(
             diesel::result::Error::DatabaseError(
                 diesel::result::DatabaseErrorKind::UniqueViolation,
                 _,
-            ) => ServiceError::UniqueConstraintError,
+            ) => ServiceError::UniqueConstraint,
             _ => {
                 println!("[create_credential] Database query error, {:#?}", error);
-                ServiceError::DatabaseError
+                ServiceError::Database
             }
         })?;
 
-    return Ok(());
+    Ok(())
 }
 
 pub fn delete_credential(id_param: Uuid) -> Result<(), ServiceError> {
@@ -76,21 +76,21 @@ pub fn delete_credential(id_param: Uuid) -> Result<(), ServiceError> {
             "[delete_credential] Database connection error occurred, {:#?}",
             error
         );
-        ServiceError::DatabaseError
+        ServiceError::Database
     })?;
 
     let affected_rows = diesel::delete(credentials.filter(id.eq(id_param)))
         .execute(&mut db_connection)
         .map_err(|error| {
             println!("[delete_credential] Database query error, {:#?}", error);
-            ServiceError::DatabaseError
+            ServiceError::Database
         })?;
 
     if affected_rows == 0 {
-        return Err(ServiceError::NotFoundError);
+        return Err(ServiceError::NotFound);
     }
 
-    return Ok(());
+    Ok(())
 }
 
 fn generate_password_hash(password: String) -> String {

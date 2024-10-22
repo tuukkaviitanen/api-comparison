@@ -1,5 +1,5 @@
 pub enum ServiceError {
-    DatabaseError,
-    NotFoundError,
-    UniqueConstraintError,
+    Database,
+    NotFound,
+    UniqueConstraint,
 }

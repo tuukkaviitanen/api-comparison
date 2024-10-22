@@ -7,15 +7,15 @@ use serde_json::json;
 
 pub enum Error {
     // Authentication errors
-    AuthHeaderMissingError,
+    AuthHeaderMissing,
     AuthHeaderWrongFormat,
     AuthHeaderInvalidBase64,
     AuthInvalidCredentialsFormat,
     AuthInvalidCredentials,
     // ValidationError,
-    NotFoundError,
-    UniqueError,
-    UnexpectedError,
+    NotFound,
+    UniqueConstraint,
+    Unexpected,
 }
 
 impl IntoResponse for Error {
@@ -36,7 +36,7 @@ fn parse_error(error: Error) -> (StatusCode, String) {
             StatusCode::UNAUTHORIZED,
             format!("{} Invalid base64", AUTH_ERROR_PREFIX),
         ),
-        AuthHeaderMissingError => (
+        AuthHeaderMissing => (
             StatusCode::UNAUTHORIZED,
             format!("{} Authorization header missing", AUTH_ERROR_PREFIX),
         ),
@@ -52,14 +52,14 @@ fn parse_error(error: Error) -> (StatusCode, String) {
             StatusCode::BAD_REQUEST,
             format!("{} Invalid credentials format", AUTH_ERROR_PREFIX),
         ),
-        UniqueError => (
+        UniqueConstraint => (
             StatusCode::BAD_REQUEST,
-            format!("Unique constraint error occurred"),
+            "Unique constraint error occurred".to_string(),
         ),
-        NotFoundError => (StatusCode::NOT_FOUND, format!("Resource not found")),
-        UnexpectedError => (
+        NotFound => (StatusCode::NOT_FOUND, "Resource not found".to_string()),
+        Unexpected => (
             StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Unexpected error occurred"),
+            "Unexpected error occurred".to_string(),
         ),
     }
 }
