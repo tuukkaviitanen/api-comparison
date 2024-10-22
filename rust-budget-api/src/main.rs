@@ -1,6 +1,9 @@
+mod errors;
+mod middlewares;
 pub mod models;
 mod routers;
 pub mod schema;
+mod services;
 
 use diesel::{Connection, PgConnection};
 use std::env;
