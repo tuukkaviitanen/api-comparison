@@ -11,6 +11,7 @@ pub enum Error {
     AuthHeaderWrongFormat,
     AuthHeaderInvalidBase64,
     AuthInvalidCredentialsFormat,
+    AuthInvalidCredentials,
     // ValidationError,
     // NotFoundError,
     // UniqueError,

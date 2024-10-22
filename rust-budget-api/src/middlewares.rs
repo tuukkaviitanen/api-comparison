@@ -14,7 +14,9 @@ pub async fn authenticate(mut request: Request, next: Next) -> Result<Response, 
 
     let (username, password) = parse_credentials(decoded_auth_string)?;
 
-    let credential_id = crate::services::credentials_service::get_credential_id(username, password);
+    // TODO: ELLABORATE ERROR
+    let credential_id = crate::services::credentials_service::get_credential_id(username, password)
+        .map_err(|_| Error::AuthInvalidCredentials)?;
 
     request.extensions_mut().insert(credential_id);
 
