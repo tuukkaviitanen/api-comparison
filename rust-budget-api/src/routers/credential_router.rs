@@ -7,13 +7,14 @@ use axum::{
     middleware,
     response::{IntoResponse, Response},
     routing::{delete, post},
-    Json, Router,
+    Extension, Json, Router,
 };
+use uuid::Uuid;
 
 pub fn routes() -> Router {
     Router::new().route("/", post(post_credential)).route(
         "/",
-        delete(|| async { StatusCode::NO_CONTENT }).route_layer(middleware::from_fn(authenticate)),
+        delete(delete_credential).route_layer(middleware::from_fn(authenticate)),
     )
 }
 
@@ -27,6 +28,15 @@ async fn post_credential(Json(json_body): Json<CredentialRequestBody>) -> Result
     credentials_service::create_credential(json_body.username, json_body.password)
         .map_err(|error| match error {
             ServiceError::UniqueConstraintError => Error::UniqueError,
+            _ => Error::UnexpectedError,
+        })
+        .map(|_| (StatusCode::NO_CONTENT).into_response())
+}
+
+async fn delete_credential(Extension(credential_id): Extension<Uuid>) -> Result<Response, Error> {
+    credentials_service::delete_credential(credential_id)
+        .map_err(|error| match error {
+            ServiceError::NotFoundError => Error::NotFoundError,
             _ => Error::UnexpectedError,
         })
         .map(|_| (StatusCode::NO_CONTENT).into_response())

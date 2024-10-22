@@ -1,13 +1,14 @@
 use crate::{database, models::Credential, schema::credentials::dsl::*};
 use diesel::prelude::*;
 use sha2::Digest;
+use uuid::Uuid;
 
 use super::errors::ServiceError;
 
 pub fn get_credential_id(
     username_param: String,
     password_param: String,
-) -> Result<String, ServiceError> {
+) -> Result<Uuid, ServiceError> {
     let mut db_connection = database::get_connection().map_err(|error| {
         println!(
             "[get_credential_id] Database connection error occurred, {:#?}",
@@ -29,7 +30,7 @@ pub fn get_credential_id(
         })?
         .ok_or_else(|| ServiceError::NotFoundError)?;
 
-    return Ok(credential.id.to_string());
+    return Ok(credential.id);
 }
 
 pub fn create_credential(
@@ -65,6 +66,29 @@ pub fn create_credential(
                 ServiceError::DatabaseError
             }
         })?;
+
+    return Ok(());
+}
+
+pub fn delete_credential(id_param: Uuid) -> Result<(), ServiceError> {
+    let mut db_connection = database::get_connection().map_err(|error| {
+        println!(
+            "[delete_credential] Database connection error occurred, {:#?}",
+            error
+        );
+        ServiceError::DatabaseError
+    })?;
+
+    let affected_rows = diesel::delete(credentials.filter(id.eq(id_param)))
+        .execute(&mut db_connection)
+        .map_err(|error| {
+            println!("[delete_credential] Database query error, {:#?}", error);
+            ServiceError::DatabaseError
+        })?;
+
+    if affected_rows == 0 {
+        return Err(ServiceError::NotFoundError);
+    }
 
     return Ok(());
 }

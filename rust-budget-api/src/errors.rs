@@ -13,7 +13,7 @@ pub enum Error {
     AuthInvalidCredentialsFormat,
     AuthInvalidCredentials,
     // ValidationError,
-    // NotFoundError,
+    NotFoundError,
     UniqueError,
     UnexpectedError,
 }
@@ -56,6 +56,7 @@ fn parse_error(error: Error) -> (StatusCode, String) {
             StatusCode::BAD_REQUEST,
             format!("Unique constraint error occurred"),
         ),
+        NotFoundError => (StatusCode::NOT_FOUND, format!("Resource not found")),
         UnexpectedError => (
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Unexpected error occurred"),
