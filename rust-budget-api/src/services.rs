@@ -1,4 +1,4 @@
-mod errors;
+pub mod errors;
 
 pub mod credentials_service {
     use crate::{database, models::Credential, schema::credentials::dsl::*};
@@ -19,7 +19,7 @@ pub mod credentials_service {
             .filter(username.eq(username_param))
             .filter(password_hash.eq(password_hash_param))
             .first::<Credential>(&mut db_connection)
-            .map_err(|_| ServiceError::DatabaseConnectionFailed)?;
+            .map_err(|_| ServiceError::NotFoundError)?;
 
         return Ok(credential.id.to_string());
     }

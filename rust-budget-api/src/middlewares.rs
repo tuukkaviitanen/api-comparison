@@ -1,4 +1,5 @@
 use crate::errors::Error;
+use crate::services::errors::ServiceError;
 use axum::{extract::Request, http::HeaderMap, middleware::Next, response::Response};
 use base64::Engine;
 use lazy_regex::regex_captures;
@@ -14,9 +15,11 @@ pub async fn authenticate(mut request: Request, next: Next) -> Result<Response, 
 
     let (username, password) = parse_credentials(decoded_auth_string)?;
 
-    // TODO: ELLABORATE ERROR
     let credential_id = crate::services::credentials_service::get_credential_id(username, password)
-        .map_err(|_| Error::AuthInvalidCredentials)?;
+        .map_err(|error| match error {
+            ServiceError::NotFoundError => Error::AuthInvalidCredentials,
+            ServiceError::DatabaseConnectionFailed => Error::UnexpectedError,
+        })?;
 
     request.extensions_mut().insert(credential_id);
 

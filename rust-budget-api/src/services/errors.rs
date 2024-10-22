@@ -1,4 +1,4 @@
 pub enum ServiceError {
     DatabaseConnectionFailed,
-    //NotFoundError,
+    NotFoundError,
 }

@@ -15,7 +15,7 @@ pub enum Error {
     // ValidationError,
     // NotFoundError,
     // UniqueError,
-    // UnexpectedError,
+    UnexpectedError,
 }
 
 impl IntoResponse for Error {
