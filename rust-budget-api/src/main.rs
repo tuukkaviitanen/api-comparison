@@ -1,3 +1,4 @@
+mod database;
 mod errors;
 mod middlewares;
 pub mod models;
@@ -5,7 +6,7 @@ mod routers;
 pub mod schema;
 mod services;
 
-use diesel::{Connection, PgConnection};
+use database::initialize_connection_pool;
 use std::env;
 use tokio::net::TcpListener;
 
@@ -14,8 +15,7 @@ async fn main() {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let port = env::var("PORT").unwrap_or(String::from("8080"));
 
-    PgConnection::establish(&database_url)
-        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+    initialize_connection_pool(database_url);
 
     let app = routers::app();
 
