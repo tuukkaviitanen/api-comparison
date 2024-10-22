@@ -14,7 +14,7 @@ pub enum Error {
     AuthInvalidCredentials,
     // ValidationError,
     // NotFoundError,
-    // UniqueError,
+    UniqueError,
     UnexpectedError,
 }
 
@@ -46,5 +46,6 @@ fn parse_error_message(error: Error) -> String {
             format!("{} Invalid credentials format", AUTH_ERROR_PREFIX)
         }
         UnexpectedError => format!("Unexpected error occurred"),
+        UniqueError => format!("Unique constraint error occurred"),
     }
 }

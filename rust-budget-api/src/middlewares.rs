@@ -18,7 +18,7 @@ pub async fn authenticate(mut request: Request, next: Next) -> Result<Response, 
     let credential_id = crate::services::credentials_service::get_credential_id(username, password)
         .map_err(|error| match error {
             ServiceError::NotFoundError => Error::AuthInvalidCredentials,
-            ServiceError::DatabaseError => Error::UnexpectedError,
+            _ => Error::UnexpectedError,
         })?;
 
     request.extensions_mut().insert(credential_id);
