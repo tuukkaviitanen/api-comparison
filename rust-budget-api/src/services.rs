@@ -11,8 +11,13 @@ pub mod credentials_service {
         username_param: String,
         password_param: String,
     ) -> Result<String, ServiceError> {
-        let mut db_connection =
-            database::get_connection().map_err(|_| ServiceError::DatabaseConnectionFailed)?;
+        let mut db_connection = database::get_connection().map_err(|error| {
+            println!(
+                "[get_credential_id] Database connection error occurred, {:#?}",
+                error
+            );
+            ServiceError::DatabaseConnectionFailed
+        })?;
 
         let password_hash_param = generate_password_hash(password_param);
 
@@ -20,7 +25,10 @@ pub mod credentials_service {
             .filter(username.eq(username_param))
             .filter(password_hash.eq(password_hash_param))
             .first::<Credential>(&mut db_connection)
-            .map_err(|_| ServiceError::NotFoundError)?;
+            .map_err(|error| {
+                println!("[get_credential_id] Database query error, {:#?}", error);
+                ServiceError::NotFoundError
+            })?;
 
         return Ok(credential.id.to_string());
     }

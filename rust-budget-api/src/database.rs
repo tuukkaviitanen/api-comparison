@@ -1,4 +1,4 @@
-mod errors;
+pub mod errors;
 
 use diesel::{
     r2d2::{ConnectionManager, Pool, PooledConnection},
