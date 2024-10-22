@@ -16,7 +16,7 @@ pub mod credentials_service {
                 "[get_credential_id] Database connection error occurred, {:#?}",
                 error
             );
-            ServiceError::DatabaseConnectionFailed
+            ServiceError::DatabaseError
         })?;
 
         let password_hash_param = generate_password_hash(password_param);
@@ -25,10 +25,12 @@ pub mod credentials_service {
             .filter(username.eq(username_param))
             .filter(password_hash.eq(password_hash_param))
             .first::<Credential>(&mut db_connection)
+            .optional()
             .map_err(|error| {
                 println!("[get_credential_id] Database query error, {:#?}", error);
-                ServiceError::NotFoundError
-            })?;
+                ServiceError::DatabaseError
+            })?
+            .ok_or_else(|| ServiceError::NotFoundError)?;
 
         return Ok(credential.id.to_string());
     }
