@@ -29,11 +29,11 @@ pub fn initialize_connection_pool(database_url: String) {
 pub fn get_connection() -> Result<DbConnection, DatabaseError> {
     let pool = CONNECTION_POOL
         .lock()
-        .map_err(|_| DatabaseError::ConnectionPoolMutexLockFailed)?;
+        .map_err(|_| DatabaseError::PoolMutexLockFailed)?;
 
     if let Some(pool) = &*pool {
         pool.get().map_err(|_| DatabaseError::ConnectionFailed)
     } else {
-        Err(DatabaseError::ConnectionPoolUninitialized)
+        Err(DatabaseError::PoolUninitialized)
     }
 }

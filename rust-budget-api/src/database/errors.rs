@@ -1,6 +1,6 @@
 #[derive(Debug)]
 pub enum DatabaseError {
-    ConnectionPoolMutexLockFailed,
-    ConnectionPoolUninitialized,
+    PoolMutexLockFailed,
+    PoolUninitialized,
     ConnectionFailed,
 }
