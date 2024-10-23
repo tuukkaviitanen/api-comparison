@@ -21,7 +21,7 @@ use uuid::Uuid;
 pub fn routes() -> Router {
     Router::new()
         .route("/", get(get_transactions))
-        .route("/:transactionId", get(|| async { StatusCode::OK }))
+        .route("/:transactionId", get(get_single_transaction))
         .route("/", post(post_transaction))
         .route("/:transactionId", put(put_transaction))
         .route("/:transactionId", delete(delete_transaction))
@@ -34,6 +34,18 @@ async fn get_transactions(Extension(credential_id): Extension<Uuid>) -> Result<R
             _ => Error::Unexpected,
         })
         .map(|transactions| (StatusCode::OK, Json(transactions)).into_response())
+}
+
+async fn get_single_transaction(
+    Extension(credential_id): Extension<Uuid>,
+    Path(transaction_id): Path<Uuid>,
+) -> Result<Response, Error> {
+    transaction_service::get_single_transaction(transaction_id, credential_id)
+        .map_err(|error| match error {
+            ServiceError::NotFound => Error::NotFound,
+            _ => Error::Unexpected,
+        })
+        .map(|transaction| (StatusCode::OK, Json(transaction)).into_response())
 }
 
 #[derive(Deserialize)]

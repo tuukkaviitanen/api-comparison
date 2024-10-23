@@ -39,6 +39,29 @@ pub fn get_transactions(credential_id: Uuid) -> Result<Vec<ProcessedTransaction>
     Ok(processed_transactions?)
 }
 
+pub fn get_single_transaction(
+    transaction_id: Uuid,
+    credential_id: Uuid,
+) -> Result<ProcessedTransaction, ServiceError> {
+    let mut db_connection = database::get_connection().map_err(|error| {
+        println!(
+            "[get_single_transaction] Database connection error occurred, {:#?}",
+            error
+        );
+        ServiceError::Database
+    })?;
+
+    let transaction = dsl::transactions
+        .filter(dsl::id.eq(transaction_id))
+        .filter(dsl::credential_id.eq(credential_id))
+        .first::<Transaction>(&mut db_connection)
+        .optional()
+        .map_err(|_| ServiceError::Database)?
+        .ok_or_else(|| ServiceError::NotFound)?;
+
+    Ok(map_processed_transaction(&transaction)?)
+}
+
 pub fn create_transaction(
     credential_id: Uuid,
     category: String,
