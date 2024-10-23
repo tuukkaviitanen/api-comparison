@@ -3,7 +3,7 @@ use std::str::FromStr;
 use crate::{
     errors::Error,
     middlewares::authenticate,
-    services::{errors::ServiceError, transaction_service},
+    services::{errors::ServiceError, transaction_service, TransactionFilters},
 };
 use axum::{
     extract::{Path, Query},
@@ -68,9 +68,7 @@ async fn get_transactions(
 
     transaction_service::get_transactions(
         credential_id,
-        query.category,
-        from_naive,
-        to_naive,
+        TransactionFilters::new(query.category, from_naive, to_naive),
         query.sort,
         query.order,
         query.skip,

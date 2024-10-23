@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use serde::Serialize;
 use uuid::Uuid;
 
-use super::errors::ServiceError;
+use super::{errors::ServiceError, TransactionFilters};
 
 #[derive(Serialize)]
 pub struct ProcessedTransaction {
@@ -18,9 +18,7 @@ pub struct ProcessedTransaction {
 
 pub fn get_transactions(
     credential_id: Uuid,
-    category: Option<String>,
-    from: Option<NaiveDateTime>,
-    to: Option<NaiveDateTime>,
+    filters: TransactionFilters,
     sort: String,
     order: String,
     skip: u32,
@@ -38,15 +36,15 @@ pub fn get_transactions(
         .filter(dsl::credential_id.eq(credential_id))
         .into_boxed();
 
-    if let Some(category) = category {
+    if let Some(category) = filters.category {
         query = query.filter(dsl::category.eq(category));
     }
 
-    if let Some(from) = from {
+    if let Some(from) = filters.from {
         query = query.filter(dsl::timestamp.ge(from));
     }
 
-    if let Some(to) = to {
+    if let Some(to) = filters.to {
         query = query.filter(dsl::timestamp.le(to));
     }
 
