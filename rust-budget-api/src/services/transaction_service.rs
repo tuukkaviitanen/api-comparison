@@ -16,7 +16,16 @@ pub struct ProcessedTransaction {
     pub timestamp: DateTime<Utc>,
 }
 
-pub fn get_transactions(credential_id: Uuid) -> Result<Vec<ProcessedTransaction>, ServiceError> {
+pub fn get_transactions(
+    credential_id: Uuid,
+    category: Option<String>,
+    from: Option<NaiveDateTime>,
+    to: Option<NaiveDateTime>,
+    sort: String,
+    order: String,
+    skip: u32,
+    limit: u32,
+) -> Result<Vec<ProcessedTransaction>, ServiceError> {
     let mut db_connection = database::get_connection().map_err(|error| {
         println!(
             "[get_transactions] Database connection error occurred, {:#?}",
@@ -25,8 +34,39 @@ pub fn get_transactions(credential_id: Uuid) -> Result<Vec<ProcessedTransaction>
         ServiceError::Database
     })?;
 
-    let transactions = dsl::transactions
+    let mut query = dsl::transactions
         .filter(dsl::credential_id.eq(credential_id))
+        .into_boxed();
+
+    if let Some(category) = category {
+        query = query.filter(dsl::category.eq(category));
+    }
+
+    if let Some(from) = from {
+        query = query.filter(dsl::timestamp.ge(from));
+    }
+
+    if let Some(to) = to {
+        query = query.filter(dsl::timestamp.le(to));
+    }
+
+    query = match sort.as_str() {
+        "category" => match order.as_str() {
+            "asc" => query.order(dsl::category.asc()),
+            "desc" => query.order(dsl::category.desc()),
+            _ => query,
+        },
+        "timestamp" => match order.as_str() {
+            "asc" => query.order(dsl::timestamp.asc()),
+            "desc" => query.order(dsl::timestamp.desc()),
+            _ => query,
+        },
+        _ => query,
+    };
+
+    let transactions = query
+        .offset(skip as i64)
+        .limit(limit as i64)
         .select(Transaction::as_select())
         .load::<Transaction>(&mut db_connection)
         .map_err(|_| ServiceError::Database)?;
