@@ -31,10 +31,8 @@ pub fn get_transactions(credential_id: Uuid) -> Result<Vec<ProcessedTransaction>
         .load::<Transaction>(&mut db_connection)
         .map_err(|_| ServiceError::Database)?;
 
-    let processed_transactions: Result<Vec<ProcessedTransaction>, ServiceError> = transactions
-        .iter()
-        .map(map_processed_transaction)
-        .collect();
+    let processed_transactions: Result<Vec<ProcessedTransaction>, ServiceError> =
+        transactions.iter().map(map_processed_transaction).collect();
 
     processed_transactions
 }
