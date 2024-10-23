@@ -1,3 +1,5 @@
+use bigdecimal::BigDecimal;
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use uuid::Uuid;
 
@@ -17,6 +19,7 @@ pub struct Transaction {
     pub id: Uuid,
     pub category: String,
     pub description: String,
-    pub timestamp: chrono::NaiveDateTime,
+    pub value: BigDecimal,
+    pub timestamp: NaiveDateTime,
     pub credential_id: Uuid,
 }

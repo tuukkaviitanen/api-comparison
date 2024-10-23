@@ -12,7 +12,7 @@ pub enum Error {
     AuthHeaderInvalidBase64,
     AuthInvalidCredentialsFormat,
     AuthInvalidCredentials,
-    // ValidationError,
+    Validation,
     NotFound,
     UniqueConstraint,
     Unexpected,
@@ -56,6 +56,8 @@ fn parse_error(error: Error) -> (StatusCode, String) {
             StatusCode::BAD_REQUEST,
             "Unique constraint error occurred".to_string(),
         ),
+        Validation => (StatusCode::BAD_REQUEST, "Validation error".to_string()),
+
         NotFound => (StatusCode::NOT_FOUND, "Resource not found".to_string()),
         Unexpected => (
             StatusCode::INTERNAL_SERVER_ERROR,
