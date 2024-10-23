@@ -30,9 +30,7 @@ pub fn routes() -> Router {
 
 async fn get_transactions(Extension(credential_id): Extension<Uuid>) -> Result<Response, Error> {
     transaction_service::get_transactions(credential_id)
-        .map_err(|error| match error {
-            _ => Error::Unexpected,
-        })
+        .map_err(|_| Error::Unexpected)
         .map(|transactions| (StatusCode::OK, Json(transactions)).into_response())
 }
 
@@ -71,9 +69,7 @@ async fn post_transaction(
         decimal_value,
         body.timestamp.naive_utc(),
     )
-    .map_err(|error| match error {
-        _ => Error::Unexpected,
-    })
+    .map_err(|_| Error::Unexpected)
     .map(|transaction| (StatusCode::CREATED, Json(transaction)).into_response())
 }
 

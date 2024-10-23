@@ -33,10 +33,10 @@ pub fn get_transactions(credential_id: Uuid) -> Result<Vec<ProcessedTransaction>
 
     let processed_transactions: Result<Vec<ProcessedTransaction>, ServiceError> = transactions
         .iter()
-        .map(|t| map_processed_transaction(t))
+        .map(map_processed_transaction)
         .collect();
 
-    Ok(processed_transactions?)
+    processed_transactions
 }
 
 pub fn get_single_transaction(
@@ -57,9 +57,9 @@ pub fn get_single_transaction(
         .first::<Transaction>(&mut db_connection)
         .optional()
         .map_err(|_| ServiceError::Database)?
-        .ok_or_else(|| ServiceError::NotFound)?;
+        .ok_or(ServiceError::NotFound)?;
 
-    Ok(map_processed_transaction(&transaction)?)
+    map_processed_transaction(&transaction)
 }
 
 pub fn create_transaction(
@@ -91,7 +91,7 @@ pub fn create_transaction(
         .execute(&mut db_connection)
         .map_err(|_| ServiceError::Database)?;
 
-    Ok(map_processed_transaction(&new_transaction)?)
+    map_processed_transaction(&new_transaction)
 }
 
 pub fn update_transaction(
@@ -133,7 +133,7 @@ pub fn update_transaction(
         .first::<Transaction>(&mut db_connection)
         .map_err(|_| ServiceError::Database)?;
 
-    Ok(map_processed_transaction(&updated_transaction)?)
+    map_processed_transaction(&updated_transaction)
 }
 
 pub fn delete_transaction(transaction_id: Uuid, credential_id: Uuid) -> Result<(), ServiceError> {
@@ -161,7 +161,7 @@ pub fn delete_transaction(transaction_id: Uuid, credential_id: Uuid) -> Result<(
 }
 
 fn map_processed_transaction(t: &Transaction) -> Result<ProcessedTransaction, ServiceError> {
-    let primitive_value = t.value.to_f64().ok_or_else(|| ServiceError::Conversion)?;
+    let primitive_value = t.value.to_f64().ok_or(ServiceError::Conversion)?;
 
     Ok(ProcessedTransaction {
         id: t.id,
