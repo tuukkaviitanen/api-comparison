@@ -11,7 +11,11 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::{errors::Error, middlewares, services::report_service};
+use crate::{
+    errors::Error,
+    middlewares,
+    services::{report_service, TransactionFilters},
+};
 
 pub fn routes() -> Router {
     Router::new()
@@ -34,8 +38,11 @@ async fn get_report(
     let from_naive = query.from.map(|dt| dt.naive_utc());
     let to_naive = query.to.map(|dt| dt.naive_utc());
 
-    let report = report_service::get_report(credential_id, query.category, from_naive, to_naive)
-        .map_err(|_| Error::Unexpected)?;
+    let report = report_service::get_report(
+        credential_id,
+        TransactionFilters::new(query.category, from_naive, to_naive),
+    )
+    .map_err(|_| Error::Unexpected)?;
 
     Ok((StatusCode::OK, Json(report)).into_response())
 }

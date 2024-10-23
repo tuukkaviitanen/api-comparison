@@ -3,10 +3,11 @@ use crate::models::Transaction;
 use crate::schema::transactions::dsl;
 use crate::services::errors::ServiceError;
 use bigdecimal::{BigDecimal, ToPrimitive};
-use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::Serialize;
 use uuid::Uuid;
+
+use super::TransactionFilters;
 
 #[derive(Serialize)]
 pub struct FinalBudgetReport {
@@ -58,9 +59,7 @@ impl BudgetReport {
 
 pub fn get_report(
     credential_id: Uuid,
-    category: Option<String>,
-    from: Option<NaiveDateTime>,
-    to: Option<NaiveDateTime>,
+    filters: TransactionFilters,
 ) -> Result<FinalBudgetReport, ServiceError> {
     let mut db_connection = database::get_connection().map_err(|error| {
         println!(
@@ -74,15 +73,15 @@ pub fn get_report(
         .filter(dsl::credential_id.eq(credential_id))
         .into_boxed();
 
-    if let Some(category) = category {
+    if let Some(category) = filters.category {
         query = query.filter(dsl::category.eq(category));
     }
 
-    if let Some(from) = from {
+    if let Some(from) = filters.from {
         query = query.filter(dsl::timestamp.ge(from));
     }
 
-    if let Some(to) = to {
+    if let Some(to) = filters.to {
         query = query.filter(dsl::timestamp.le(to));
     }
 

@@ -3,10 +3,10 @@ use std::str::FromStr;
 use crate::{
     errors::Error,
     middlewares::authenticate,
-    services::{errors::ServiceError, transaction_service},
+    services::{errors::ServiceError, transaction_service, TransactionFilters},
 };
 use axum::{
-    extract::Path,
+    extract::{Path, Query},
     http::StatusCode,
     middleware,
     response::{IntoResponse, Response},
@@ -28,10 +28,54 @@ pub fn routes() -> Router {
         .route_layer(middleware::from_fn(authenticate))
 }
 
-async fn get_transactions(Extension(credential_id): Extension<Uuid>) -> Result<Response, Error> {
-    transaction_service::get_transactions(credential_id)
-        .map_err(|_| Error::Unexpected)
-        .map(|transactions| (StatusCode::OK, Json(transactions)).into_response())
+#[derive(Deserialize)]
+struct GetTransactionsQueryParams {
+    category: Option<String>,
+    from: Option<DateTime<Utc>>,
+    to: Option<DateTime<Utc>>,
+    #[serde(default = "default_sort")]
+    sort: String,
+    #[serde(default = "default_order")]
+    order: String,
+    #[serde(default = "default_skip")]
+    skip: u32,
+    #[serde(default = "default_limit")]
+    limit: u32,
+}
+
+fn default_sort() -> String {
+    "timestamp".to_string()
+}
+
+fn default_order() -> String {
+    "desc".to_string()
+}
+
+fn default_skip() -> u32 {
+    0
+}
+
+fn default_limit() -> u32 {
+    10
+}
+
+async fn get_transactions(
+    Extension(credential_id): Extension<Uuid>,
+    Query(query): Query<GetTransactionsQueryParams>,
+) -> Result<Response, Error> {
+    let from_naive = query.from.map(|dt| dt.naive_utc());
+    let to_naive = query.to.map(|dt| dt.naive_utc());
+
+    transaction_service::get_transactions(
+        credential_id,
+        TransactionFilters::new(query.category, from_naive, to_naive),
+        query.sort,
+        query.order,
+        query.skip,
+        query.limit,
+    )
+    .map_err(|_| Error::Unexpected)
+    .map(|transactions| (StatusCode::OK, Json(transactions)).into_response())
 }
 
 async fn get_single_transaction(
