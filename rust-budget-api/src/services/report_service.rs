@@ -46,15 +46,9 @@ impl BudgetReport {
             transaction_sum: self
                 .transaction_sum
                 .to_f64()
-                .ok_or_else(|| ServiceError::Conversion)?,
-            expenses_sum: self
-                .expenses_sum
-                .to_f64()
-                .ok_or_else(|| ServiceError::Conversion)?,
-            incomes_sum: self
-                .incomes_sum
-                .to_f64()
-                .ok_or_else(|| ServiceError::Conversion)?,
+                .ok_or(ServiceError::Conversion)?,
+            expenses_sum: self.expenses_sum.to_f64().ok_or(ServiceError::Conversion)?,
+            incomes_sum: self.incomes_sum.to_f64().ok_or(ServiceError::Conversion)?,
             transactions_count: self.transactions_count,
             expenses_count: self.expenses_count,
             incomes_count: self.incomes_count,
@@ -99,7 +93,7 @@ pub fn get_report(
         .map(|transaction| transaction.value)
         .collect::<Vec<BigDecimal>>();
 
-    Ok(generate_report(results)?)
+    generate_report(results)
 }
 
 fn generate_report(values: Vec<BigDecimal>) -> Result<FinalBudgetReport, ServiceError> {
