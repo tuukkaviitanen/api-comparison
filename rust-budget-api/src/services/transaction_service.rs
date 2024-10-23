@@ -71,6 +71,72 @@ pub fn create_transaction(
     Ok(map_processed_transaction(&new_transaction)?)
 }
 
+pub fn update_transaction(
+    transaction_id: Uuid,
+    credential_id: Uuid,
+    category: String,
+    description: String,
+    value: BigDecimal,
+    timestamp: NaiveDateTime,
+) -> Result<ProcessedTransaction, ServiceError> {
+    let mut db_connection = database::get_connection().map_err(|error| {
+        println!(
+            "[update_transaction] Database connection error occurred, {:#?}",
+            error
+        );
+        ServiceError::Database
+    })?;
+
+    let target = dsl::transactions
+        .filter(dsl::id.eq(transaction_id))
+        .filter(dsl::credential_id.eq(credential_id));
+
+    let rows_updated = diesel::update(target)
+        .set((
+            dsl::category.eq(category),
+            dsl::description.eq(description),
+            dsl::value.eq(value),
+            dsl::timestamp.eq(timestamp),
+        ))
+        .execute(&mut db_connection)
+        .map_err(|_| ServiceError::Database)?;
+
+    if rows_updated == 0 {
+        return Err(ServiceError::NotFound);
+    }
+
+    let updated_transaction = dsl::transactions
+        .filter(dsl::id.eq(transaction_id))
+        .first::<Transaction>(&mut db_connection)
+        .map_err(|_| ServiceError::Database)?;
+
+    Ok(map_processed_transaction(&updated_transaction)?)
+}
+
+pub fn delete_transaction(transaction_id: Uuid, credential_id: Uuid) -> Result<(), ServiceError> {
+    let mut db_connection = database::get_connection().map_err(|error| {
+        println!(
+            "[delete_transaction] Database connection error occurred, {:#?}",
+            error
+        );
+        ServiceError::Database
+    })?;
+
+    let target = dsl::transactions
+        .filter(dsl::id.eq(transaction_id))
+        .filter(dsl::credential_id.eq(credential_id));
+
+    let rows_deleted = diesel::delete(target)
+        .execute(&mut db_connection)
+        .map_err(|_| ServiceError::Database)?;
+
+    if rows_deleted == 0 {
+        Err(ServiceError::NotFound)
+    } else {
+        Ok(())
+    }
+}
+
 fn map_processed_transaction(t: &Transaction) -> Result<ProcessedTransaction, ServiceError> {
     let primitive_value = t.value.to_f64().ok_or_else(|| ServiceError::Conversion)?;
 
