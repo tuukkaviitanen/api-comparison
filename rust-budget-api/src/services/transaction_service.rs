@@ -1,5 +1,5 @@
 use crate::{database, models::Transaction, schema::transactions::dsl};
-use bigdecimal::{BigDecimal, ToPrimitive};
+use bigdecimal::BigDecimal;
 use chrono::{DateTime, NaiveDateTime, Utc};
 use diesel::prelude::*;
 use serde::Serialize;
@@ -207,7 +207,11 @@ pub fn delete_transaction(transaction_id: Uuid, credential_id: Uuid) -> Result<(
 }
 
 fn map_processed_transaction(t: &Transaction) -> Result<ProcessedTransaction, ServiceError> {
-    let primitive_value = t.value.to_f64().ok_or(ServiceError::Conversion)?;
+    let primitive_value = t
+        .value
+        .to_string()
+        .parse::<f64>()
+        .map_err(|_| ServiceError::Conversion)?;
 
     Ok(ProcessedTransaction {
         id: t.id,

@@ -28,7 +28,7 @@ pub fn validate_sort(sort: &str) -> Result<(), ValidationError> {
     let valid_sorts: HashSet<&str> = ["timestamp", "category"].iter().cloned().collect();
 
     // Check if the provided sort option is in the set of valid sort options
-    if valid_sorts.contains(sort) {
+    if valid_sorts.contains(sort.to_lowercase().as_str()) {
         Ok(())
     } else {
         Err(ValidationError::new("invalid sort"))
@@ -40,7 +40,7 @@ pub fn validate_order(sort: &str) -> Result<(), ValidationError> {
     let valid_sorts: HashSet<&str> = ["asc", "desc"].iter().cloned().collect();
 
     // Check if the provided sort option is in the set of valid sort options
-    if valid_sorts.contains(sort) {
+    if valid_sorts.contains(sort.to_lowercase().as_str()) {
         Ok(())
     } else {
         Err(ValidationError::new("invalid order"))
