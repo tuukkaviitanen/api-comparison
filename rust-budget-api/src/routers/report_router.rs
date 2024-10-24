@@ -1,3 +1,4 @@
+use super::custom_validators::validate_category;
 use axum::{
     debug_handler,
     extract::Query,
@@ -7,9 +8,11 @@ use axum::{
     routing::get,
     Extension, Json, Router,
 };
+use axum_extra::extract::WithRejection;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use uuid::Uuid;
+use validator::Validate;
 
 use crate::{
     errors::Error,
@@ -23,8 +26,9 @@ pub fn routes() -> Router {
         .route_layer(middleware::from_fn(middlewares::authenticate))
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 struct ReportQueryParams {
+    #[validate(custom(function = "validate_category", message = "invalid category"))]
     category: Option<String>,
     from: Option<DateTime<Utc>>,
     to: Option<DateTime<Utc>>,
@@ -33,8 +37,12 @@ struct ReportQueryParams {
 #[debug_handler]
 async fn get_report(
     Extension(credential_id): Extension<Uuid>,
-    Query(query): Query<ReportQueryParams>,
+    WithRejection(Query(query), _): WithRejection<Query<ReportQueryParams>, Error>,
 ) -> Result<Response, Error> {
+    query
+        .validate()
+        .map_err(|error| Error::Validation(error.to_string()))?;
+
     let from_naive = query.from.map(|dt| dt.naive_utc());
     let to_naive = query.to.map(|dt| dt.naive_utc());
 

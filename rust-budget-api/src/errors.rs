@@ -78,7 +78,7 @@ fn parse_error(error: Error) -> (StatusCode, String) {
             StatusCode::INTERNAL_SERVER_ERROR,
             "Unexpected error occurred".to_string(),
         ),
-        ValidationJson(json_rejection) => (StatusCode::BAD_REQUEST, json_rejection.to_string()),
-        ValidationQuery(query_rejection) => (StatusCode::BAD_REQUEST, query_rejection.to_string()),
+        ValidationJson(json_rejection) => (StatusCode::BAD_REQUEST, json_rejection.body_text()),
+        ValidationQuery(query_rejection) => (StatusCode::BAD_REQUEST, query_rejection.body_text()),
     }
 }
