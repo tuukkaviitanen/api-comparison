@@ -43,7 +43,7 @@ jobs:
         working-directory: ./rust-budget-api
 
       - name: Run full environment with docker compose
-        run: task run:prod
+        run: docker compose up --wait
         working-directory: ./rust-budget-api
 
       - name: Setup K6

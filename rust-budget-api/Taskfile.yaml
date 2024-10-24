@@ -1,12 +1,9 @@
 version: "3"
 
 tasks:
-  run:dev:
+  run:
     cmds:
       - docker compose -f docker-compose.dev.yaml up --build
-  run:prod:
-    cmds:
-      - docker compose -f docker-compose.prod.yaml up --build
   lint:check:
     cmds:
       - cargo clippy
