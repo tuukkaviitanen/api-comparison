@@ -11,9 +11,9 @@ pub fn serialize_datetime<S>(datetime: &DateTime<Utc>, serializer: S) -> Result<
 where
     S: serde::Serializer,
 {
-    Ok(datetime
+    datetime
         .to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
-        .serialize(serializer)?)
+        .serialize(serializer)
 }
 
 #[derive(Serialize)]
