@@ -12,3 +12,5 @@ pub fn app() -> Router {
         .nest("/transactions", transaction_router::routes())
         .nest_service("/openapi.yaml", ServeFile::new("./openapi.yaml"))
 }
+
+mod custom_validators;

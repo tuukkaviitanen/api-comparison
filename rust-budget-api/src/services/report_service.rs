@@ -2,7 +2,7 @@ use crate::database;
 use crate::models::Transaction;
 use crate::schema::transactions::dsl;
 use crate::services::errors::ServiceError;
-use bigdecimal::{BigDecimal, ToPrimitive};
+use bigdecimal::BigDecimal;
 use diesel::prelude::*;
 use serde::Serialize;
 use uuid::Uuid;
@@ -11,7 +11,7 @@ use super::TransactionFilters;
 
 #[derive(Serialize)]
 pub struct FinalBudgetReport {
-    transaction_sum: f64,
+    transactions_sum: f64,
     expenses_sum: f64,
     incomes_sum: f64,
     transactions_count: u32,
@@ -20,7 +20,7 @@ pub struct FinalBudgetReport {
 }
 
 pub struct BudgetReport {
-    transaction_sum: BigDecimal,
+    transactions_sum: BigDecimal,
     expenses_sum: BigDecimal,
     incomes_sum: BigDecimal,
     transactions_count: u32,
@@ -31,7 +31,7 @@ pub struct BudgetReport {
 impl BudgetReport {
     pub fn new() -> Self {
         BudgetReport {
-            transaction_sum: BigDecimal::from(0),
+            transactions_sum: BigDecimal::from(0),
             expenses_count: 0,
             expenses_sum: BigDecimal::from(0),
             incomes_count: 0,
@@ -44,12 +44,21 @@ impl BudgetReport {
 impl BudgetReport {
     pub fn to_final(&self) -> Result<FinalBudgetReport, ServiceError> {
         Ok(FinalBudgetReport {
-            transaction_sum: self
-                .transaction_sum
-                .to_f64()
-                .ok_or(ServiceError::Conversion)?,
-            expenses_sum: self.expenses_sum.to_f64().ok_or(ServiceError::Conversion)?,
-            incomes_sum: self.incomes_sum.to_f64().ok_or(ServiceError::Conversion)?,
+            transactions_sum: self
+                .transactions_sum
+                .to_string()
+                .parse::<f64>()
+                .map_err(|_| ServiceError::Conversion)?,
+            expenses_sum: self
+                .expenses_sum
+                .to_string()
+                .parse::<f64>()
+                .map_err(|_| ServiceError::Conversion)?,
+            incomes_sum: self
+                .incomes_sum
+                .to_string()
+                .parse::<f64>()
+                .map_err(|_| ServiceError::Conversion)?,
             transactions_count: self.transactions_count,
             expenses_count: self.expenses_count,
             incomes_count: self.incomes_count,
@@ -103,7 +112,7 @@ fn generate_report(values: Vec<BigDecimal>) -> Result<FinalBudgetReport, Service
             let is_income = next.ge(&BigDecimal::from(0));
 
             BudgetReport {
-                transaction_sum: report.transaction_sum + next,
+                transactions_sum: report.transactions_sum + next,
                 transactions_count: report.transactions_count + 1,
                 expenses_sum: if is_expense {
                     report.expenses_sum + next
