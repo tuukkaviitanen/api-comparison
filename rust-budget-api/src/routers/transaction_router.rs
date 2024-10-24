@@ -103,8 +103,8 @@ async fn post_transaction(
     Json(body): Json<TransactionRequestBody>,
 ) -> Result<Response, Error> {
     // Parsing from float causes floating point errors
-    let decimal_value =
-        BigDecimal::from_str(&body.value.to_string()).map_err(|_| Error::Validation)?;
+    let decimal_value = BigDecimal::from_str(&body.value.to_string())
+        .map_err(|_| Error::Validation("Invalid value".to_string()))?;
 
     transaction_service::create_transaction(
         credential_id,
@@ -122,8 +122,8 @@ async fn put_transaction(
     Path(transaction_id): Path<Uuid>,
     Json(body): Json<TransactionRequestBody>,
 ) -> Result<Response, Error> {
-    let decimal_value =
-        BigDecimal::from_str(&body.value.to_string()).map_err(|_| Error::Validation)?;
+    let decimal_value = BigDecimal::from_str(&body.value.to_string())
+        .map_err(|_| Error::Validation("Invalid value".to_string()))?;
 
     transaction_service::update_transaction(
         transaction_id,

@@ -1,10 +1,13 @@
 use axum::{
+    extract::rejection::{JsonRejection, QueryRejection},
     http::StatusCode,
     response::{IntoResponse, Response},
     Json,
 };
 use serde_json::json;
+use thiserror::Error;
 
+#[derive(Debug, Error)]
 pub enum Error {
     // Authentication errors
     AuthHeaderMissing,
@@ -12,10 +15,20 @@ pub enum Error {
     AuthHeaderInvalidBase64,
     AuthInvalidCredentialsFormat,
     AuthInvalidCredentials,
-    Validation,
+
+    Validation(String),
     NotFound,
     UniqueConstraint,
     Unexpected,
+
+    ValidationJson(#[from] JsonRejection),
+    ValidationQuery(#[from] QueryRejection),
+}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 impl IntoResponse for Error {
@@ -56,12 +69,16 @@ fn parse_error(error: Error) -> (StatusCode, String) {
             StatusCode::BAD_REQUEST,
             "Unique constraint error occurred".to_string(),
         ),
-        Validation => (StatusCode::BAD_REQUEST, "Validation error".to_string()),
-
+        Validation(message) => (
+            StatusCode::BAD_REQUEST,
+            format!("Validation error: {}", message),
+        ),
         NotFound => (StatusCode::NOT_FOUND, "Resource not found".to_string()),
         Unexpected => (
             StatusCode::INTERNAL_SERVER_ERROR,
             "Unexpected error occurred".to_string(),
         ),
+        ValidationJson(json_rejection) => (StatusCode::BAD_REQUEST, json_rejection.to_string()),
+        ValidationQuery(query_rejection) => (StatusCode::BAD_REQUEST, query_rejection.to_string()),
     }
 }
