@@ -4,9 +4,6 @@ tasks:
   run:
     cmds:
       - docker compose -f docker-compose.dev.yaml up --build
-  run:database:
-    cmds:
-      - docker compose -f docker-compose.dev.yaml up postgres adminer
   lint:check:
     cmds:
       - cargo clippy

@@ -5,14 +5,16 @@ on:
     branches:
       - main
     paths:
-      - 'bun-budget-api/**'
-      - 'k6/**'
+      - "bun-budget-api/**"
+      - "k6/**"
+      - "**/CI-bun.yaml"
   pull_request:
     branches:
       - main
     paths:
-      - 'bun-budget-api/**'
-      - 'k6/**'
+      - "bun-budget-api/**"
+      - "k6/**"
+      - "**/CI-bun.yaml"
 
 jobs:
   verification:

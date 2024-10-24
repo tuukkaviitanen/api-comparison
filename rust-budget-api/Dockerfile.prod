@@ -1,0 +1,24 @@
+FROM rust AS build-stage
+
+WORKDIR /usr/src/app
+
+COPY rust-budget-api/ ./
+
+# Install musl tools to build a statically linked binary
+RUN apt-get update && apt-get install -y musl-tools
+
+# Add the musl target
+RUN rustup target add x86_64-unknown-linux-musl
+
+# Build the binary for the musl target
+RUN cargo build --release --target=x86_64-unknown-linux-musl
+
+FROM scratch
+
+WORKDIR /usr/src/app
+
+COPY ./docs/openapi.yaml .
+
+COPY --from=build-stage /usr/src/app/target/x86_64-unknown-linux-musl/release/rust-budget-api .
+
+CMD ["./rust-budget-api"]
