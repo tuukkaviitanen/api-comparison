@@ -28,5 +28,5 @@ thiserror = "1.0.29"
 axum-extra = "0.9.4"
 # build libpq and openssl as part of the build process
 # uncomment these lines if you run into setup issues
-# pq-sys = { version = "0.6", features = ["bundled"] }
-# openssl-sys = { version = "0.9.100", features = ["vendored"] }
+pq-sys = { version = "0.6", features = ["bundled"] }
+openssl-sys = { version = "0.9.100", features = ["vendored"] }
