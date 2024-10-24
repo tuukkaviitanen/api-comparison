@@ -7,12 +7,22 @@ use uuid::Uuid;
 
 use super::{errors::ServiceError, TransactionFilters};
 
+pub fn serialize_datetime<S>(datetime: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    Ok(datetime
+        .to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+        .serialize(serializer)?)
+}
+
 #[derive(Serialize)]
 pub struct ProcessedTransaction {
     pub id: Uuid,
     pub category: String,
     pub description: String,
     pub value: f64,
+    #[serde(serialize_with = "serialize_datetime")]
     pub timestamp: DateTime<Utc>,
 }
 

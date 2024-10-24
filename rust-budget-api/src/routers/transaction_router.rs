@@ -73,6 +73,10 @@ async fn get_transactions(
     Extension(credential_id): Extension<Uuid>,
     WithRejection(Query(query), _): WithRejection<Query<GetTransactionsQueryParams>, Error>,
 ) -> Result<Response, Error> {
+    query
+        .validate()
+        .map_err(|error| Error::Validation(error.to_string()))?;
+
     let category_lowercase = query.category.map(|c| c.to_lowercase());
     let from_naive = query.from.map(|dt| dt.naive_utc());
     let to_naive = query.to.map(|dt| dt.naive_utc());
@@ -122,6 +126,9 @@ async fn post_transaction(
     Extension(credential_id): Extension<Uuid>,
     WithRejection(Json(body), _): WithRejection<Json<TransactionRequestBody>, Error>,
 ) -> Result<Response, Error> {
+    body.validate()
+        .map_err(|error| Error::Validation(error.to_string()))?;
+
     // Parsing from float causes floating point errors
     let decimal_value = BigDecimal::from_str(&body.value.to_string())
         .map_err(|_| Error::Validation("Invalid value".to_string()))?;
@@ -142,6 +149,9 @@ async fn put_transaction(
     WithRejection(Path(transaction_id), _): WithRejection<Path<Uuid>, Error>,
     WithRejection(Json(body), _): WithRejection<Json<TransactionRequestBody>, Error>,
 ) -> Result<Response, Error> {
+    body.validate()
+        .map_err(|error| Error::Validation(error.to_string()))?;
+
     let decimal_value = BigDecimal::from_str(&body.value.to_string())
         .map_err(|_| Error::Validation("Invalid value".to_string()))?;
 
