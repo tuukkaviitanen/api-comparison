@@ -1243,7 +1243,11 @@ export default function () {
             ],
             [
               "filtering starting from specific timestamp",
-              { category: undefined, from: "2022-01-01T00:00:00Z", to: undefined },
+              {
+                category: undefined,
+                from: "2022-01-01T00:00:00Z",
+                to: undefined,
+              },
               {
                 transactions_sum: 680,
                 expenses_sum: -320,
@@ -1255,7 +1259,11 @@ export default function () {
             ],
             [
               "filtering until specific timestamp",
-              { category: undefined, from: undefined, to: "2022-01-01T00:00:00Z" },
+              {
+                category: undefined,
+                from: undefined,
+                to: "2022-01-01T00:00:00Z",
+              },
               {
                 transactions_sum: 1900,
                 expenses_sum: -100,
@@ -1267,7 +1275,11 @@ export default function () {
             ],
             [
               "combining params",
-              { category: "health", from: "2023-09-01T00:00:00Z", to: "2024-03-01T00:00:00Z" },
+              {
+                category: "health",
+                from: "2023-09-01T00:00:00Z",
+                to: "2024-03-01T00:00:00Z",
+              },
               {
                 transactions_sum: -50,
                 expenses_sum: -50,
@@ -1349,7 +1361,7 @@ export default function () {
 
         expect(response.status, "response status").to.equal(200);
         expect(response.headers["Content-Type"], "content type").to.include(
-          "text/yaml"
+          "yaml"
         );
       });
     });

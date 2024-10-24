@@ -1,5 +1,5 @@
 use axum::{
-    extract::rejection::{JsonRejection, QueryRejection},
+    extract::rejection::{JsonRejection, PathRejection, QueryRejection},
     http::StatusCode,
     response::{IntoResponse, Response},
     Json,
@@ -23,6 +23,7 @@ pub enum Error {
 
     ValidationJson(#[from] JsonRejection),
     ValidationQuery(#[from] QueryRejection),
+    ValidationPath(#[from] PathRejection),
 }
 
 impl std::fmt::Display for Error {
@@ -80,5 +81,6 @@ fn parse_error(error: Error) -> (StatusCode, String) {
         ),
         ValidationJson(json_rejection) => (StatusCode::BAD_REQUEST, json_rejection.body_text()),
         ValidationQuery(query_rejection) => (StatusCode::BAD_REQUEST, query_rejection.body_text()),
+        ValidationPath(path_rejection) => (StatusCode::BAD_REQUEST, path_rejection.body_text()),
     }
 }

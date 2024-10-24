@@ -43,12 +43,13 @@ async fn get_report(
         .validate()
         .map_err(|error| Error::Validation(error.to_string()))?;
 
+    let category_lowercase = query.category.map(|c| c.to_lowercase());
     let from_naive = query.from.map(|dt| dt.naive_utc());
     let to_naive = query.to.map(|dt| dt.naive_utc());
 
     let report = report_service::get_report(
         credential_id,
-        TransactionFilters::new(query.category, from_naive, to_naive),
+        TransactionFilters::new(category_lowercase, from_naive, to_naive),
     )
     .map_err(|_| Error::Unexpected)?;
 
