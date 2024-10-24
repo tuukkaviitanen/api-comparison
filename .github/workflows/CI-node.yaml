@@ -5,14 +5,16 @@ on:
     branches:
       - main
     paths:
-      - 'node-budget-api/**'
-      - 'k6/**'
+      - "node-budget-api/**"
+      - "k6/**"
+      - "**/CI-node.yaml"
   pull_request:
     branches:
       - main
     paths:
-      - 'node-budget-api/**'
-      - 'k6/**'
+      - "node-budget-api/**"
+      - "k6/**"
+      - "**/CI-node.yaml"
 
 jobs:
   verification:
@@ -89,7 +91,7 @@ jobs:
         id: time
         uses: nanzm/get-time-action@master
         with:
-          format: 'YYYYMMDDHHmmss'
+          format: "YYYYMMDDHHmmss"
 
       # Build and push Docker image with Buildx
       # https://github.com/docker/build-push-action

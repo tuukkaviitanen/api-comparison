@@ -1,12 +1,12 @@
 version: "3"
 
 tasks:
-  run:
+  run:dev:
     cmds:
       - docker compose -f docker-compose.dev.yaml up --build
-  run:database:
+  run:prod:
     cmds:
-      - docker compose -f docker-compose.dev.yaml up postgres adminer
+      - docker compose -f docker-compose.prod.yaml up --build
   lint:check:
     cmds:
       - cargo clippy
