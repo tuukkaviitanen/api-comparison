@@ -9,7 +9,10 @@ use uuid::Uuid;
 
 use super::TransactionFilters;
 
-#[derive(Serialize)]
+#[cfg(test)]
+mod tests;
+
+#[derive(Serialize, Debug, PartialEq)]
 pub struct FinalBudgetReport {
     transactions_sum: f64,
     expenses_sum: f64,
@@ -104,12 +107,12 @@ pub fn get_report(
     generate_report(results)
 }
 
-fn generate_report(values: Vec<BigDecimal>) -> Result<FinalBudgetReport, ServiceError> {
+pub fn generate_report(values: Vec<BigDecimal>) -> Result<FinalBudgetReport, ServiceError> {
     values
         .iter()
         .fold(BudgetReport::new(), |report, next| {
-            let is_expense = next.le(&BigDecimal::from(0));
-            let is_income = next.ge(&BigDecimal::from(0));
+            let is_expense = next.lt(&BigDecimal::from(0));
+            let is_income = next.gt(&BigDecimal::from(0));
 
             BudgetReport {
                 transactions_sum: report.transactions_sum + next,

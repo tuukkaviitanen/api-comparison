@@ -28,3 +28,6 @@ tasks:
   migration:redo:
     cmds:
       - task diesel -- --database-url=postgresql://user:password@postgres/budget_api migration redo
+  test:
+    cmds:
+      - cargo test
