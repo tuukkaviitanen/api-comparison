@@ -1,0 +1,77 @@
+import { expect } from "https://jslib.k6.io/k6chaijs/4.3.4.3/index.js";
+import { randomString } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
+import {
+  deleteCredentials,
+  getReport,
+  getTransactionParams,
+  getTransactions,
+  postCredentials,
+  postTransaction,
+} from "./helpers.js";
+
+export const options = {
+  vus: 10,
+  duration: "30s",
+};
+
+export default () => {
+  const username = randomString(10);
+  const password = randomString(10);
+
+  // POST credential
+  const postCredentialsResponse = postCredentials(username, password);
+
+  expect(
+    postCredentialsResponse.status,
+    "POST credential response status"
+  ).to.equal(204);
+
+  const transactionParams = getTransactionParams(username, password);
+
+  // POST 10 transactions
+  for (let i = 0; i < 10; i++) {
+    const postResponse = postTransaction(
+      "Food & Drinks",
+      "pizza",
+      -10.99,
+      "2024-01-01T18:00:00Z",
+      transactionParams
+    );
+
+    expect(postResponse.status, "POST transaction response status").to.equal(
+      201
+    );
+  }
+
+  // GET transactions
+  const getResponse = getTransactions(
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    transactionParams
+  );
+
+  expect(getResponse.status, "GET transactions response status").to.equal(200);
+
+  // DELETE the report
+  const reportResponse = getReport(
+    undefined,
+    undefined,
+    undefined,
+    transactionParams
+  );
+
+  expect(reportResponse.status, "GET report response status").to.equal(200);
+
+  // DELETE the credential
+  const deleteCredentialResponse = deleteCredentials(username, password);
+
+  expect(
+    deleteCredentialResponse.status,
+    "DELETE credential response status"
+  ).to.equal(204);
+};

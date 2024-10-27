@@ -1,9 +1,9 @@
 services:
   k6:
     image: grafana/k6
-    command: run /api-tests.js
+    command: run /functional-tests.js
     volumes:
-      - ./api-tests.js:/api-tests.js
+      - ./functional-tests.js:/functional-tests.js
       - ./helpers.js:/helpers.js
     network_mode: "host"
     environment:
