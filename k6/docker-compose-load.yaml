@@ -1,0 +1,10 @@
+services:
+  k6:
+    image: grafana/k6
+    command: run /load-tests.js
+    volumes:
+      - ./load-tests.js:/load-tests.js
+      - ./helpers.js:/helpers.js
+    network_mode: "host"
+    environment:
+      - BASE_URL=http://localhost:8080

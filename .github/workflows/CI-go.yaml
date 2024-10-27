@@ -5,16 +5,16 @@ on:
     branches:
       - main
     paths:
-      - 'go-budget-api/**'
-      - 'k6/**'
-      - '**/CI-go.yaml'
+      - "go-budget-api/**"
+      - "k6/**"
+      - "**/CI-go.yaml"
   pull_request:
     branches:
       - main
     paths:
-      - 'go-budget-api/**'
-      - 'k6/**'
-      - '**/CI-go.yaml'
+      - "go-budget-api/**"
+      - "k6/**"
+      - "**/CI-go.yaml"
 
 jobs:
   verification:
@@ -27,7 +27,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: '^1.23.2'
+          go-version: "^1.23.2"
 
       - name: Run linter
         uses: golangci/golangci-lint-action@v6
@@ -47,8 +47,7 @@ jobs:
         uses: grafana/setup-k6-action@v1
 
       - name: Run K6 API tests
-        run: BASE_URL=http://localhost:8080 k6 run k6/api-tests.js
-
+        run: BASE_URL=http://localhost:8080 k6 run k6/functional-tests.js
 
   publish_docker_image:
     needs: [verification]

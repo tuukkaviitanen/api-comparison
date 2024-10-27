@@ -5,16 +5,16 @@ on:
     branches:
       - main
     paths:
-      - 'cs-budget-api/**'
-      - 'k6/**'
-      - '**/CI-cs.yaml'
+      - "cs-budget-api/**"
+      - "k6/**"
+      - "**/CI-cs.yaml"
   pull_request:
     branches:
       - main
     paths:
-      - 'cs-budget-api/**'
-      - 'k6/**'
-      - '**/CI-cs.yaml'
+      - "cs-budget-api/**"
+      - "k6/**"
+      - "**/CI-cs.yaml"
 
 jobs:
   verification:
@@ -26,7 +26,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
+          dotnet-version: "8.x"
 
       - name: Run formatter
         run: dotnet format main --verify-no-changes
@@ -48,8 +48,7 @@ jobs:
         uses: grafana/setup-k6-action@v1
 
       - name: Run K6 API tests
-        run: BASE_URL=http://localhost:8080 k6 run k6/api-tests.js
-
+        run: BASE_URL=http://localhost:8080 k6 run k6/functional-tests.js
 
   publish_docker_image:
     needs: [verification]

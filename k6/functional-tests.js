@@ -82,7 +82,7 @@ const runAuthenticationTests = (requestFactory) => {
   });
 };
 
-export default function () {
+export default () => {
   describe("Budget API", () => {
     describe("Credentials endpoint", () => {
       const username = randomString(10);
@@ -1234,4 +1234,4 @@ export default function () {
       });
     });
   });
-}
+};
