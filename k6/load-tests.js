@@ -10,8 +10,17 @@ import {
 } from "./helpers.js";
 
 export const options = {
-  vus: 10,
-  duration: "30s",
+  stages: [
+    { duration: "1m", target: 10 }, // Ramping up
+    { duration: "2m", target: 10 }, // Holding
+    { duration: "1m", target: 100 }, // Ramping up
+    { duration: "2m", target: 100 }, // Holding
+    { duration: "1m", target: 500 }, // Ramping up
+    { duration: "2m", target: 500 }, // Holding
+    { duration: "1m", target: 1000 }, // Ramping up
+    { duration: "2m", target: 1000 }, // Holding
+    { duration: "1m", target: 0 }, // Ramping down
+  ],
 };
 
 export default () => {
@@ -32,7 +41,7 @@ export default () => {
   for (let i = 0; i < 10; i++) {
     const postResponse = postTransaction(
       "Food & Drinks",
-      "pizza",
+      "Pizza at Frank's",
       -10.99,
       "2024-01-01T18:00:00Z",
       transactionParams
@@ -43,29 +52,35 @@ export default () => {
     );
   }
 
-  // GET transactions
-  const getResponse = getTransactions(
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    transactionParams
-  );
+  // GET transactions 10 times
+  for (let i = 0; i < 10; i++) {
+    const getResponse = getTransactions(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      transactionParams
+    );
 
-  expect(getResponse.status, "GET transactions response status").to.equal(200);
+    expect(getResponse.status, "GET transactions response status").to.equal(
+      200
+    );
+  }
 
-  // DELETE the report
-  const reportResponse = getReport(
-    undefined,
-    undefined,
-    undefined,
-    transactionParams
-  );
+  // GET report 10 times
+  for (let i = 0; i < 10; i++) {
+    const reportResponse = getReport(
+      undefined,
+      undefined,
+      undefined,
+      transactionParams
+    );
 
-  expect(reportResponse.status, "GET report response status").to.equal(200);
+    expect(reportResponse.status, "GET report response status").to.equal(200);
+  }
 
   // DELETE the credential
   const deleteCredentialResponse = deleteCredentials(username, password);

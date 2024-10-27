@@ -12,6 +12,11 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0" # Limit to 1 CPU core
+          memory: "1G" # Limit to 1 GB of RAM
   migrator:
     build:
       context: ../
@@ -34,3 +39,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0" # Limit to 1 CPU core
+          memory: "1G" # Limit to 1 GB of RAM
