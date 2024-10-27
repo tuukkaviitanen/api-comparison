@@ -4,6 +4,7 @@ services:
     command: run /api-tests.js
     volumes:
       - ./api-tests.js:/api-tests.js
+      - ./helpers.js:/helpers.js
     network_mode: "host"
     environment:
       - BASE_URL=http://localhost:8080
