@@ -57,5 +57,5 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     uses: ./.github/workflows/publish-docker-image.yaml
     with:
-      project_name: cs
+      project_tag: cs
       dockerfile_path: cs-budget-api/Dockerfile.prod
