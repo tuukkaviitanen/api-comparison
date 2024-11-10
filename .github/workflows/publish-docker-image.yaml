@@ -50,7 +50,7 @@ jobs:
           context: .
           file: ${{ inputs.dockerfile_path }}
           tags: |
-            ${{ env.IMAGE_NAME }}/${{ env.IMAGE_NAME }}:${{ inputs.project_tag }}
-            ${{ env.IMAGE_NAME }}/${{ env.IMAGE_NAME }}:${{ inputs.project_tag }}-${{ steps.time.outputs.time }}
-            ${{ env.IMAGE_NAME }}/${{ env.IMAGE_NAME }}:${{ inputs.project_tag }}-latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.project_tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.project_tag }}-${{ steps.time.outputs.time }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.project_tag }}-latest
           push: true
