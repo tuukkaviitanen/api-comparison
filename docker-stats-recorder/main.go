@@ -2,34 +2,19 @@ package main
 
 import (
 	"bufio"
+	"docker-stats-recorder/database"
+	"docker-stats-recorder/models"
+	"docker-stats-recorder/utils"
 	"encoding/json"
 	"log"
 	"os/exec"
 	"regexp"
-	"strconv"
-	"strings"
+	"time"
 )
-
-type UnrefinedDockerStats struct {
-	Name      string
-	Container string
-	BlockIO   string
-	CPUPerc   string
-	MemPerc   string
-	MemUsage  string
-	NetIO     string
-	PIDs      string
-}
-
-type RefinedDockerStats struct {
-	Name    string
-	CPUPerc float64
-	MemPerc float64
-}
 
 func main() {
 	// Create docker stats command
-	cmd := exec.Command("docker", "stats", "--format", "json")
+	cmd := exec.Command("docker", "stats", "--format", "{{json .}}")
 
 	// Get the output pipe
 	stdout, err := cmd.StdoutPipe()
@@ -60,16 +45,16 @@ func handleStat(jsonString string) {
 	cleanedJsonStr := ansiEscapeRegex.ReplaceAllString(jsonString, "")
 
 	// Define a variable to hold the parsed JSON data
-	var data UnrefinedDockerStats
+	var data models.UnrefinedDockerStats
 
 	// Parse the JSON string into the map
 	if err := json.Unmarshal([]byte(cleanedJsonStr), &data); err != nil {
-		log.Fatalf("Error parsing JSON: %s\n", err)
+		log.Fatalf("Error parsing JSON text '%s': %s\n", cleanedJsonStr, err)
 		return
 	}
 
-	parsedCPUPerc, cpuPercErr := parsePercentage(data.CPUPerc)
-	parsedMemPerc, memPercErr := parsePercentage(data.MemPerc)
+	parsedCPUPerc, cpuPercErr := utils.ParsePercentage(data.CPUPerc)
+	parsedMemPerc, memPercErr := utils.ParsePercentage(data.MemPerc)
 
 	if cpuPercErr != nil {
 		log.Printf("Error parsing CPU percentage: %s\n", cpuPercErr)
@@ -81,21 +66,12 @@ func handleStat(jsonString string) {
 		return
 	}
 
-	refinedData := RefinedDockerStats{Name: data.Name, CPUPerc: parsedCPUPerc, MemPerc: parsedMemPerc}
+	timestamp := time.Now().UTC()
+
+	refinedData := models.RefinedDockerStats{Name: data.Name, CPUPerc: parsedCPUPerc, MemPerc: parsedMemPerc, Timestamp: timestamp}
+
+	database.SaveToInflux(refinedData)
 
 	// Print the parsed data
-	log.Printf("Refined data: %v\n", refinedData)
-}
-
-func parsePercentage(percentageStr string) (float64, error) {
-	// Remove the '%' sign from the end of the string
-	cleanedStr := strings.TrimSuffix(percentageStr, "%")
-
-	// Parse the cleaned string to float64
-	parsedFloat, err := strconv.ParseFloat(cleanedStr, 64)
-	if err != nil {
-		return 0, err
-	}
-
-	return parsedFloat, nil
+	log.Printf("Refined data saved: %v\n", refinedData)
 }

@@ -1,0 +1,10 @@
+services:
+  docker-stats-recorder:
+    build: .
+    restart: unless-stopped
+    environment:
+      INFLUX_URL: http://localhost:8086
+      INFLUX_DB: k6
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    network_mode: host
