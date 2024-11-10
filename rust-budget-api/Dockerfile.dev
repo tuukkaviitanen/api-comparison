@@ -2,11 +2,16 @@ FROM rust
 
 WORKDIR /usr/src/app
 
+# Install binstall for binary installations
+# Otherwise would have to compile the binaries every time
+# Installing with curl instead of cargo install to also avoid the need to compile cargo-binstall
+RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+
 # Install live reload tool
-RUN cargo install cargo-watch
+RUN cargo binstall cargo-watch
 
 # Install database ORM cli tool
-RUN cargo install diesel_cli
+RUN cargo binstall diesel_cli
 
 COPY rust-budget-api/ ./
 
