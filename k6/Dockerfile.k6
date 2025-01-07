@@ -1,8 +1,0 @@
-# Based on template from Grafana GitHub https://github.com/grafana/xk6-output-timescaledb/blob/main/Dockerfile
-
-FROM golang:1.19-alpine AS builder
-
-RUN go install go.k6.io/xk6/cmd/xk6@latest
-RUN xk6 build --with github.com/grafana/xk6-output-timescaledb --output /usr/bin/k6
-
-ENTRYPOINT ["k6"]

@@ -12,6 +12,12 @@ services:
     environment:
       - PORT=8080
       - DATABASE_URL=postgresql://user:password@postgres/budget_api
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0" # Limit to 2 CPU cores
+          memory: "1G" # Limit to 1 GB of RAM
+
   migrator:
     build:
       context: ../
@@ -22,6 +28,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://user:password@postgres/budget_api
     command: diesel migration run
+
   postgres:
     image: postgres:10.3
     restart: unless-stopped
@@ -36,3 +43,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0" # Limit to 2 CPU cores
+          memory: "1G" # Limit to 1 GB of RAM
