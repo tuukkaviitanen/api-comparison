@@ -23,6 +23,15 @@ export const options = {
   ],
 };
 
+export const handleSummary = (data) => {
+  const now = new Date();
+  const timestamp = now.toISOString();
+
+  return {
+    [`/results/summary_${timestamp}.json`]: JSON.stringify(data), //the default data object
+  };
+};
+
 export default () => {
   const username = randomString(10);
   const password = randomString(10);

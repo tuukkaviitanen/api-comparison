@@ -5,6 +5,7 @@ services:
     volumes:
       - ./load-tests.js:/load-tests.js
       - ./helpers.js:/helpers.js
+      - ./results:/results
     network_mode: host
     environment:
       - BASE_URL=http://localhost:8080
