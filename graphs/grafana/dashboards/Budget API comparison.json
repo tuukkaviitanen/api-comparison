@@ -22,10 +22,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -117,21 +114,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -143,9 +133,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -158,21 +146,14 @@
         },
         {
           "alias": "Bun CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -185,9 +166,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -206,21 +185,14 @@
         },
         {
           "alias": "C# CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -233,9 +205,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -254,21 +224,14 @@
         },
         {
           "alias": "Node CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -281,9 +244,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -302,21 +263,14 @@
         },
         {
           "alias": "Go CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -329,9 +283,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -350,21 +302,14 @@
         },
         {
           "alias": "Rust CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -377,9 +322,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -401,10 +344,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -496,21 +436,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -522,9 +455,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -537,21 +468,14 @@
         },
         {
           "alias": "Bun Database CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -564,9 +488,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -585,21 +507,14 @@
         },
         {
           "alias": "C# Database CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -612,9 +527,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -633,21 +546,14 @@
         },
         {
           "alias": "Node Database CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -660,9 +566,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -681,21 +585,14 @@
         },
         {
           "alias": "Go Database CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -708,9 +605,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -729,21 +624,14 @@
         },
         {
           "alias": "Rust Database CPU Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -756,9 +644,7 @@
           "select": [
             [
               {
-                "params": [
-                  "cpu_percentage"
-                ],
+                "params": ["cpu_percentage"],
                 "type": "field"
               },
               {
@@ -780,10 +666,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -875,21 +758,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -901,9 +777,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -916,21 +790,14 @@
         },
         {
           "alias": "Bun Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -943,9 +810,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -964,21 +829,14 @@
         },
         {
           "alias": "C# Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -991,9 +849,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1012,21 +868,14 @@
         },
         {
           "alias": "Node Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1039,9 +888,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1060,21 +907,14 @@
         },
         {
           "alias": "Go Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1087,9 +927,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1108,21 +946,14 @@
         },
         {
           "alias": "Rust Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1135,9 +966,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1159,10 +988,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1254,21 +1080,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1280,9 +1099,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -1295,21 +1112,14 @@
         },
         {
           "alias": "Bun Database Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1322,9 +1132,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1343,21 +1151,14 @@
         },
         {
           "alias": "C# Database Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1370,9 +1171,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1391,21 +1190,14 @@
         },
         {
           "alias": "Node Database Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1418,9 +1210,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1439,21 +1229,14 @@
         },
         {
           "alias": "Go Database Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1466,9 +1249,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1487,21 +1268,14 @@
         },
         {
           "alias": "Rust Database Memory Percentage",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1514,9 +1288,7 @@
           "select": [
             [
               {
-                "params": [
-                  "memory_percentage"
-                ],
+                "params": ["memory_percentage"],
                 "type": "field"
               },
               {
@@ -1538,10 +1310,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1633,21 +1402,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1659,9 +1421,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -1673,21 +1433,14 @@
           "tags": []
         },
         {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1700,9 +1453,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -1718,10 +1469,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1813,21 +1561,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1839,9 +1580,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -1853,21 +1592,14 @@
           "tags": []
         },
         {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -1880,9 +1612,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -1898,10 +1628,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1993,21 +1720,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2019,9 +1739,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -2033,21 +1751,14 @@
           "tags": []
         },
         {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2060,9 +1771,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -2078,10 +1787,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2173,21 +1879,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2199,9 +1898,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -2213,21 +1910,14 @@
           "tags": []
         },
         {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2240,9 +1930,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -2258,10 +1946,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2353,21 +2038,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2379,9 +2057,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -2393,21 +2069,14 @@
           "tags": []
         },
         {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2420,9 +2089,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -2438,10 +2105,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "de99ql9z3xszkb"
-      },
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2533,21 +2197,14 @@
       "targets": [
         {
           "alias": "Virtual Users",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2559,9 +2216,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -2573,21 +2228,14 @@
           "tags": []
         },
         {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "de99ql9z3xszkb"
-          },
+          "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": [
-                "$__interval"
-              ],
+              "params": ["$__interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -2600,9 +2248,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
