@@ -5,6 +5,10 @@ services:
     volumes:
       - ./functional-tests.js:/functional-tests.js
       - ./helpers.js:/helpers.js
-    network_mode: "host"
     environment:
-      - BASE_URL=http://localhost:8080
+      - BASE_URL=http://server:8080
+
+networks:
+  default:
+    external: true
+    name: budget-api

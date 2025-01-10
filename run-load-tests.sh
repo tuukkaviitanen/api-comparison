@@ -4,7 +4,16 @@
 run_tests_for() {
   docker compose -f $1 up --build --wait
 
+  # This is to record the idle server stats before the tests
+  sleep 10
+
   docker compose -f ./k6/docker-compose-load.yaml up --build
+
+  # This down-command is necessary to reset the budget-api external network
+  docker compose -f ./k6/docker-compose-load.yaml down
+
+  # This is to record the idle server stats after the tests
+  sleep 10
 
   docker compose -f $1 down -v
 }

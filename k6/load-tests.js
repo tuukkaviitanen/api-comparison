@@ -11,15 +11,14 @@ import {
 
 export const options = {
   stages: [
-    { duration: "1m", target: 10 }, // Ramping up
-    { duration: "2m", target: 10 }, // Holding
-    { duration: "1m", target: 100 }, // Ramping up
-    { duration: "2m", target: 100 }, // Holding
-    { duration: "1m", target: 500 }, // Ramping up
-    { duration: "2m", target: 500 }, // Holding
-    { duration: "1m", target: 1000 }, // Ramping up
-    { duration: "2m", target: 1000 }, // Holding
-    { duration: "1m", target: 0 }, // Ramping down
+    { duration: "1m", target: 1 }, // Holding
+    { duration: "30s", target: 5 }, // Ramping up
+    { duration: "1m", target: 5 }, // Holding
+    { duration: "30s", target: 10 }, // Ramping up
+    { duration: "1m", target: 10 }, // Holding
+    { duration: "30s", target: 100 }, // Ramping up
+    { duration: "1m", target: 100 }, // Holding
+    { duration: "30s", target: 0 }, // Ramping down
   ],
 };
 
