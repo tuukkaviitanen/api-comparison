@@ -8,6 +8,7 @@ import {
   postCredentials,
   postTransaction,
 } from "./helpers.js";
+import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 export const options = {
   stages: [
@@ -26,8 +27,14 @@ export const handleSummary = (data) => {
   const now = new Date();
   const timestamp = now.toISOString();
 
+  const summary = textSummary(data, {
+    indent: " ",
+    enableColors: true,
+  });
+
   return {
-    [`/results/summary_${timestamp}.json`]: JSON.stringify(data), //the default data object
+    [`/results/summary_${timestamp}.txt`]: summary,
+    stdout: summary,
   };
 };
 
@@ -45,8 +52,8 @@ export default () => {
 
   const transactionParams = getTransactionParams(username, password);
 
-  // POST 10 transactions
-  for (let i = 0; i < 10; i++) {
+  // POST 1000 transactions
+  for (let i = 0; i < 1000; i++) {
     const postResponse = postTransaction(
       "Food & Drinks",
       "Pizza at Frank's",
@@ -60,8 +67,8 @@ export default () => {
     );
   }
 
-  // GET transactions 10 times
-  for (let i = 0; i < 10; i++) {
+  // GET transactions 100 times
+  for (let i = 0; i < 100; i++) {
     const getResponse = getTransactions(
       undefined,
       undefined,
@@ -78,8 +85,8 @@ export default () => {
     );
   }
 
-  // GET report 10 times
-  for (let i = 0; i < 10; i++) {
+  // GET report 1000 times
+  for (let i = 0; i < 1000; i++) {
     const reportResponse = getReport(
       undefined,
       undefined,
