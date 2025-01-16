@@ -18,6 +18,7 @@ lazy_static! {
 pub fn initialize_connection_pool(database_url: String) {
     let manager = ConnectionManager::<PgConnection>::new(database_url);
     let pool = Pool::builder()
+        .max_size(100)
         .test_on_check_out(true)
         .build(manager)
         .expect("Could not build database connection pool");

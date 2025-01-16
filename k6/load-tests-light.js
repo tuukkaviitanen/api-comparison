@@ -42,7 +42,7 @@ export default () => {
   const username = randomString(10);
   const password = randomString(10);
 
-  // POST credential
+  // POST Credential
   const postCredentialsResponse = postCredentials(username, password);
 
   expect(
@@ -52,50 +52,30 @@ export default () => {
 
   const transactionParams = getTransactionParams(username, password);
 
-  // POST 1000 transactions
-  for (let i = 0; i < 1000; i++) {
-    const postResponse = postTransaction(
-      "Food & Drinks",
-      "Pizza at Frank's",
-      -10.99,
-      "2024-01-01T18:00:00Z",
-      transactionParams
-    );
+  // POST Transaction
+  const postResponse = postTransaction(
+    "Food & Drinks",
+    "Pizza at Frank's",
+    -10.99,
+    "2024-01-01T18:00:00Z",
+    transactionParams
+  );
 
-    expect(postResponse.status, "POST transaction response status").to.equal(
-      201
-    );
-  }
+  expect(postResponse.status, "POST transaction response status").to.equal(201);
 
-  // GET transactions 100 times
-  for (let i = 0; i < 100; i++) {
-    const getResponse = getTransactions(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      transactionParams
-    );
+  // GET Transactions
+  const getResponse = getTransactions(
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    transactionParams
+  );
 
-    expect(getResponse.status, "GET transactions response status").to.equal(
-      200
-    );
-  }
-
-  // GET report 1000 times
-  for (let i = 0; i < 1000; i++) {
-    const reportResponse = getReport(
-      undefined,
-      undefined,
-      undefined,
-      transactionParams
-    );
-
-    expect(reportResponse.status, "GET report response status").to.equal(200);
-  }
+  expect(getResponse.status, "GET transactions response status").to.equal(200);
 
   // DELETE the credential
   const deleteCredentialResponse = deleteCredentials(username, password);

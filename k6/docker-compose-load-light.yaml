@@ -1,9 +1,9 @@
 services:
   k6:
     image: grafana/k6:latest
-    command: run /load-tests.js
+    command: run /load-tests-light.js
     volumes:
-      - ./load-tests.js:/load-tests.js
+      - ./load-tests-light.js:/load-tests-light.js
       - ./helpers.js:/helpers.js
       - ./results:/results
     environment:

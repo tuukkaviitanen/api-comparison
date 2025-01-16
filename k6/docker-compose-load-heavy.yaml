@@ -1,0 +1,27 @@
+services:
+  k6:
+    image: grafana/k6:latest
+    command: run /load-tests-heavy.js
+    volumes:
+      - ./load-tests-heavy.js:/load-tests-heavy.js
+      - ./helpers.js:/helpers.js
+      - ./results:/results
+    environment:
+      - BASE_URL=http://server:8080
+      - K6_OUT=influxdb=http://influxdb:8086/k6
+    networks:
+      - budget-api
+      - influxdb-grafana
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
+networks:
+  budget-api:
+    external: true
+    name: budget-api
+  influxdb-grafana:
+    external: true
+    name: influxdb-grafana

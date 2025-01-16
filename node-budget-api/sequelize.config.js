@@ -8,12 +8,18 @@ module.exports = {
     define: {
       timestamps: false,
     },
+    pool: {
+      max: 100,
+    },
   },
   production: {
     url,
     dialect: "postgres",
     define: {
       timestamps: false,
+    },
+    pool: {
+      max: 100,
     },
   },
 };

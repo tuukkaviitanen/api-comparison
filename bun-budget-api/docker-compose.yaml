@@ -4,7 +4,7 @@ services:
       context: ../
       dockerfile: ./bun-budget-api/Dockerfile.dev
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres/budget_api
+      - DATABASE_URL=postgresql://user:password@postgres/budget_api?connection_limit=100
     command: bunx prisma migrate deploy
     depends_on:
       postgres:

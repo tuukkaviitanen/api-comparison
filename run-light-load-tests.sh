@@ -7,10 +7,10 @@ run_tests_for() {
   # This is to record the idle server stats before the tests
   sleep 10
 
-  docker compose -f ./k6/docker-compose-load.yaml up --build
+  docker compose -f ./k6/docker-compose-load-light.yaml up --build
 
   # This down-command is necessary to reset the budget-api external network
-  docker compose -f ./k6/docker-compose-load.yaml down
+  docker compose -f ./k6/docker-compose-load-light.yaml down
 
   # This is to record the idle server stats after the tests
   sleep 10
