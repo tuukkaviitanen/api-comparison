@@ -12,6 +12,12 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
   migrator:
     build:
       context: ../
@@ -22,6 +28,7 @@ services:
       postgres:
         condition: service_healthy
     command: dotnet ef database update
+
   postgres:
     image: postgres:10.3
     restart: unless-stopped
@@ -36,3 +43,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
+networks:
+  default:
+    name: budget-api

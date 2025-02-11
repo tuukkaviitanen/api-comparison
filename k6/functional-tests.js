@@ -7,15 +7,19 @@ import {
   randomString,
   uuidv4,
 } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
-import encoding from "k6/encoding";
-import exec from "k6/execution";
-import { URL } from "https://jslib.k6.io/url/1.0.0/index.js";
 
-const BASE_URL = __ENV.BASE_URL;
-
-if (!BASE_URL) {
-  exec.test.abort("BASE_URL not provided");
-}
+import {
+  deleteCredentials,
+  deleteTransaction,
+  getReport,
+  getSingleTransaction,
+  getTransactionParams,
+  getTransactions,
+  postCredentials,
+  postTransaction,
+  putTransaction,
+  getOpenAPI,
+} from "./helpers.js";
 
 export const options = {
   vus: 5,
@@ -25,147 +29,11 @@ export const options = {
   },
 };
 
-const getBasicAuthHeader = (username, password) => {
-  const credentials = `${username}:${password}`;
-  const encodedCredentials = encoding.b64encode(credentials);
-  const basicAuthHeader = `basic ${encodedCredentials}`;
-  return basicAuthHeader;
-};
-
-const postCredentials = (username, password) => {
-  const requestBody = JSON.stringify({
-    username,
-    password,
-  });
-
-  const params = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  return http.post(`${BASE_URL}/credentials`, requestBody, params);
-};
-
-const deleteCredentials = (username, password, optionalParams = undefined) => {
-  const params = optionalParams ?? {
-    headers: {
-      Authorization: getBasicAuthHeader(username, password),
-    },
-  };
-
-  return http.del(`${BASE_URL}/credentials`, undefined, params);
-};
-
-const assertValidErrorBody = (response) => {
+export const assertValidErrorBody = (response) => {
   expect(response).to.have.validJsonBody();
   const jsonBody = response.json();
   expect(jsonBody, "response body").to.have.property("error");
   expect(jsonBody.error, "error property").to.be.a("string");
-};
-
-const getTransactionParams = (username, password) => {
-  const params = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: getBasicAuthHeader(username, password),
-    },
-  };
-  return params;
-};
-
-const postTransaction = (category, description, value, timestamp, params) => {
-  const payload = JSON.stringify({
-    category,
-    description,
-    value,
-    timestamp,
-  });
-
-  return http.post(`${BASE_URL}/transactions`, payload, params);
-};
-
-const putTransaction = (
-  transactionId,
-  category,
-  description,
-  value,
-  timestamp,
-  params
-) => {
-  const payload = JSON.stringify({
-    category,
-    description,
-    value,
-    timestamp,
-  });
-
-  return http.put(`${BASE_URL}/transactions/${transactionId}`, payload, params);
-};
-
-const getSingleTransaction = (transactionId, params) => {
-  return http.get(`${BASE_URL}/transactions/${transactionId}`, params);
-};
-
-const getTransactions = (
-  category = "",
-  from = "",
-  to = "",
-  sort = "",
-  order = "",
-  limit = "",
-  skip = "",
-  params
-) => {
-  const url = new URL(`${BASE_URL}/transactions`);
-
-  if (category) {
-    url.searchParams.append("category", category);
-  }
-  if (from) {
-    url.searchParams.append("from", from);
-  }
-  if (to) {
-    url.searchParams.append("to", to);
-  }
-  if (sort) {
-    url.searchParams.append("sort", sort);
-  }
-  if (order) {
-    url.searchParams.append("order", order);
-  }
-  if (limit) {
-    url.searchParams.append("limit", limit);
-  }
-  if (skip) {
-    url.searchParams.append("skip", skip);
-  }
-
-  return http.get(url.toString(), params);
-};
-
-const deleteTransaction = (transactionId, params) => {
-  return http.del(
-    `${BASE_URL}/transactions/${transactionId}`,
-    undefined,
-    params
-  );
-};
-
-const getReport = (category = "", from = "", to = "", params) => {
-  const url = new URL(`${BASE_URL}/reports`);
-
-  if (category) {
-    url.searchParams.append("category", category);
-  }
-  if (from) {
-    url.searchParams.append("from", from);
-  }
-  if (to) {
-    url.searchParams.append("to", to);
-  }
-
-  return http.get(url.toString(), params);
 };
 
 /**
@@ -214,7 +82,7 @@ const runAuthenticationTests = (requestFactory) => {
   });
 };
 
-export default function () {
+export default () => {
   describe("Budget API", () => {
     describe("Credentials endpoint", () => {
       const username = randomString(10);
@@ -1357,7 +1225,7 @@ export default function () {
 
     describe("OpenAPI document", () => {
       describe("should be served successfully", () => {
-        const response = http.get(`${BASE_URL}/openapi.yaml`);
+        const response = getOpenAPI();
 
         expect(response.status, "response status").to.equal(200);
         expect(response.headers["Content-Type"], "content type").to.include(
@@ -1366,4 +1234,4 @@ export default function () {
       });
     });
   });
-}
+};

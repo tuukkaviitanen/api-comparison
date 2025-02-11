@@ -12,6 +12,12 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
   migrator:
     build:
       context: ../
@@ -20,11 +26,10 @@ services:
       postgres:
         condition: service_healthy
     command: atlas migrate apply --url "postgresql://user:password@postgres/budget_api?sslmode=disable"
+
   postgres:
     image: postgres:10.3
     restart: unless-stopped
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -34,3 +39,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
+networks:
+  default:
+    name: budget-api

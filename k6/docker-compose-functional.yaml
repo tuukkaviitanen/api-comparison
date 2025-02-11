@@ -1,0 +1,14 @@
+services:
+  k6:
+    image: grafana/k6
+    command: run /functional-tests.js
+    volumes:
+      - ./functional-tests.js:/functional-tests.js
+      - ./helpers.js:/helpers.js
+    environment:
+      - BASE_URL=http://server:8080
+
+networks:
+  default:
+    external: true
+    name: budget-api

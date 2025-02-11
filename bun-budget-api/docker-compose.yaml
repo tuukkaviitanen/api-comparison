@@ -4,11 +4,12 @@ services:
       context: ../
       dockerfile: ./bun-budget-api/Dockerfile.dev
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres/budget_api
+      - DATABASE_URL=postgresql://user:password@postgres/budget_api?connection_limit=100
     command: bunx prisma migrate deploy
     depends_on:
       postgres:
         condition: service_healthy
+
   server:
     build:
       context: ../
@@ -24,6 +25,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
   postgres:
     image: postgres:10.3
     restart: unless-stopped
@@ -38,3 +45,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
+networks:
+  default:
+    name: budget-api

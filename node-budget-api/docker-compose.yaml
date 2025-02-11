@@ -3,14 +3,21 @@ services:
     build:
       context: ../
       dockerfile: ./node-budget-api/Dockerfile
-    volumes:
-      - ./src:/usr/src/app/src
     environment:
       PORT: 8080
       DATABASE_URL: postgresql://user:password@postgres/budget_api
     ports:
       - 8080:8080
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
   postgres:
     image: postgres:10.3
     restart: unless-stopped
@@ -25,3 +32,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+
+networks:
+  default:
+    name: budget-api

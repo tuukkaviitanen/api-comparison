@@ -1,6 +1,9 @@
-version: '3'
+version: "3"
 
 tasks:
-  api-tests:
+  test:functional:
     cmds:
-      - docker compose -f ./k6/docker-compose-test.yaml up
+      - docker compose -f ./k6/docker-compose-functional.yaml up
+  test:load:
+    cmds:
+      - docker compose -f ./k6/docker-compose-load.yaml up
