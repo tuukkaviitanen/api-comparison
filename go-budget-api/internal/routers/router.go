@@ -3,12 +3,14 @@ package routers
 import (
 	"budget-api/internal/middlewares"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
 
 func GetMainRouter() *gin.Engine {
 	router := gin.Default()
+	router.Use(cors.Default())
 
 	binding.Validator = &customValidator{}
 
