@@ -21,10 +21,14 @@ builder.Services.AddScoped<CredentialService>();
 builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddCors();
 
+// Makes parameter binding errors throw errors instead of automatically returning 400
 builder.Services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadRequest = true);
 
 var app = builder.Build();
+
+app.UseCors();
 
 app.UseExceptionHandler(appError =>
 {

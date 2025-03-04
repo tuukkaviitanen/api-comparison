@@ -9,6 +9,7 @@
     "start": "bun run out/index.js"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
     "@prisma/client": "^5.20.0",
     "elysia": "latest"
   },

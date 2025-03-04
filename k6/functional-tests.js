@@ -29,7 +29,7 @@ export const options = {
   },
 };
 
-export const assertValidErrorBody = (response) => {
+const assertValidErrorBody = (response) => {
   expect(response).to.have.validJsonBody();
   const jsonBody = response.json();
   expect(jsonBody, "response body").to.have.property("error");

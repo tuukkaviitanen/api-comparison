@@ -155,3 +155,31 @@ export const getReport = (category = "", from = "", to = "", params) => {
 };
 
 export const getOpenAPI = () => http.get(`${BASE_URL}/openapi.yaml`);
+
+export const handleSummary = (data) => {
+  const now = new Date();
+  const timestamp = now.toISOString();
+
+  const summary = textSummary(data, {
+    indent: " ",
+    enableColors: true,
+  });
+
+  return {
+    [`/results/summary_${timestamp}.txt`]: summary,
+    stdout: summary,
+  };
+};
+
+export const loadTestOptions = {
+  stages: [
+    { duration: "1m", target: 1 }, // Holding
+    { duration: "30s", target: 5 }, // Ramping up
+    { duration: "1m", target: 5 }, // Holding
+    { duration: "30s", target: 10 }, // Ramping up
+    { duration: "1m", target: 10 }, // Holding
+    { duration: "30s", target: 100 }, // Ramping up
+    { duration: "1m", target: 100 }, // Holding
+    { duration: "30s", target: 0 }, // Ramping down
+  ],
+};

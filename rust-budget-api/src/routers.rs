@@ -3,7 +3,10 @@ mod report_router;
 mod transaction_router;
 
 use axum::Router;
-use tower_http::services::ServeFile;
+use tower_http::{
+    cors::{Any, CorsLayer},
+    services::ServeFile,
+};
 
 pub fn app() -> Router {
     Router::new()
@@ -11,6 +14,7 @@ pub fn app() -> Router {
         .nest("/reports", report_router::routes())
         .nest("/transactions", transaction_router::routes())
         .nest_service("/openapi.yaml", ServeFile::new("./openapi.yaml"))
+        .layer(CorsLayer::new().allow_origin(Any))
 }
 
 mod custom_validators;
