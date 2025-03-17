@@ -123,11 +123,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -139,7 +143,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -155,11 +161,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -172,7 +182,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -194,11 +206,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -211,7 +227,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -233,11 +251,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -250,7 +272,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -272,11 +296,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -289,7 +317,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -311,11 +341,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -328,7 +362,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -450,11 +486,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -466,7 +506,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -482,11 +524,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -499,7 +545,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -521,11 +569,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -538,7 +590,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -560,11 +614,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -577,7 +635,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -599,11 +659,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -616,7 +680,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -638,11 +704,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -655,7 +725,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -778,11 +850,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -794,7 +870,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -810,11 +888,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -827,7 +909,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -849,11 +933,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -866,7 +954,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -888,11 +978,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -905,7 +999,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -927,11 +1023,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -944,7 +1044,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -966,11 +1068,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -983,7 +1089,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1105,11 +1213,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1121,7 +1233,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -1137,11 +1251,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1154,7 +1272,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1176,11 +1296,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1193,7 +1317,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1215,11 +1341,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1232,7 +1362,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1254,11 +1386,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1271,7 +1407,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1293,11 +1431,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1310,7 +1452,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1433,11 +1577,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1449,7 +1597,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -1465,11 +1615,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1482,7 +1636,9 @@
           "select": [
             [
               {
-                "params": ["cpu_percentage"],
+                "params": [
+                  "cpu_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1604,11 +1760,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1620,7 +1780,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -1636,11 +1798,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1653,7 +1819,9 @@
           "select": [
             [
               {
-                "params": ["memory_percentage"],
+                "params": [
+                  "memory_percentage"
+                ],
                 "type": "field"
               },
               {
@@ -1770,11 +1938,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1786,7 +1958,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -1802,11 +1976,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1819,7 +1997,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -1935,11 +2115,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1951,7 +2135,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -1967,11 +2153,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -1984,7 +2174,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -2100,11 +2292,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -2116,7 +2312,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -2132,11 +2330,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -2149,7 +2351,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -2260,11 +2464,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -2276,7 +2484,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -2292,11 +2502,15 @@
           "datasource": "InfluxDB",
           "groupBy": [
             {
-              "params": ["$__interval"],
+              "params": [
+                "$__interval"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -2309,7 +2523,9 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "value"
+                ],
                 "type": "field"
               },
               {
@@ -2332,8 +2548,8 @@
     "list": []
   },
   "time": {
-    "from": "2025-01-16T18:55:11.443Z",
-    "to": "2025-01-16T20:06:50.674Z"
+    "from": "2025-03-04T16:45:42.654Z",
+    "to": "2025-03-04T17:54:40.509Z"
   },
   "timepicker": {},
   "timezone": "browser",
