@@ -13,9 +13,8 @@ const initialReport = {
   incomes_count: 0,
 };
 
-const mapReport = (transactions) =>
-  transactions.reduce((report, transaction) => {
-    const value = Number(transaction.value);
+const mapReport = (values) =>
+  values.reduce((report, value) => {
     const isExpense = value < 0;
     const isIncome = value > 0;
 
@@ -39,9 +38,12 @@ const generateReport = async (credentialId, category, from, to) => {
   const where = getTransactionsWhereClause(credentialId, category, from, to);
   const transactions = await Transaction.findAll({
     where,
+    attributes: ["value"],
   });
 
-  return mapReport(transactions);
+  const values = transactions.map((transaction) => Number(transaction.value));
+
+  return mapReport(values);
 };
 
 module.exports = { generateReport };

@@ -1,4 +1,6 @@
 import Elysia from "elysia";
+import { cors } from "@elysiajs/cors";
+
 import credentialRouter from "./routers/credential-router";
 import transactionRouter from "./routers/transaction-router";
 import reportRouter from "./routers/report-router";
@@ -8,6 +10,7 @@ import UniqueError from "./errors/unique-error";
 import NotFoundError from "./errors/not-found-error";
 
 const app = new Elysia()
+  .use(cors())
   .onError(({ error, set, code }) => {
     console.error("Error occurred", error.message);
 

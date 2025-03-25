@@ -1,4 +1,3 @@
-import { Transaction as ProcessedTransaction } from "../../prisma/client";
 import prisma from "../utils/prisma";
 
 const roundToTwoDecimals = (num: number) => Math.round(num * 100) / 100;
@@ -12,9 +11,8 @@ const initialReport = {
   incomes_count: 0,
 };
 
-const mapReport = (transactions: ProcessedTransaction[]) =>
-  transactions.reduce((report, transaction) => {
-    const value = Number(transaction.value);
+const mapReport = (values: number[]) =>
+  values.reduce((report, value) => {
     const isExpense = value < 0;
     const isIncome = value > 0;
 
@@ -42,9 +40,14 @@ export const generateReport = async (
 ) => {
   const transactions = await prisma.transaction.findMany({
     where: { credentialId, category, timestamp: { gte: from, lte: to } },
+    select: {
+      value: true,
+    },
   });
 
-  const report = mapReport(transactions);
+  const values = transactions.map((transaction) => Number(transaction.value));
+
+  const report = mapReport(values);
 
   return report;
 };

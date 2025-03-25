@@ -5,7 +5,7 @@ erDiagram
 
 Credentials {
     uuid id PK
-    varchar(50) username unique
+    varchar(50) username UK
     varchar(64) passwordHash
 }
 
