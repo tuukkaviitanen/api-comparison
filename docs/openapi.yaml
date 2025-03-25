@@ -30,12 +30,12 @@ paths:
         204:
           description: Credentials created successfully
         400:
-          $ref: '#/components/responses/ValidationError'
+          $ref: "#/components/responses/ValidationError"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
     delete:
       security:
-      - basicAuth: []
+        - basicAuth: []
       tags:
         - Credentials
       summary: Delete credentials
@@ -43,13 +43,13 @@ paths:
         204:
           description: Credentials deleted successfully
         401:
-          $ref: '#/components/responses/AuthenticationError'
+          $ref: "#/components/responses/AuthenticationError"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
   /transactions:
     post:
       security:
-      - basicAuth: []
+        - basicAuth: []
       tags:
         - Transactions
       summary: Add a new transaction
@@ -57,23 +57,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Transaction'
+              $ref: "#/components/schemas/Transaction"
       responses:
         201:
           description: Transactions added
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedTransaction'
+                $ref: "#/components/schemas/ProcessedTransaction"
         400:
-          $ref: '#/components/responses/ValidationError'
+          $ref: "#/components/responses/ValidationError"
         401:
-          $ref: '#/components/responses/AuthenticationError'
+          $ref: "#/components/responses/AuthenticationError"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
     get:
       security:
-      - basicAuth: []
+        - basicAuth: []
       tags:
         - Transactions
       summary: Get list of the transactions
@@ -82,7 +82,7 @@ paths:
           name: category
           description: For filtering. Returns transactions with given category.
           schema:
-            $ref: '#/components/schemas/TransactionCategory'
+            $ref: "#/components/schemas/TransactionCategory"
         - in: query
           name: from
           description: For filtering. Returns transactions that occured after given timestamp.
@@ -135,24 +135,24 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProcessedTransaction'
+                  $ref: "#/components/schemas/ProcessedTransaction"
         400:
-          $ref: '#/components/responses/ValidationError'
+          $ref: "#/components/responses/ValidationError"
         401:
-          $ref: '#/components/responses/AuthenticationError'
+          $ref: "#/components/responses/AuthenticationError"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
   /transactions/{transactionId}:
     parameters:
-    - in: path
-      name: transactionId
-      required: true
-      schema:
-        type: string
-        format: uuid
+      - in: path
+        name: transactionId
+        required: true
+        schema:
+          type: string
+          format: uuid
     get:
       security:
-      - basicAuth: []
+        - basicAuth: []
       tags:
         - Transactions
       summary: Get transaction by id
@@ -162,16 +162,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedTransaction'
+                $ref: "#/components/schemas/ProcessedTransaction"
         401:
-          $ref: '#/components/responses/AuthenticationError'
+          $ref: "#/components/responses/AuthenticationError"
         404:
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
     put:
       security:
-      - basicAuth: []
+        - basicAuth: []
       tags:
         - Transactions
       summary: Update an existing transaction
@@ -179,25 +179,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Transaction'
+              $ref: "#/components/schemas/Transaction"
       responses:
         200:
           description: Transaction successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedTransaction'
+                $ref: "#/components/schemas/ProcessedTransaction"
         400:
-          $ref: '#/components/responses/ValidationError'
+          $ref: "#/components/responses/ValidationError"
         401:
-          $ref: '#/components/responses/AuthenticationError'
+          $ref: "#/components/responses/AuthenticationError"
         404:
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
     delete:
       security:
-      - basicAuth: []
+        - basicAuth: []
       tags:
         - Transactions
       summary: Delete an existing transaction
@@ -205,13 +205,13 @@ paths:
         204:
           description: Transaction successfully deleted
         400:
-          $ref: '#/components/responses/ValidationError'
+          $ref: "#/components/responses/ValidationError"
         401:
-          $ref: '#/components/responses/AuthenticationError'
+          $ref: "#/components/responses/AuthenticationError"
         404:
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
   /reports:
     get:
       summary: Generates a financial report for the given period
@@ -224,7 +224,7 @@ paths:
         - in: query
           name: category
           schema:
-            $ref: '#/components/schemas/TransactionCategory'
+            $ref: "#/components/schemas/TransactionCategory"
           required: false
         - in: query
           name: from
@@ -259,11 +259,11 @@ paths:
                   incomes_count:
                     type: number
         400:
-          $ref: '#/components/responses/ValidationError'
+          $ref: "#/components/responses/ValidationError"
         401:
-          $ref: '#/components/responses/AuthenticationError'
+          $ref: "#/components/responses/AuthenticationError"
         500:
-          $ref: '#/components/responses/InternalError'
+          $ref: "#/components/responses/InternalError"
   /openapi.yaml:
     get:
       summary: Returns the OpenAPI document
@@ -281,14 +281,14 @@ paths:
 components:
   schemas:
     TransactionCategory:
-          type: string
-          enum:
-            - "Household & Services"
-            - "Food & Drinks"
-            - "Transport"
-            - "Recreation"
-            - "Health"
-            - "Other"
+      type: string
+      enum:
+        - "Household & Services"
+        - "Food & Drinks"
+        - "Transport"
+        - "Recreation"
+        - "Health"
+        - "Other"
     Transaction:
       type: object
       required:
@@ -298,7 +298,7 @@ components:
         - timestamp
       properties:
         category:
-          $ref: '#/components/schemas/TransactionCategory'
+          $ref: "#/components/schemas/TransactionCategory"
         description:
           type: string
           description: Freely formatted description of the transaction
@@ -324,7 +324,7 @@ components:
     ProcessedTransaction:
       required:
       allOf:
-        - $ref: '#/components/schemas/Transaction'
+        - $ref: "#/components/schemas/Transaction"
         - type: object
           properties:
             id:
